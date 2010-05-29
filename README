@@ -1,0 +1,20 @@
+Universum Meum is a game that allows the player to create new particles and arbitrary interactions
+to build their own universe completely from scratch.
+
+Obtaining:
+
+Github currently hosts the repo at http://github.com/JAChapmanII/Universum-Meum
+You can use:
+	git clone git://github.com/JAChapmanII/Universum-Meum.git
+to clone the repository locally.
+
+
+Building:
+
+Currently use gdc to compile Universum Meum through rebuild. To do this, cd to the Universum Meum
+directory and execute:
+	rebuild -dc=gdc-posix-tango -D -ofbin/Universum-Meum src/main.d
+You can then execute it by typing
+	./bin/Universum-Meum
+from the same directory.
+
