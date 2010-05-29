@@ -13,7 +13,7 @@ Building:
 
 Currently use gdc to compile Universum Meum through rebuild. To do this, cd to the Universum Meum
 directory and execute:
-	rebuild -dc=gdc-posix-tango -D -ofbin/Universum-Meum src/main.d
+	make
 You can then execute it by typing
 	./bin/Universum-Meum
 from the same directory.

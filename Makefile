@@ -1,21 +1,29 @@
-SRC="src/main.d"
-OBJ="$(foreach obj, $(SRC:.d=.o), $(notdir $(obj)))"
+SHELL=/bin/sh
+SRCDIR=src
+DOCDIR=doc
+OBJDIR=obj
+BINDIR=bin
+SRC=main.d
+PROG=Universum-Meum
+
+DD=rebuild
+DFLAGS=-no-export-dynamic -lldl
 
 all: universum-meum
 
 universum-meum: release
 
 release:
-	rebuild -dc=gdc-posix-tango -D -Dqdoc -oqobj -ofbin/Universum-Meum \
-		-no-export-dynamic -lldl -Isrc -O -release src/main.d
+	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}/${PROG} \
+		${DFLAGS} -O -release ${SRCDIR}/${SRC}
 
 debug:
-	rebuild -dc=gdc-posix-tango -D -Dqdoc -oqobj -ofbin/Universum-Meum \
-		-no-export-dynamic -lldl -Isrc -g -debug src/main.d
+	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}/${PROG} \
+		${DFLAGS} -g -debug ${SRCDIR}/${SRC}
 
 profile:
-	rebuild -dc=gdc-posix-tango -D -Dqdoc -oqobj -ofbin/Universum-Meum \
-		-no-export-dynamic -lldl -Isrc -g -debug -profile src/main.d
+	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}/${PROG} \
+		${DFLAGS} -g -debug -profile ${SRCDIR}/${SRC}
 
 clean:
 	rm -f obj/*
