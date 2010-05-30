@@ -1,5 +1,5 @@
 /* {{{
-	Copyright 2010 Jeff Chapman
+	Copyright 2010 Jeff Chapman (and Nolan Brown)
 
 	This file is a part of Universum Meum
 
@@ -23,7 +23,7 @@ import tango.io.Stdout;
 
 int main( char[][] )
 {
-	Stdout.formatln( "Universum Meum" );
+	Stdout.formatln( "Welcome to Universum Meum." );
 	Stdout.formatln( "Thanks for playing!" );
 	return 0;
 }
