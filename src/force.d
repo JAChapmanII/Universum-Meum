@@ -17,14 +17,13 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module main;
+module force;
 
-import tango.io.Stdout;
-import force;
-
-int main( char[][] )
+class force
 {
-	Stdout.formatln( "Welcome to Universum Meum." );
-	Stdout.formatln( "Thanks for playing!" );
-	return 0;
+	public:
+		this()
+		{
+
+		}
 }
