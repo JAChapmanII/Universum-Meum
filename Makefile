@@ -11,7 +11,7 @@ DFLAGS=-no-export-dynamic -lldl
 
 all: universum-meum
 
-universum-meum: release
+universum-meum: clean release
 
 release:
 	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}/${PROG} \
