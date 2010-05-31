@@ -17,19 +17,25 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module main;
+module particle;
 
-import tango.io.Stdout;
-import display;
-import particle;
 import force;
 
-int main( char[][] )
+class particle
 {
-	Stdout.formatln( "Welcome to Universum Meum." );
-	display m_Display = display.display( 800, 600, 32 );
-	force m_Force = new force();
-	particle m_Particle = new particle();
-	Stdout.formatln( "Thanks for playing!" );
-	return 0;
+	public:
+		this()
+		{
+			m_Mass = 0;
+			m_Radius = 0;
+		}
+
+	protected:
+		float m_Mass;
+		float m_Radius;
+
+		force m_Force;
+
+	private:
+
 }
