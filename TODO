@@ -1,0 +1,26 @@
+display.d:
+	- Decide on the number of dimensions (a lot of OpenGL code will be different)
+		Note: We could use a actor based system where display only sets up the OpenGL environment
+		and then each actor then draws itself in whatever dimensions
+	- Make this file and whatever it imports be able to take arbitrary objects based on some class
+	  and display them in either 2 or 3 dimensions.
+	- Needs to be able to get the objects added easily, have some common interface for defining how
+	  shit is rendered
+
+main.d:
+	- This should look for different objects and seed conditions or something. Have the main GUI in
+	  here from which the person can select a project to be compiled/run
+	- Set up the main controls once a universe is loaded, zoom/save/quit/pan/rotate/fast/slow/pause
+	  and everything else it might need such as changing the abstraction level.
+
+particle.d:
+	- Make it so that it holds some level of abstraction (e.g., "molecule") to class it under
+	- Add some set of predefined things for it to do that can be strung together in some other file
+	- Create some function called "work" or the like that is overridden in the other file
+
+force.d:
+	- Perhaps ditch in favor of allowing particles to do this?
+		Note: might be best to allow forces to be created and then they can be "work"'d from a
+		to allow easy duplication of wanted effect
+	- Make these have a virtual "work" then?
+
