@@ -36,16 +36,16 @@ static this()
 
 static char[] PROGRAM_NAME = "Universum Meum";
 
-public class display
+public class Display
 {
 	public:
-		static display Instance( uint iWidth, uint iHeight, uint iBPP )
+		static Display Instance( uint iWidth, uint iHeight, uint iBPP )
 		{ //{{{
 			if( m_Instance is null )
 			{
 				try
 				{
-					m_Instance = new display( iWidth, iHeight, iBPP );
+					m_Instance = new Display( iWidth, iHeight, iBPP );
 				}
 				catch( Exception e )
 				{
@@ -162,6 +162,11 @@ public class display
 			m_NextTime += m_TickInterval;
 		} //}}}
 
+		void sleep( uint microSeconds = 1000 )
+		{
+			SDL_Delay( microSeconds );
+		}
+
 		// {G,S}etter for m_TickInterval
 		void TickInterval( uint nTickInterval ) //{{{
 		{
@@ -195,22 +200,96 @@ public class display
 	protected: //{{{
 		this( uint iWidth, uint iHeight, uint iBPP )
 		{
-			Width = iWidth;
-			Height = iHeight;
-			BPP = iBPP;
+			InitSGL( iWidth, iHeight, iBPP );
 		}
 
+		// load modules needed to interface with C libs SDL, GL, IL
 		void loadModules()
-		{
-		}
-		void unloadModules()
-		{
-		}
-		void toggleModules()
-		{
-		}
+		{ //{{{
+			if( ! m_ModulesLoaded )
+			{
+				// Try to load SDL module
+				try //{{{
+				{
+					DerelictSDL.load();
+				}
+				catch( Exception e )
+				{
+					log.fatal( "Could not load SDL module" );
+					throw e;
+				} //}}}
 
-		static display m_Instance;
+				// Try to load OpenGL module
+				try //{{{
+				{
+					DerelictGL.load();
+				}
+				catch( Exception e )
+				{
+					log.fatal( "Could not load OpenGL module" );
+					throw e;
+				} //}}}
+
+				// Try to load devIL module
+				try //{{{
+				{
+					DerelictIL.load();
+				}
+				catch( Exception e )
+				{
+					log.fatal( "Could not load devIL module" );
+					throw e;
+				} //}}}
+
+				m_ModulesLoaded = true;
+			}
+			else
+			{
+				log.warn( "Attempted to re-load modules" );
+			}
+		} //}}}
+
+		// unload modules needed to interface with C libs SDL, GL, IL
+		void unloadModules()
+		{ //{{{
+			if( m_ModulesLoaded )
+			{
+				// Try to unload all modules
+				// since this is less important, one try block
+				try //{{{
+				{
+					DerelictSDL.unload();
+					DerelictGL.unload();
+					DerelictIL.unload();
+				}
+				catch( Exception e )
+				{
+					log.error( "One or more modules could not be unloaded" );
+					throw e;
+				} //}}}
+
+				m_ModulesLoaded = false;
+			}
+			else
+			{
+				log.warn( "Attempted to re-unload modules" );
+			}
+		} //}}}
+
+		// toggle {un}loaded state of modules
+		void toggleModules()
+		{ //{{{
+			if( m_ModulesLoaded )
+			{
+				unloadModules();
+			}
+			else
+			{
+				loadModules();
+			}
+		} //}}}
+
+		static Display m_Instance;
 
 		uint m_TickInterval;
 		uint m_NextTime;

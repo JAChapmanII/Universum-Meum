@@ -19,17 +19,38 @@
 */// }}}
 module main;
 
+import tango.util.log.Log;
+import tango.util.log.AppendConsole;
+
 import tango.io.Stdout;
 import display;
 import particle;
 import force;
 
+Logger log;
+static this()
+{
+	log = Log.lookup( "main" );
+	log.add( new AppendConsole() );
+}
+
 int main( char[][] )
 {
 	Stdout.formatln( "Welcome to Universum Meum." );
-	display m_Display = display.display( 800, 600, 32 );
-	force m_Force = new force();
-	particle m_Particle = new particle();
+
+	log.info( "Creating a Display" );
+	Display m_Display = Display.Instance( 800, 600, 32 );
+
+	log.info( "Now a force and particle" );
+	Force m_Force = new Force();
+	Particle m_Particle = new Particle();
+
+	log.info( "Sleeping a little" );
+	m_Display.sleep( 5000 );
+
+	log.info( "5 secs passed" );
+	m_Display.sleep( 5000 );
+
 	Stdout.formatln( "Thanks for playing!" );
 	return 0;
 }
