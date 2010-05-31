@@ -24,6 +24,10 @@ class force
 	public:
 		this()
 		{
-
 		}
+
+	protected:
+
+	private:
+
 }

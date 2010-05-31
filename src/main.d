@@ -26,6 +26,8 @@ import force;
 int main( char[][] )
 {
 	Stdout.formatln( "Welcome to Universum Meum." );
+	display m_Display = display.display( 800, 600, 32 );
+	force m_Force = new force();
 	Stdout.formatln( "Thanks for playing!" );
 	return 0;
 }

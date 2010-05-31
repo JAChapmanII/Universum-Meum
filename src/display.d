@@ -96,8 +96,10 @@ public class display
 		} //}}}
 
 		void DeinitSGL()
-		{
-		}
+		{ //{{{
+			SDL_Quit();
+			unloadModules();
+		} //}}}
 
 		void Draw()
 		{
