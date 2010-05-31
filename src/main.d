@@ -40,16 +40,19 @@ int main( char[][] )
 
 	log.info( "Creating a Display" );
 	Display m_Display = Display.Instance( 800, 600, 32 );
+	m_Display.TickInterval = 1000 / 100;
 
 	log.info( "Now a force and particle" );
 	Force m_Force = new Force();
 	Particle m_Particle = new Particle();
 
-	log.info( "Sleeping a little" );
-	m_Display.sleep( 5000 );
-
-	log.info( "5 secs passed" );
-	m_Display.sleep( 5000 );
+	log.info( "Entering main game loop" );
+	while( !m_Display.isDone )
+	{
+		m_Display.ProcessInput();
+		m_Display.Draw();
+		m_Display.WaitFor();
+	}
 
 	Stdout.formatln( "Thanks for playing!" );
 	return 0;

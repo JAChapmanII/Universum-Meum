@@ -27,6 +27,8 @@ import derelict.opengl.gl;
 import derelict.sdl.sdl;
 import derelict.devil.il;
 
+import entity;
+
 Logger log;
 static this()
 {
@@ -76,13 +78,6 @@ public class Display
 
 			SDL_WM_SetCaption( cast( char* )PROGRAM_NAME, null );
 
-			ilInit();
-			if( ilGetError() != IL_NO_ERROR )
-			{
-				log.warn( "DevIL has had an error." );
-				throw new Exception( "DevIL had an error." );
-			}
-
 			glEnable( GL_TEXTURE_2D );
 			glEnable( GL_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -103,7 +98,67 @@ public class Display
 
 		void Draw()
 		{
+			foreach( i; m_Entities )
+			{
+				i.Draw();
+			}
+			SDL_GL_SwapBuffers();
 		}
+
+		void ProcessInput()
+		{ //{{{
+			// handle all SDL events that we might've received in this loop
+			// iteration TODO can this SDL_Poll... error?
+			while( SDL_PollEvent( &m_Event ) )
+			{
+				switch( m_Event.type )
+				{
+					// user has clicked on the window's close button
+					case SDL_QUIT:
+					{ //{{{
+						// set the done flag
+						isDone = true;
+						return;
+					} //}}}
+
+					// window has gained/lost attention
+					case SDL_ACTIVEEVENT:
+					{ //{{{
+						if( m_Event.active.gain == 0 )
+						{
+							// lost focus
+							isActive = false;
+						}
+						else
+						{
+							// gained focus
+							isActive = true;
+						}
+						break;
+					} //}}}
+
+					// A key was pressed
+					case SDL_KEYDOWN:
+					{ //{{{
+						break;
+					} //}}}
+
+					// A key was released
+					case SDL_KEYUP:
+					{ //{{{
+						break;
+					} //}}}
+
+					// by default, we do nothing => break from the switch
+					default:
+					{ //{{{
+						break;
+					} //}}}
+				}
+			}
+
+			return;
+		} //}}}
 
 		// {G,S}etter for m_Width
 		void Width( uint nWidth ) //{{{
@@ -135,9 +190,18 @@ public class Display
 			return m_BPP;
 		} //}}}
 
-		void AddActor()
-		{
-		}
+		void AddEntity( Entity nEntity )
+		{ //{{{
+			if( !( nEntity is null ) )
+			{
+				m_Entities.length = m_Entities.length + 1;
+				m_Entities[ $-1 ] = nEntity;
+			}
+			else
+			{
+				log.warn( "Tried to add a null entity" );
+			}
+		} //}}}
 
 		uint GetTicks()
 		{
@@ -146,7 +210,7 @@ public class Display
 
 		void WaitFor()
 		{ //{{{
-			uint now;
+			static uint now;
 			now = GetTicks();
 
 			if( m_NextTime > now )
@@ -155,9 +219,11 @@ public class Display
 			}
 			else
 			{
+				/*
 				char[] tlog = "Behind: " ~
 					Integer.toString( cast( int )( m_NextTime - now ) );
 				log.info( tlog );
+				*/
 			}
 			m_NextTime += m_TickInterval;
 		} //}}}
@@ -178,21 +244,21 @@ public class Display
 		} //}}}
 
 		// {G,S}etter for m_isDone
-		void IsDone( bool nState ) //{{{
+		void isDone( bool nState ) //{{{
 		{
 			m_isDone = nState;
 		}
-		bool IsDone()
+		bool isDone()
 		{
 			return m_isDone;
 		} //}}}
 
 		// {G,S}etter for m_isActive
-		void IsActive( bool nState ) //{{{
+		void isActive( bool nState ) //{{{
 		{
 			m_isActive = nState;
 		}
-		bool IsActive()
+		bool isActive()
 		{
 			return m_isActive;
 		} //}}}
@@ -230,17 +296,6 @@ public class Display
 					throw e;
 				} //}}}
 
-				// Try to load devIL module
-				try //{{{
-				{
-					DerelictIL.load();
-				}
-				catch( Exception e )
-				{
-					log.fatal( "Could not load devIL module" );
-					throw e;
-				} //}}}
-
 				m_ModulesLoaded = true;
 			}
 			else
@@ -260,7 +315,6 @@ public class Display
 				{
 					DerelictSDL.unload();
 					DerelictGL.unload();
-					DerelictIL.unload();
 				}
 				catch( Exception e )
 				{
@@ -303,6 +357,8 @@ public class Display
 		uint m_BPP;
 
 		SDL_Event m_Event;
+
+		Entity[] m_Entities;
 
 		//}}}
 
