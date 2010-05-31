@@ -21,7 +21,7 @@ module particle;
 
 import force;
 
-class particle
+class Particle
 {
 	public:
 		this()
@@ -34,7 +34,7 @@ class particle
 		float m_Mass;
 		float m_Radius;
 
-		force m_Force;
+		Force m_Force;
 
 	private:
 
