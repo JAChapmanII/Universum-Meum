@@ -20,6 +20,7 @@
 module main;
 
 import tango.io.Stdout;
+import display;
 import force;
 
 int main( char[][] )

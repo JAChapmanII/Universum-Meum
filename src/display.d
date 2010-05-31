@@ -1,5 +1,5 @@
 /* {{{
-	Copyright 2010 Jeff Chapman
+	Copyright 2010 Jeff Chapman (and Nolan Brown)
 
 	This file is a part of Universum Meum
 
@@ -21,6 +21,7 @@ module display;
 
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
+import Integer = tango.text.convert.Integer;
 
 import derelict.opengl.gl;
 import derelict.sdl.sdl;
@@ -35,16 +36,16 @@ static this()
 
 static char[] PROGRAM_NAME = "Universum Meum";
 
-public class Display
+public class display
 {
 	public:
-		static Display Instance( uint iWidth, uint iHeight, uint iBPP )
-		{
+		static display Instance( uint iWidth, uint iHeight, uint iBPP )
+		{ //{{{
 			if( m_Instance is null )
 			{
 				try
 				{
-					m_Instance = new Display( iWidth, iHeight, iBPP );
+					m_Instance = new display( iWidth, iHeight, iBPP );
 				}
 				catch( Exception e )
 				{
@@ -53,12 +54,12 @@ public class Display
 				}
 			}
 			return m_Instance;
-		}
+		} //}}}
 
 		alias Instance opCall;
 
 		void InitSGL( uint iWidth, uint iHeight, uint iBPP )
-		{
+		{ //{{{
 			loadModules();
 
 			if( SDL_Init( SDL_INIT_VIDEO ) != 0 )
@@ -90,41 +91,124 @@ public class Display
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
 			glOrtho( 0, Width, Height, 0, -10, 10 );
-			glMatrixMode( GL_MODLEVIEW );
+			glMatrixMode( GL_MODELVIEW );
 			glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		} //}}}
+
+		void DeinitSGL()
+		{
 		}
 
-		void DeinitSGL();
+		void Draw()
+		{
+		}
 
-		void Draw();
+		// {G,S}etter for m_Width
+		void Width( uint nWidth ) //{{{
+		{
+			m_Width = nWidth;
+		}
+		uint Width()
+		{
+			return m_Width;
+		} //}}}
 
-		void Width( uint nWidth );
-		uint Width();
+		// {G,S}etter for m_Height
+		void Height( uint nHeight ) //{{{
+		{
+			m_Height = nHeight;
+		}
+		uint Height()
+		{
+			return m_Height;
+		} //}}}
 
-		void Height( uint nHeight );
-		uint Height();
+		// {G,S}etter for m_BPP
+		void BPP( uint nBPP ) //{{{
+		{
+			m_BPP = nBPP;
+		}
+		uint BPP()
+		{
+			return m_BPP;
+		} //}}}
 
-		void AddActor();
+		void AddActor()
+		{
+		}
 
-		uint GetTicks();
-		void WaitFor();
+		uint GetTicks()
+		{
+			return SDL_GetTicks();
+		}
 
-		void TickInterval( uint nTickInterval );
-		uint TickInterval();
+		void WaitFor()
+		{ //{{{
+			uint now;
+			now = GetTicks();
 
-		void IsDone( bool nState );
+			if( m_NextTime > now )
+			{
+				SDL_Delay( m_NextTime - now );
+			}
+			else
+			{
+				char[] tlog = "Behind: " ~
+					Integer.toString( cast( int )( m_NextTime - now ) );
+				log.info( tlog );
+			}
+			m_NextTime += m_TickInterval;
+		} //}}}
+
+		// {G,S}etter for m_TickInterval
+		void TickInterval( uint nTickInterval ) //{{{
+		{
+			m_TickInterval = nTickInterval;
+		}
+		uint TickInterval()
+		{
+			return m_TickInterval;
+		} //}}}
+
+		// {G,S}etter for m_isDone
+		void IsDone( bool nState ) //{{{
+		{
+			m_isDone = nState;
+		}
 		bool IsDone()
+		{
+			return m_isDone;
+		} //}}}
 
-		void IsActive( bool nState );
-		bool IsActive();
+		// {G,S}etter for m_isActive
+		void IsActive( bool nState ) //{{{
+		{
+			m_isActive = nState;
+		}
+		bool IsActive()
+		{
+			return m_isActive;
+		} //}}}
 
-	protected:
-		this();
-		void loadModules();
-		void unloadModules();
-		void toggleModules();
+	protected: //{{{
+		this( uint iWidth, uint iHeight, uint iBPP )
+		{
+			Width = iWidth;
+			Height = iHeight;
+			BPP = iBPP;
+		}
 
-		static Display m_Instance;
+		void loadModules()
+		{
+		}
+		void unloadModules()
+		{
+		}
+		void toggleModules()
+		{
+		}
+
+		static display m_Instance;
 
 		uint m_TickInterval;
 		uint m_NextTime;
@@ -133,8 +217,13 @@ public class Display
 		bool m_isActive;
 		bool m_ModulesLoaded;
 
+		uint m_Width;
+		uint m_Height;
+		uint m_BPP;
+
 		SDL_Event m_Event;
+
+		//}}}
 
 	private:
 }
-
