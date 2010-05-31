@@ -25,7 +25,6 @@ import Integer = tango.text.convert.Integer;
 
 import derelict.opengl.gl;
 import derelict.sdl.sdl;
-import derelict.devil.il;
 
 import entity;
 
@@ -100,7 +99,14 @@ public class Display
 		{
 			foreach( i; m_Entities )
 			{
-				i.Draw();
+				if( i is null )
+				{
+					log.warn( "Tried to Draw null object" );
+				}
+				else
+				{
+					i.Draw();
+				}
 			}
 			SDL_GL_SwapBuffers();
 		}
@@ -140,6 +146,10 @@ public class Display
 					// A key was pressed
 					case SDL_KEYDOWN:
 					{ //{{{
+						if( m_Event.key.keysym.sym == 27 )
+						{
+							isDone = true;
+						}
 						break;
 					} //}}}
 

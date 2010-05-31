@@ -26,6 +26,7 @@ import tango.io.Stdout;
 import display;
 import particle;
 import force;
+import point;
 
 Logger log;
 static this()
@@ -45,6 +46,28 @@ int main( char[][] )
 	log.info( "Now a force and particle" );
 	Force m_Force = new Force();
 	Particle m_Particle = new Particle();
+
+	log.info( "Now creating an array of points" );
+	Point[ 4 ] m_Points;
+	m_Points[ 0 ] = new Point( 200, 150, 10, 1.0f, 0.0f, 0.0f );
+	m_Points[ 1 ] = new Point( 600, 150, 10, 0.0f, 1.0f, 0.0f );
+	m_Points[ 2 ] = new Point( 200, 450, 10, 0.0f, 0.0f, 1.0f );
+	m_Points[ 3 ] = new Point( 600, 450, 10, 1.0f, 1.0f, 1.0f );
+
+	foreach( i; m_Points )
+	{
+		m_Display.AddEntity( i );
+	}
+
+	/*
+	m_Display.AddEntity( m_Points[ 0 ] );
+	m_Display.AddEntity( m_Points[ 1 ] );
+	m_Display.AddEntity( m_Points[ 2 ] );
+	m_Display.AddEntity( m_Points[ 3 ] );
+	*/
+
+	Point m_Point = new Point( 400, 300, 25, 1.0f, 1.0f, 1.0f );
+	m_Display.AddEntity( m_Point );
 
 	log.info( "Entering main game loop" );
 	while( !m_Display.isDone )

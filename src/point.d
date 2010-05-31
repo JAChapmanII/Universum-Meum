@@ -19,6 +19,10 @@
 */// }}}
 module point;
 
+import derelict.opengl.gl;
+
+import entity;
+
 class Point : Entity
 {
 	public:
@@ -38,7 +42,7 @@ class Point : Entity
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( uint iX, uint iY, uint iRadius, uint iRed, uint iGreen, uint iBlue )
+		this( uint iX, uint iY, uint iRadius, float iRed, float iGreen, float iBlue )
 		{ //{{{
 			X = iX;
 			Y = iY;
@@ -46,7 +50,7 @@ class Point : Entity
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		this( uint iX, uint iY, uint iRadius, uint iRed, uint iGreen, uint iBlue, uint iAlpha )
+		this( uint iX, uint iY, uint iRadius, float iRed, float iGreen, float iBlue, float iAlpha )
 		{ //{{{
 			X = iX;
 			Y = iY;
@@ -54,28 +58,26 @@ class Point : Entity
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
 
-		void Draw()
+		override void Draw()
 		{ //{{{
-			glPushMatrix();
 			glPointSize( Radius );
 			glColor4f( Red, Green, Blue, Alpha );
 			glBegin( GL_POINTS );
-			glVertex2f( cast( float )( X ) + 0.5f, cast( float )( Y ) + 0.5f );
+			glVertex2i( X, Y );
 			glEnd();
-			glPopMatrix();
 		} //}}}
 
 		// {G,S}etter for m_Radius
 		uint Radius() //{{{
 		{
-			return Radius;
+			return m_Radius;
 		}
 		void Radius( uint nRadius )
 		{
 			m_Radius = nRadius;
 		} //}}}
 
-		void Color( uint nRed, uint nGreen, uint nBlue, uint nAlpha )
+		void Color( float nRed, float nGreen, float nBlue, float nAlpha )
 		{ //{{{
 			m_Color[ 0 ] = nRed;
 			m_Color[ 1 ] = nGreen;
@@ -83,7 +85,7 @@ class Point : Entity
 			m_Color[ 3 ] = nAlpha;
 		} //}}}
 
-		void Color( uint nRed, uint nGreen, uint nBlue )
+		void Color( float nRed, float nGreen, float nBlue )
 		{ //{{{
 			m_Color[ 0 ] = nRed;
 			m_Color[ 1 ] = nGreen;
@@ -91,41 +93,41 @@ class Point : Entity
 		} //}}}
 
 		// {G,S} for m_Color[ 0 ]
-		uint Red() //{{{
+		float Red() //{{{
 		{
 			return m_Color[ 0 ];
 		}
-		void Red( uint nRed )
+		void Red( float nRed )
 		{
 			m_Color[ 0 ] = nRed;
 		} //}}}
 
 		// {G,S} for m_Color[ 1 ]
-		uint Blue() //{{{
+		float Green() //{{{
 		{
 			return m_Color[ 1 ];
 		}
-		void Blue( uint nBlue )
+		void Green( float nGreen )
 		{
-			m_Color[ 1 ] = nBlue;
+			m_Color[ 1 ] = nGreen;
 		} //}}}
 
 		// {G,S} for m_Color[ 2 ]
-		uint Blue() //{{{
+		float Blue() //{{{
 		{
 			return m_Color[ 2 ];
 		}
-		void Blue( uint nBlue )
+		void Blue( float nBlue )
 		{
 			m_Color[ 2 ] = nBlue;
 		} //}}}
 
 		// {G,S} for m_Color[ 3 ]
-		uint Alpha() //{{{
+		float Alpha() //{{{
 		{
 			return m_Color[ 3 ];
 		}
-		void Alpha( uint nAlpha )
+		void Alpha( float nAlpha )
 		{
 			m_Color[ 3 ] = nAlpha;
 		} //}}}
