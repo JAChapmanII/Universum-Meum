@@ -63,12 +63,17 @@ class Repel : Force
 			float dist =  sqrt( (B.XPosition - A.XPosition)*(B.XPosition - A.XPosition) +
 							(B.YPosition - A.YPosition)*(B.YPosition - A.YPosition) );
 
-			if( dist < A.Radius + 5.0f )
+			if( dist < A.Radius )
 			{
 				A.XVelocity = -A.XVelocity * 0.01f;// * 0.1f;
 				B.XVelocity = -B.XVelocity * 0.01f;// * 0.1f;
 				A.YVelocity = -A.YVelocity * 0.01f;// * 0.1f;
 				B.XVelocity = -B.XVelocity * 0.01f;// * 0.1f;
+
+				A.XAcceleration = A.XAcceleration * 0.001f;// * 0.1f;
+				B.XAcceleration = B.XAcceleration * 0.001f;// * 0.1f;
+				A.YAcceleration = A.YAcceleration * 0.001f;// * 0.1f;
+				B.XAcceleration = B.XAcceleration * 0.001f;// * 0.1f;
 			}
 		}
 
