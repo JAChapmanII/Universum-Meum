@@ -1,3 +1,13 @@
+The main thing that needs done code-wise at this point is to have the gravity and repel forces
+reimplemented properly. The way we were going to do it, where you can define different polygons
+and percents to apply I think would help a ton here, as we could have gravity drop off at radius
+and have the repel pick up.
+
+Other huge thing to do is separate the simulation part from the render part, such as using two
+threads or anything that'll split them up.
+
+A script that checks for basic parse errors would be nice.
+
 display.d:
 	- Decide on the number of dimensions (a lot of OpenGL code will be different)
 		Note: We could use a actor based system where display only sets up the OpenGL environment
