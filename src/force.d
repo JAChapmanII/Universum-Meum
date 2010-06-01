@@ -19,14 +19,19 @@
 */// }}}
 module force;
 
+import particle;
+
 class Force
 {
 	public:
-		this()
+		void Work( Particle A, Particle B )
 		{
 		}
 
 	protected:
+		this()
+		{
+		}
 
 	private:
 
