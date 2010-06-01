@@ -53,16 +53,17 @@ int main( char[][] )
 	Repel m_Repel = Repel.Instance();
 
 	log.info( "Now a particle system and some particles" );
-	ParticleSystem m_ParticleSystem = new ParticleSystem();
-	Particle[ 5 ] m_Particles;
+	ParticleSystem m_ParticleSystem = new ParticleSystem( 0.1f );
+	Particle[ 6 ] m_Particles;
 
 	log.info( "Now creating an array of points" );
-	Point[ 5 ] m_Points;
+	Point[ 6 ] m_Points;
 	m_Points[ 0 ] = new Point( 200.0f, 150.0f, 10.0f, 1.0f, 0.0f, 0.0f );
 	m_Points[ 1 ] = new Point( 600.0f, 150.0f, 10.0f, 0.0f, 1.0f, 0.0f );
 	m_Points[ 2 ] = new Point( 200.0f, 450.0f, 10.0f, 0.0f, 0.0f, 1.0f );
 	m_Points[ 3 ] = new Point( 600.0f, 450.0f, 10.0f, 0.0f, 0.0f, 0.0f );
 	m_Points[ 4 ] = new Point( 500.0f, 300.0f, 10.0f, 1.0f, 0.0f, 1.0f );
+	m_Points[ 5 ] = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f );
 
 	log.info( "Adding each point to display" );
 	foreach( i; m_Points )
@@ -71,7 +72,7 @@ int main( char[][] )
 	}
 
 	log.info( "Setting up each particle" );
-	for( uint i = 0; i < 5; ++i )
+	for( uint i = 0; i < 6; ++i )
 	{
 		m_Particles[ i ] = new Particle();
 		m_Particles[ i ].AddEntity( m_Points[ i ] );
@@ -87,14 +88,9 @@ int main( char[][] )
 	m_Particles[ 3 ].Position( 600.0f, 450.0f );
 	m_Particles[ 4 ].Position( 500.0f, 300.0f );
 
-			for( uint i = 0; i < 4; ++i )
-			{
-				Stdout.formatln( "{}: < {}, {} >", i,
-					m_Particles[ i ].XPosition, m_Particles[ i ].YPosition );
-			}
-
-	Point m_Point = new Point( 400, 300, 25, 1.0f, 1.0f, 1.0f );
-	m_Display.AddEntity( m_Point );
+	m_Particles[ 5 ].Position( 400.0f, 300.0f );
+	m_Particles[ 5 ].Radius( 25.0f );
+	m_Particles[ 5 ].Mass( 2500000.0f );
 
 	log.info( "Entering main game loop" );
 	uint cnt = 0;
@@ -103,13 +99,15 @@ int main( char[][] )
 	while( !m_Display.isDone )
 	{
 		cnt++;
-		if( cnt > 200 )
+		if( ( cnt > 100 ) || ( m_ParticleSystem.maxSpeed > 1 ) || ( m_ParticleSystem.maxAcceleration > 1 ) )
 		{
 			cnt=0;
-			for( uint i = 0; i < 5; ++i )
+			foreach( uint num, i; m_Particles )
 			{
-				Stdout.formatln( "{}: < {}, {} >", i,
-					m_Particles[ i ].XPosition, m_Particles[ i ].YPosition );
+				Stdout.formatln( "{}: ( {}, {} ) < {}, {} > [ {}, {} ]", num,
+					i.XPosition, i.YPosition,
+					i.XVelocity, i.YVelocity,
+					i.XAcceleration, i.YAcceleration );
 			}
 		}
 
@@ -146,6 +144,7 @@ int main( char[][] )
 		rad %= 2 * PI;
 
 		m_Particles[ 4 ].Position( 100.0f * cos( rad ) + 400.0f, 100.0f * sin( rad ) + 300.0f );
+		m_Particles[ 5 ].Position( 400.0f, 300.0f );
 
 		m_Display.Draw();
 		m_Display.WaitFor();

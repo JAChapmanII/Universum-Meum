@@ -19,68 +19,98 @@
 */// }}}
 module particle_system;
 
+import tango.math.Math : sqrt;
+
 import force;
 import particle;
 
 class ParticleSystem
 {
 	public:
-		this()
+		this( float iStep = 1.0f )
 		{
+			Step = iStep;
 		}
 
-		void Work()
+		void Work( float deltaTime = 1.0f )
 		{
-			float deltaTime = 1.0f;
-			if( maxSpeed > 1.0f )
+			float timePassed = 0.0f;
+			if( maxSpeed > ( deltaTime * Step ) )
 			{
-				deltaTime /= maxSpeed;
-			}
-			uint hi = 0;
-			for( uint l = 0; l < maxSpeed; ++l )
-			{
-				hi = l;
-				for( uint i = 0; i < m_Particles.length; i++ )
+				while( timePassed < deltaTime )
 				{
-					for( uint j = i + 1; j < m_Particles.length; j++ )
-					{
-						m_Particles[ i ].Work( m_Particles[ j ], deltaTime );
-					}
-				}
-				foreach( i; m_Particles )
-				{
-					i.Update( deltaTime );
+					float currentDelta = Step / maxSpeed;
+
+					WorkAll( currentDelta );
+					UpdateAll( currentDelta );
+
+					timePassed += currentDelta;
 				}
 			}
+
+			WorkAll( deltaTime - timePassed );
+			UpdateAll( deltaTime - timePassed );
+		}
+
+		void WorkAll( float deltaTime )
+		{ //{{{
 			for( uint i = 0; i < m_Particles.length; i++ )
 			{
-				for( uint j = i + 1; j < m_Particles.length; j++ )
+				for( uint j = 0; j < m_Particles.length; j++ )
 				{
-					m_Particles[ i ].Work( m_Particles[ j ], (1.0 - (deltaTime * hi) ) );
+					m_Particles[ i ].Work( m_Particles[ j ], deltaTime );
 				}
 			}
+		} //}}}
+
+		void UpdateAll( float deltaTime )
+		{ //{{{
 			foreach( i; m_Particles )
 			{
-				i.Update( (1.0f - (deltaTime * hi) ) );
+				i.Update( deltaTime );
 			}
-		}
+		} //}}}
 
 		float maxSpeed()
-		{
+		{ //{{{
 			float max = 0.0f;
+			float current = 0.0f;
 			foreach( i; m_Particles )
 			{
-				if( abs( i.XVelocity ) > max )
+				current = sqrt( i.XVelocity*i.XVelocity + i.YVelocity*i.YVelocity );
+				if( current >= max )
 				{
-					max = abs( i.XVelocity );
-				}
-				else if( abs( i.YVelocity ) > max )
-				{
-					max = abs( i.YVelocity );
+					max = current;
 				}
 			}
 			return max;
+		} //}}}
+
+		float maxAcceleration()
+		{ //{{{
+			float max = 0.0f;
+			float current = 0.0f;
+			foreach( i; m_Particles )
+			{
+				current = sqrt( i.XAcceleration*i.XAcceleration + i.YAcceleration*i.YAcceleration );
+				if( current >= max )
+				{
+					max = current;
+				}
+			}
+			return max;
+		} //}}}
+
+		// {G,S}etter for m_Step
+		void Step( float nStep ) //{{{
+		{
+			m_Step = nStep;
 		}
+		float Step()
+		{
+			return m_Step;
+		} //}}}
+
 
 		void AddForce( Force nForce )
 		{ //{{{
@@ -118,6 +148,8 @@ class ParticleSystem
 			}
 			return a;
 		}
+
+		float m_Step;
 
 		Particle[] m_Particles;
 		Force[] m_Forces;

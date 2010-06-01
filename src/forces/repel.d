@@ -62,24 +62,11 @@ class Repel : Force
 			//log.info( "Repel has done work" );
 			float distX = B.XPosition - A.XPosition;
 			float distY = B.YPosition - A.YPosition;
-			float dist =  sqrt( (B.XPosition - A.XPosition)*(B.XPosition - A.XPosition) +
-							(B.YPosition - A.YPosition)*(B.YPosition - A.YPosition) );
-			if( dist > 0.0001f )
+			float dist =  sqrt( (distX*distX) + (distY*distY) );
+			if( (dist <= (A.Radius + B.Radius)) && (dist > 0.0f) )
 			{
-				if( dist < (A.Radius + B.Radius + 1.0) )
-				{
-					float delX = distX / dist;
-					float delY = distY / dist;
-					A.XVelocity = A.XVelocity - (A.XVelocity * delX );
-					B.XVelocity = B.XVelocity - (B.XVelocity * delX );
-					A.YVelocity = A.YVelocity - (A.YVelocity * delY );
-					B.YVelocity = B.YVelocity - (B.YVelocity * delY );
-
-					A.XAcceleration = A.XAcceleration - (A.XAcceleration * delX );
-					B.XAcceleration = B.XAcceleration - (B.XAcceleration * delX );
-					A.YAcceleration = A.YAcceleration - (A.YAcceleration * delY );
-					B.YAcceleration = B.YAcceleration - (B.YAcceleration * delY );
-				}
+				A.XVelocity = A.XVelocity*A.Mass - B.XVelocity*B.Mass;
+				A.YVelocity = A.YVelocity*A.Mass - B.YVelocity*B.Mass;
 			}
 		}
 

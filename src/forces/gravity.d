@@ -36,13 +36,13 @@ static this()
 class Gravity : Force
 {
 	public:
-		static Gravity Instance()
+		static Gravity Instance( float iG = 0.00000000006f )
 		{ //{{{
 			if( m_Instance is null )
 			{
 				try
 				{
-					m_Instance = new Gravity();
+					m_Instance = new Gravity( iG );
 				}
 				catch( Exception e )
 				{
@@ -61,26 +61,38 @@ class Gravity : Force
 			float distX = B.XPosition - A.XPosition;
 			float distY = B.YPosition - A.YPosition;
 			float dist = sqrt( distX*distX + distY*distY );
-			if( dist > 0.001f )
+			if( dist > (A.Radius + B.Radius + 1.0) )
 			{
-				float force = ( A.Mass * B.Mass ) / ( dist * dist );
-				float delX = ( distX / dist ) * force / 100000.0f * deltaTime;
-				float delY = ( distY / dist ) * force / 100000.0f * deltaTime;
+				float force = ( GravityConstant * A.Mass * B.Mass ) / ( dist * dist );
+				float delX = ( distX / dist ) * force * deltaTime;
+				float delY = ( distY / dist ) * force * deltaTime;
 
 				A.XAcceleration = A.XAcceleration + delX;
 				A.YAcceleration = A.YAcceleration + delY;
 
-				B.XAcceleration = B.XAcceleration - delX;
-				B.YAcceleration = B.YAcceleration - delY;
+				//B.XAcceleration = B.XAcceleration - delX;
+				//B.YAcceleration = B.YAcceleration - delY;
 			}
 		}
 
-	protected:
-		this()
+		float GravityConstant()
 		{
+			return m_GravityConstant;
+		}
+		void GravityConstant( float nG )
+		{
+			m_GravityConstant = nG;
+		}
+
+	protected:
+		this( float iG )
+		{
+			m_GravityConstant = iG;
 		}
 
 		static Gravity m_Instance;
+
+		float m_GravityConstant;
 
 		float sgn( float a )
 		{
