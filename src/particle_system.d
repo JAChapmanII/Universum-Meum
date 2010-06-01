@@ -27,9 +27,10 @@ import particle;
 class ParticleSystem
 {
 	public:
-		this( float iStep = 1.0f )
+		this( float iStep = 1.0f, float iMaxStep = 500 )
 		{
 			Step = iStep;
+			maxStep = iMaxStep;
 		}
 
 		void Work( float deltaTime = 1.0f )
@@ -39,12 +40,16 @@ class ParticleSystem
 			{
 				while( timePassed < deltaTime )
 				{
-					float currentDelta = Step / maxSpeed;
-
+					float currentDelta = (Step / maxSpeed);
+					if (currentDelta < (deltaTime / maxStep))
+					{
+						currentDelta = (deltaTime / maxStep);
+					}
 					WorkAll( currentDelta );
 					UpdateAll( currentDelta );
 
 					timePassed += currentDelta;
+
 				}
 			}
 
@@ -140,6 +145,9 @@ class ParticleSystem
 
 
 	protected:
+
+		float maxStep;
+
 		float abs( float a )
 		{
 			if( a < 0 )
