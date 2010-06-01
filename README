@@ -1,6 +1,9 @@
 Universum Meum is a game that allows the player to create new particles and arbitrary interactions
 to build their own universe completely from scratch.
 
+UM is currently in pre-alhpa and many things do not work. If you'd like to help us hack, drop us a
+line either through github or through our emails.
+
 Obtaining:
 
 Github currently hosts the repo at http://github.com/JAChapmanII/Universum-Meum
@@ -11,10 +14,18 @@ to clone the repository locally.
 
 Building:
 
-Currently use gdc to compile Universum Meum through rebuild. To do this, cd to the Universum Meum
-directory and execute:
+Currently use gdc to compile Universum Meum through rebuild. Unfortunately, this part of the process
+is a little bit of a mess since the gdc/tango we're using is outdated. This is because tango no
+longer works with gdc. We're trying to move to a newer (ldc-based) bulid system, but for now send
+Jeff an email and he'll try to help you build it. We also have an Arch Linux package with the exact
+development suite we use that we can offer. Once you have the build software, execute
 	make
-You can then execute it by typing
+from the Universum Meum directory
+
+
+Running:
+
+After the program is compiled, simply run:
 	./bin/Universum-Meum
-from the same directory.
+from the same directory from the Universum-Meum directory.
 
