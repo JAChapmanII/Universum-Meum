@@ -73,7 +73,7 @@ int main( char[][] )
 		m_Particles[ i ].AddEntity( m_Points[ i ] );
 		m_Particles[ i ].Radius = 10.0f;
 		m_Particles[ i ].AddForce( m_Gravity );
-		m_Particles[ i ].AddForce( m_Repel );
+		//m_Particles[ i ].AddForce( m_Repel );
 		m_ParticleSystem.AddParticle( m_Particles[ i ] );
 	}
 
@@ -82,10 +82,17 @@ int main( char[][] )
 	m_Particles[ 2 ].Position( 200.0f, 450.0f );
 	m_Particles[ 3 ].Position( 600.0f, 450.0f );
 
+			for( uint i = 0; i < 4; ++i )
+			{
+				Stdout.formatln( "{}: < {}, {} >", i,
+					m_Particles[ i ].XPosition, m_Particles[ i ].YPosition );
+			}
+	/*
 	m_Particles[ 0 ].Velocity( 1.0f, 1.0f );
 	m_Particles[ 1 ].Velocity( -1.0f, 1.0f );
 	m_Particles[ 2 ].Velocity( 1.0f, -1.0f );
 	m_Particles[ 3 ].Velocity( -1.0f, -1.0f );
+	*/
 
 	Point m_Point = new Point( 400, 300, 25, 1.0f, 1.0f, 1.0f );
 	m_Display.AddEntity( m_Point );
@@ -115,10 +122,6 @@ int main( char[][] )
 
 		m_Display.ProcessInput();
 		m_ParticleSystem.Work();
-		foreach( i; m_Particles )
-		{
-			i.Update();
-		}
 
 		m_Display.Draw();
 		m_Display.WaitFor();

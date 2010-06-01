@@ -55,12 +55,26 @@ class Gravity : Force
 
 		alias Instance opCall;
 
-		override void Work( Particle A, Particle B )
+		override void Work( Particle A, Particle B, float deltaTime )
 		{
 			//log.info( "Gravity has done work" );
 			float distX = B.XPosition - A.XPosition;
 			float distY = B.YPosition - A.YPosition;
 			float dist = sqrt( distX*distX + distY*distY );
+			if( dist > 0.001f )
+			{
+				float force = ( A.Mass * B.Mass ) / ( dist * dist );
+				float delX = ( distX / dist ) * force / 100000.0f * deltaTime;
+				float delY = ( distY / dist ) * force / 100000.0f * deltaTime;
+
+				A.XAcceleration = A.XAcceleration + delX;// * 0.1f;
+				A.YAcceleration = A.YAcceleration + delY;// * 0.1f;
+
+				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
+				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
+			}
+
+				/*
 			if( dist < A.Mass )
 			{
 				float delX = 0.0f;
@@ -88,6 +102,7 @@ class Gravity : Force
 				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
 				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
 			}
+			*/
 		}
 
 	protected:
