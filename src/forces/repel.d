@@ -60,20 +60,26 @@ class Repel : Force
 		override void Work( Particle A, Particle B, float deltaTime )
 		{
 			//log.info( "Repel has done work" );
+			float distX = B.XPosition - A.XPosition;
+			float distY = B.YPosition - A.YPosition;
 			float dist =  sqrt( (B.XPosition - A.XPosition)*(B.XPosition - A.XPosition) +
 							(B.YPosition - A.YPosition)*(B.YPosition - A.YPosition) );
-
-			if( dist < A.Radius )
+			if( dist > 0.0001f )
 			{
-				A.XVelocity = -A.XVelocity * 0.01f;// * 0.1f;
-				B.XVelocity = -B.XVelocity * 0.01f;// * 0.1f;
-				A.YVelocity = -A.YVelocity * 0.01f;// * 0.1f;
-				B.XVelocity = -B.XVelocity * 0.01f;// * 0.1f;
+				if( dist < (A.Radius + B.Radius + 1.0) )
+				{
+					float delX = distX / dist;
+					float delY = distY / dist;
+					A.XVelocity = A.XVelocity - (A.XVelocity * delX );
+					B.XVelocity = B.XVelocity - (B.XVelocity * delX );
+					A.YVelocity = A.YVelocity - (A.YVelocity * delY );
+					B.YVelocity = B.YVelocity - (B.YVelocity * delY );
 
-				A.XAcceleration = A.XAcceleration * 0.001f;// * 0.1f;
-				B.XAcceleration = B.XAcceleration * 0.001f;// * 0.1f;
-				A.YAcceleration = A.YAcceleration * 0.001f;// * 0.1f;
-				B.XAcceleration = B.XAcceleration * 0.001f;// * 0.1f;
+					A.XAcceleration = A.XAcceleration - (A.XAcceleration * delX );
+					B.XAcceleration = B.XAcceleration - (B.XAcceleration * delX );
+					A.YAcceleration = A.YAcceleration - (A.YAcceleration * delY );
+					B.YAcceleration = B.YAcceleration - (B.YAcceleration * delY );
+				}
 			}
 		}
 

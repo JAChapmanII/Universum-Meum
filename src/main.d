@@ -21,6 +21,7 @@ module main;
 
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
+import tango.math.Math;
 
 import tango.io.Stdout;
 import display;
@@ -53,27 +54,30 @@ int main( char[][] )
 
 	log.info( "Now a particle system and some particles" );
 	ParticleSystem m_ParticleSystem = new ParticleSystem();
-	Particle[ 4 ] m_Particles;
+	Particle[ 5 ] m_Particles;
 
 	log.info( "Now creating an array of points" );
-	Point[ 4 ] m_Points;
+	Point[ 5 ] m_Points;
 	m_Points[ 0 ] = new Point( 200.0f, 150.0f, 10.0f, 1.0f, 0.0f, 0.0f );
 	m_Points[ 1 ] = new Point( 600.0f, 150.0f, 10.0f, 0.0f, 1.0f, 0.0f );
 	m_Points[ 2 ] = new Point( 200.0f, 450.0f, 10.0f, 0.0f, 0.0f, 1.0f );
 	m_Points[ 3 ] = new Point( 600.0f, 450.0f, 10.0f, 0.0f, 0.0f, 0.0f );
+	m_Points[ 4 ] = new Point( 500.0f, 300.0f, 10.0f, 1.0f, 0.0f, 1.0f );
 
+	log.info( "Adding each point to display" );
 	foreach( i; m_Points )
 	{
 		m_Display.AddEntity( i );
 	}
 
-	for( uint i = 0; i < 4; ++i )
+	log.info( "Setting up each particle" );
+	for( uint i = 0; i < 5; ++i )
 	{
 		m_Particles[ i ] = new Particle();
 		m_Particles[ i ].AddEntity( m_Points[ i ] );
 		m_Particles[ i ].Radius = 10.0f;
 		m_Particles[ i ].AddForce( m_Gravity );
-		//m_Particles[ i ].AddForce( m_Repel );
+		m_Particles[ i ].AddForce( m_Repel );
 		m_ParticleSystem.AddParticle( m_Particles[ i ] );
 	}
 
@@ -81,18 +85,13 @@ int main( char[][] )
 	m_Particles[ 1 ].Position( 600.0f, 150.0f );
 	m_Particles[ 2 ].Position( 200.0f, 450.0f );
 	m_Particles[ 3 ].Position( 600.0f, 450.0f );
+	m_Particles[ 4 ].Position( 500.0f, 300.0f );
 
 			for( uint i = 0; i < 4; ++i )
 			{
 				Stdout.formatln( "{}: < {}, {} >", i,
 					m_Particles[ i ].XPosition, m_Particles[ i ].YPosition );
 			}
-	/*
-	m_Particles[ 0 ].Velocity( 1.0f, 1.0f );
-	m_Particles[ 1 ].Velocity( -1.0f, 1.0f );
-	m_Particles[ 2 ].Velocity( 1.0f, -1.0f );
-	m_Particles[ 3 ].Velocity( -1.0f, -1.0f );
-	*/
 
 	Point m_Point = new Point( 400, 300, 25, 1.0f, 1.0f, 1.0f );
 	m_Display.AddEntity( m_Point );
@@ -100,13 +99,14 @@ int main( char[][] )
 	log.info( "Entering main game loop" );
 	uint cnt = 0;
 	float nX = 1.0f;
+	float rad = 0.0f;
 	while( !m_Display.isDone )
 	{
 		cnt++;
 		if( cnt > 200 )
 		{
 			cnt=0;
-			for( uint i = 0; i < 4; ++i )
+			for( uint i = 0; i < 5; ++i )
 			{
 				Stdout.formatln( "{}: < {}, {} >", i,
 					m_Particles[ i ].XPosition, m_Particles[ i ].YPosition );
@@ -121,7 +121,31 @@ int main( char[][] )
 		m_Points[ 0 ].X = nX;
 
 		m_Display.ProcessInput();
+
+		if( !m_Display.isActive )
+		{
+			m_Particles[ 0 ].Position( 200.0f, 150.0f );
+			m_Particles[ 1 ].Position( 600.0f, 150.0f );
+			m_Particles[ 2 ].Position( 200.0f, 450.0f );
+			m_Particles[ 3 ].Position( 600.0f, 450.0f );
+
+			m_Particles[ 0 ].Velocity( 0.0f, 0.0f );
+			m_Particles[ 1 ].Velocity( 0.0f, 0.0f );
+			m_Particles[ 2 ].Velocity( 0.0f, 0.0f );
+			m_Particles[ 3 ].Velocity( 0.0f, 0.0f );
+
+			m_Particles[ 0 ].Acceleration( 0.0f, 0.0f );
+			m_Particles[ 1 ].Acceleration( 0.0f, 0.0f );
+			m_Particles[ 2 ].Acceleration( 0.0f, 0.0f );
+			m_Particles[ 3 ].Acceleration( 0.0f, 0.0f );
+		}
+
 		m_ParticleSystem.Work();
+
+		rad -= 0.01f;
+		rad %= 2 * PI;
+
+		m_Particles[ 4 ].Position( 100.0f * cos( rad ) + 400.0f, 100.0f * sin( rad ) + 300.0f );
 
 		m_Display.Draw();
 		m_Display.WaitFor();
