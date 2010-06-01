@@ -20,7 +20,7 @@
 module particle;
 
 import force;
-import point;
+import entities.point;
 
 class Particle
 {

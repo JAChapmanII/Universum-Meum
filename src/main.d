@@ -25,8 +25,8 @@ import tango.util.log.AppendConsole;
 import tango.io.Stdout;
 import display;
 import particle;
-import force;
-import point;
+import entities.point;
+import forces.gravity;
 
 Logger log;
 static this()
@@ -44,7 +44,7 @@ int main( char[][] )
 	m_Display.TickInterval = 1000 / 100;
 
 	log.info( "Now a force and particle" );
-	Force m_Force = new Force();
+	//Force m_Force = new Force();
 	Particle m_Particle = new Particle();
 
 	log.info( "Now creating an array of points" );
