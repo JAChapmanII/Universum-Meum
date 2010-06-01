@@ -45,9 +45,11 @@ class ParticleSystem
 					for( uint j = i + 1; j < m_Particles.length; j++ )
 					{
 						m_Particles[ i ].Work( m_Particles[ j ], deltaTime );
-						m_Particles[ j ].Update( deltaTime );
 					}
-					m_Particles[ i ].Update( deltaTime );
+				}
+				foreach( i; m_Particles )
+				{
+					i.Update( deltaTime );
 				}
 			}
 			for( uint i = 0; i < m_Particles.length; i++ )
@@ -55,9 +57,11 @@ class ParticleSystem
 				for( uint j = i + 1; j < m_Particles.length; j++ )
 				{
 					m_Particles[ i ].Work( m_Particles[ j ], (1.0 - (deltaTime * hi) ) );
-					m_Particles[ j ].Update( (1.0f - (deltaTime * hi) ) );
 				}
-				m_Particles[ i ].Update( (1.0f - (deltaTime * hi) ) );
+			}
+			foreach( i; m_Particles )
+			{
+				i.Update( (1.0f - (deltaTime * hi) ) );
 			}
 		}
 
