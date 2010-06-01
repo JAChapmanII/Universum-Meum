@@ -32,6 +32,15 @@ class Particle
 			m_Point = new Point( 0, 0 );
 		}
 
+		void Update()
+		{
+			XVelocity = XVelocity + XAcceleration;
+			YVelocity = YVelocity + YAcceleration;
+
+			XPosition = XPosition + XVelocity;
+			YPosition = YPosition + YVelocity;
+		}
+
 		// {G,S}etter for m_Position[ 0 ]
 		float XPosition() //{{{
 		{
