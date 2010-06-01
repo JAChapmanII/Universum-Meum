@@ -19,17 +19,35 @@
 */// }}}
 module gravity;
 
-class Gravity
+import force;
+import particle;
+
+class Gravity : Force
 {
 	public:
-		this()
-		{
-		}
+		static Gravity Instance()
+		{ //{{{
+			if( m_Instance is null )
+			{
+				try
+				{
+					m_Instance = new Gravity();
+				}
+				catch( Exception e )
+				{
+					log.fatal( "Gravity could not be instantiated." );
+					throw e;
+				}
+			}
+			return m_Instance;
+		} //}}}
+
+		alias Instance opCall;
 
 		override void Work( Particle A, Particle B )
 		{
-			uint distX = A.XPosition - B.XPositon;
-			uint distY = A.YPosition - B.YPosition;
+			float distX = A.XPosition - B.XPosition;
+			float distY = A.YPosition - B.YPosition;
 
 			A.XAcceleration = A.XAcceleration + distX;
 			A.YAcceleration = A.YAcceleration + distY;
@@ -39,6 +57,11 @@ class Gravity
 		}
 
 	protected:
+		this()
+		{
+		}
+
+		static Gravity m_Instance;
 
 	private:
 
