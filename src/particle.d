@@ -44,13 +44,13 @@ class Particle
 			Acceleration( 0.0f, 0.0f );
 		}
 
-		void Update()
+		void Update( float deltaTime )
 		{
-			XVelocity = XVelocity + XAcceleration;
-			YVelocity = YVelocity + YAcceleration;
+			XVelocity = XVelocity + XAcceleration * deltaTime;
+			YVelocity = YVelocity + YAcceleration * deltaTime;
 
-			XPosition = XPosition + XVelocity;
-			YPosition = YPosition + YVelocity;
+			XPosition = XPosition + XVelocity * deltaTime;
+			YPosition = YPosition + YVelocity * deltaTime;
 		}
 
 		void AddForce( Force nForce )
@@ -79,13 +79,13 @@ class Particle
 			}
 		} //}}}
 
-		void Work( Particle B )
+		void Work( Particle B, float deltaTime )
 		{ //{{{
 			foreach( i; m_Forces )
 			{
 				if( !( i is null ) )
 				{
-					i.Work( this, B );
+					i.Work( this, B, deltaTime );
 				}
 			}
 		} //}}}

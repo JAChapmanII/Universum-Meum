@@ -31,13 +31,51 @@ class ParticleSystem
 
 		void Work()
 		{
+			float deltaTime = 1.0f;
+			if( maxSpeed > 1.0f )
+			{
+				deltaTime /= maxSpeed;
+			}
+			uint hi = 0;
+			for( uint l = 0; l < maxSpeed; ++l )
+			{
+				hi = l;
+				for( uint i = 0; i < m_Particles.length; i++ )
+				{
+					for( uint j = i + 1; j < m_Particles.length; j++ )
+					{
+						m_Particles[ i ].Work( m_Particles[ j ], deltaTime );
+						m_Particles[ j ].Update( deltaTime );
+					}
+					m_Particles[ i ].Update( deltaTime );
+				}
+			}
 			for( uint i = 0; i < m_Particles.length; i++ )
 			{
 				for( uint j = i + 1; j < m_Particles.length; j++ )
 				{
-					m_Particles[ i ].Work( m_Particles[ j ] );
+					m_Particles[ i ].Work( m_Particles[ j ], (1.0 - (deltaTime * hi) ) );
+					m_Particles[ j ].Update( (1.0f - (deltaTime * hi) ) );
+				}
+				m_Particles[ i ].Update( (1.0f - (deltaTime * hi) ) );
+			}
+		}
+
+		float maxSpeed()
+		{
+			float max = 0.0f;
+			foreach( i; m_Particles )
+			{
+				if( abs( i.XVelocity ) > max )
+				{
+					max = abs( i.XVelocity );
+				}
+				else if( abs( i.YVelocity ) > max )
+				{
+					max = abs( i.YVelocity );
 				}
 			}
+			return max;
 		}
 
 		void AddForce( Force nForce )
@@ -68,6 +106,15 @@ class ParticleSystem
 
 
 	protected:
+		float abs( float a )
+		{
+			if( a < 0 )
+			{
+				return -a;
+			}
+			return a;
+		}
+
 		Particle[] m_Particles;
 		Force[] m_Forces;
 

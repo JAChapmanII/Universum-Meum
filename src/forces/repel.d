@@ -57,7 +57,7 @@ class Repel : Force
 
 		alias Instance opCall;
 
-		override void Work( Particle A, Particle B )
+		override void Work( Particle A, Particle B, float deltaTime )
 		{
 			//log.info( "Repel has done work" );
 			float dist =  sqrt( (B.XPosition - A.XPosition)*(B.XPosition - A.XPosition) +

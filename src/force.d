@@ -24,7 +24,7 @@ import particle;
 class Force
 {
 	public:
-		void Work( Particle A, Particle B )
+		void Work( Particle A, Particle B, float deltaTime )
 		{
 		}
 
