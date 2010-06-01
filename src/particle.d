@@ -20,6 +20,7 @@
 module particle;
 
 import force;
+import point;
 
 class Particle
 {
@@ -28,11 +29,78 @@ class Particle
 		{
 			m_Mass = 0;
 			m_Radius = 0;
+			m_Point = new Point( 0, 0 );
 		}
+
+		// {G,S}etter for m_Position[ 0 ]
+		float XPosition() //{{{
+		{
+			return m_Position[ 0 ];
+		}
+		void XPosition( float nXPosition )
+		{
+			m_Position[ 0 ] = nXPosition;
+		} //}}}
+
+		// {G,S}etter for m_Position[ 1 ]
+		float YPosition() //{{{
+		{
+			return m_Position[ 1 ];
+		}
+		void YPosition( float nYPosition )
+		{
+			m_Position[ 1 ] = nYPosition;
+		} //}}}
+
+		// {G,S}etter for m_Velocity[ 0 ]
+		float XVelocity() //{{{
+		{
+			return m_Velocity[ 0 ];
+		}
+		void XVelocity( float nXVelocity )
+		{
+			m_Velocity[ 0 ] = nXVelocity;
+		} //}}}
+
+		// {G,S}etter for m_Velocity[ 1 ]
+		float YVelocity() //{{{
+		{
+			return m_Velocity[ 1 ];
+		}
+		void YVelocity( float nYVelocity )
+		{
+			m_Velocity[ 1 ] = nYVelocity;
+		} //}}}
+
+		// {G,S}etter for m_Acceleration[ 0 ]
+		float XAcceleration() //{{{
+		{
+			return m_Acceleration[ 0 ];
+		}
+		void XAcceleration( float nXAcceleration )
+		{
+			m_Acceleration[ 0 ] = nXAcceleration;
+		} //}}}
+
+		// {G;,S}etter for m_Acceleration[ 1 ]
+		float YAcceleration() //{{{
+		{
+			return m_Acceleration[ 1 ];
+		}
+		void YAcceleration( float nYAcceleration )
+		{
+			m_Acceleration[ 1 ] = nYAcceleration;
+		} //}}}
 
 	protected:
 		float m_Mass;
 		float m_Radius;
+
+		float[ 2 ] m_Position;
+		float[ 2 ] m_Velocity;
+		float[ 2 ] m_Acceleration;
+
+		Point m_Point;
 
 		Force m_Force;
 
