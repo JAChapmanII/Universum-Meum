@@ -65,8 +65,8 @@ class Repel : Force
 			float dist =  sqrt( (distX*distX) + (distY*distY) );
 			if( (dist <= (A.Radius + B.Radius)) && (dist > 0.0f) )
 			{
-				A.XVelocity = A.XVelocity*A.Mass - B.XVelocity*B.Mass;
-				A.YVelocity = A.YVelocity*A.Mass - B.YVelocity*B.Mass;
+				A.XVelocity = (A.XVelocity*A.Mass + B.XVelocity*B.Mass)/(500000*A.Mass);
+				A.YVelocity = (A.YVelocity*A.Mass + B.YVelocity*B.Mass)/(500000*A.Mass);
 			}
 		}
 
