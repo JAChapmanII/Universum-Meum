@@ -26,6 +26,10 @@ class Entity
 		{
 		}
 
+		void Update()
+		{
+		}
+
 		// {G,S}etter for m_Position[ 0 ]
 		uint X() //{{{
 		{
