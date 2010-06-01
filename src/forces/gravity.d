@@ -26,6 +26,18 @@ class Gravity
 		{
 		}
 
+		override void Work( Particle A, Particle B )
+		{
+			uint distX = A.XPosition - B.XPositon;
+			uint distY = A.YPosition - B.YPosition;
+
+			A.XAcceleration = A.XAcceleration + distX;
+			A.YAcceleration = A.YAcceleration + distY;
+
+			B.XAcceleration = B.XAcceleration - distX;
+			B.XAcceleration = B.XAcceleration - distX;
+		}
+
 	protected:
 
 	private:
