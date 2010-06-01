@@ -31,21 +31,21 @@ class Entity
 		}
 
 		// {G,S}etter for m_Position[ 0 ]
-		uint X() //{{{
+		float X() //{{{
 		{
 			return m_Position[ 0 ];
 		}
-		void X( uint nX )
+		void X( float nX )
 		{
 			m_Position[ 0 ] = nX;
 		} //}}}
 
 		// {G,S}etter for m_Position[ 1 ]
-		uint Y() //{{{
+		float Y() //{{{
 		{
 			return m_Position[ 1 ];
 		}
-		void Y( uint nY )
+		void Y( float nY )
 		{
 			m_Position[ 1 ] = nY;
 		} //}}}
@@ -55,7 +55,7 @@ class Entity
 		{
 		}
 
-		uint[ 2 ] m_Position;
+		float[ 2 ] m_Position;
 
 	private:
 

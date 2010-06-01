@@ -26,7 +26,7 @@ import entity;
 class Point : Entity
 {
 	public:
-		this( uint iX, uint iY )
+		this( float iX, float iY )
 		{ //{{{
 			X = iX;
 			Y = iY;
@@ -34,7 +34,7 @@ class Point : Entity
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( uint iX, uint iY, uint iRadius )
+		this( float iX, float iY, float iRadius )
 		{ //{{{
 			X = iX;
 			Y = iY;
@@ -42,7 +42,7 @@ class Point : Entity
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( uint iX, uint iY, uint iRadius, float iRed, float iGreen, float iBlue )
+		this( float iX, float iY, float iRadius, float iRed, float iGreen, float iBlue )
 		{ //{{{
 			X = iX;
 			Y = iY;
@@ -50,7 +50,7 @@ class Point : Entity
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		this( uint iX, uint iY, uint iRadius, float iRed, float iGreen, float iBlue, float iAlpha )
+		this( float iX, float iY, float iRadius, float iRed, float iGreen, float iBlue, float iAlpha )
 		{ //{{{
 			X = iX;
 			Y = iY;
@@ -63,16 +63,16 @@ class Point : Entity
 			glPointSize( Radius );
 			glColor4f( Red, Green, Blue, Alpha );
 			glBegin( GL_POINTS );
-			glVertex2i( X, Y );
+			glVertex2f( X, Y );
 			glEnd();
 		} //}}}
 
 		// {G,S}etter for m_Radius
-		uint Radius() //{{{
+		float Radius() //{{{
 		{
 			return m_Radius;
 		}
-		void Radius( uint nRadius )
+		void Radius( float nRadius )
 		{
 			m_Radius = nRadius;
 		} //}}}
@@ -133,7 +133,7 @@ class Point : Entity
 		} //}}}
 
 	protected:
-		uint m_Radius;
+		float m_Radius;
 		float[ 4 ] m_Color;
 
 	private:
