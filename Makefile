@@ -9,20 +9,20 @@ PROG=Universum-Meum
 DD=rebuild
 DFLAGS=-no-export-dynamic -lldl
 
-all: universum-meum
+all: ${PROG}
 
-universum-meum: dirs clean release
+${PROG}: dirs clean release
 
 release:
 	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
 		${DFLAGS} -O -release ${SRCDIR}/${SRC}
 
-debug:
-	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}\${PROG} -I${SRCDIR}/\
+debug: dirs clean
+	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
 		${DFLAGS} -g -debug ${SRCDIR}/${SRC}
 
 profile:
-	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
+	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
 		${DFLAGS} -g -debug -profile ${SRCDIR}/${SRC}
 
 dirs:
@@ -32,7 +32,7 @@ dirs:
 	mkdir -p ${BINDIR}
 
 clean:
-	rm -f obj/*
-	rm -f bin/*
-	rm -f doc/*
+	rm -f ${OBJDIR}/*
+	rm -f ${BINDIR}/*
+	rm -f ${DOCDIR}/*
 
