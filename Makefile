@@ -18,11 +18,11 @@ release:
 		${DFLAGS} -O -release ${SRCDIR}/${SRC}
 
 debug: dirs clean
-	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
+	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG}-debug -I${SRCDIR}/\
 		${DFLAGS} -g -debug ${SRCDIR}/${SRC}
 
 profile:
-	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
+	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG}-profile -I${SRCDIR}/\
 		${DFLAGS} -g -debug -profile ${SRCDIR}/${SRC}
 
 dirs:
