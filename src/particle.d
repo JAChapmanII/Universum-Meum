@@ -19,17 +19,29 @@
 */// }}}
 module particle;
 
+import tango.util.log.Log;
+import tango.util.log.AppendConsole;
+
 import force;
-import entities.point;
+import entity;
+
+Logger log;
+static this()
+{
+	log = Log.lookup( "particle" );
+	log.add( new AppendConsole() );
+}
 
 class Particle
 {
 	public:
 		this()
 		{
-			m_Mass = 0;
-			m_Radius = 0;
-			m_Point = new Point( 0, 0 );
+			m_Mass = 50.0f;
+			m_Radius = 0.0f;
+			Position( 0.0f, 0.0f );
+			Velocity( 0.0f, 0.0f );
+			Acceleration( 0.0f, 0.0f );
 		}
 
 		void Update()
@@ -41,6 +53,49 @@ class Particle
 			YPosition = YPosition + YVelocity;
 		}
 
+		void AddForce( Force nForce )
+		{ //{{{
+			if( !( nForce is null ) )
+			{
+				m_Forces.length = m_Forces.length + 1;
+				m_Forces[ $-1 ] = nForce;
+			}
+			else
+			{
+				log.warn( "Tried to add a null force" );
+			}
+		} //}}}
+
+		void AddEntity( Entity nEntity )
+		{ //{{{
+			if( !( nEntity is null ) )
+			{
+				m_Entities.length = m_Entities.length + 1;
+				m_Entities[ $-1 ] = nEntity;
+			}
+			else
+			{
+				log.warn( "Tried to add a null entity" );
+			}
+		} //}}}
+
+		void Work( Particle B )
+		{ //{{{
+			foreach( i; m_Forces )
+			{
+				if( !( i is null ) )
+				{
+					i.Work( this, B );
+				}
+			}
+		} //}}}
+
+		void Position( float nXPosition, float nYPosition )
+		{
+			m_Position[ 0 ] = nXPosition;
+			m_Position[ 1 ] = nYPosition;
+		}
+
 		// {G,S}etter for m_Position[ 0 ]
 		float XPosition() //{{{
 		{
@@ -49,6 +104,10 @@ class Particle
 		void XPosition( float nXPosition )
 		{
 			m_Position[ 0 ] = nXPosition;
+			foreach( i; m_Entities )
+			{
+				i.X = nXPosition;
+			}
 		} //}}}
 
 		// {G,S}etter for m_Position[ 1 ]
@@ -59,7 +118,17 @@ class Particle
 		void YPosition( float nYPosition )
 		{
 			m_Position[ 1 ] = nYPosition;
+			foreach( i; m_Entities )
+			{
+				i.Y = nYPosition;
+			}
 		} //}}}
+
+		void Velocity( float nXVelocity, float nYVelocity )
+		{
+			m_Velocity[ 0 ] = nXVelocity;
+			m_Velocity[ 1 ] = nYVelocity;
+		}
 
 		// {G,S}etter for m_Velocity[ 0 ]
 		float XVelocity() //{{{
@@ -81,6 +150,11 @@ class Particle
 			m_Velocity[ 1 ] = nYVelocity;
 		} //}}}
 
+		void Acceleration( float nXAcceleration, float nYAcceleration )
+		{
+			m_Acceleration[ 0 ] = nXAcceleration;
+			m_Acceleration[ 1 ] = nYAcceleration;
+		}
 		// {G,S}etter for m_Acceleration[ 0 ]
 		float XAcceleration() //{{{
 		{
@@ -101,6 +175,26 @@ class Particle
 			m_Acceleration[ 1 ] = nYAcceleration;
 		} //}}}
 
+		// {G,S}eetter for m_Mass
+		float Mass() //{{{
+		{
+			return m_Mass;
+		}
+		void Mass( float nMass )
+		{
+			m_Mass = nMass;
+		} //}}}
+
+		// {G,S}eetter for m_Radius
+		float Radius() //{{{
+		{
+			return m_Radius;
+		}
+		void Radius( float nRadius )
+		{
+			m_Radius = nRadius;
+		} //}}}
+
 	protected:
 		float m_Mass;
 		float m_Radius;
@@ -109,9 +203,8 @@ class Particle
 		float[ 2 ] m_Velocity;
 		float[ 2 ] m_Acceleration;
 
-		Point m_Point;
-
-		Force m_Force;
+		Entity[] m_Entities;
+		Force[] m_Forces;
 
 	private:
 

@@ -19,8 +19,19 @@
 */// }}}
 module gravity;
 
+import tango.util.log.Log;
+import tango.util.log.AppendConsole;
+import tango.math.Math;
+
 import force;
 import particle;
+
+Logger log;
+static this()
+{
+	log = Log.lookup( "forces.gravity" );
+	log.add( new AppendConsole() );
+}
 
 class Gravity : Force
 {
@@ -46,14 +57,37 @@ class Gravity : Force
 
 		override void Work( Particle A, Particle B )
 		{
-			float distX = A.XPosition - B.XPosition;
-			float distY = A.YPosition - B.YPosition;
+			//log.info( "Gravity has done work" );
+			float distX = B.XPosition - A.XPosition;
+			float distY = B.YPosition - A.YPosition;
+			float dist = sqrt( distX*distX + distY*distY );
+			if( dist < A.Mass )
+			{
+				float delX = 0.0f;
+				float delY = 0.0f;
 
-			A.XAcceleration = A.XAcceleration + distX;
-			A.YAcceleration = A.YAcceleration + distY;
+				if( abs( distX ) < ( A.Mass * 0.9f ) )
+				{
+					delX = sgn( distX ) * abs( distX ) * ( A.Mass - abs( distX ) );
+				}
+				if( abs( distY ) < ( A.Mass * 0.9f ) )
+				{
+					delY = sgn( distY ) * abs( distY ) * ( A.Mass - abs( distY ) );
+				}
+				delX *= 0.001f;
+				delY *= 0.001f;
 
-			B.XAcceleration = B.XAcceleration - distX;
-			B.XAcceleration = B.XAcceleration - distX;
+				if( ( abs( delX ) > 10 ) || ( abs( delY ) > 10 ) )
+				{
+					log.info( "Problems" );
+				}
+
+				A.XAcceleration = A.XAcceleration + delX;// * 0.1f;
+				A.YAcceleration = A.YAcceleration + delY;// * 0.1f;
+
+				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
+				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
+			}
 		}
 
 	protected:
@@ -62,6 +96,31 @@ class Gravity : Force
 		}
 
 		static Gravity m_Instance;
+
+		float sgn( float a )
+		{
+			if( a < 0 )
+			{
+				return -1.0f;
+			}
+			else if( a > 0 )
+			{
+				return 1.0f;
+			}
+			else
+			{
+				return 0.0f;
+			}
+		}
+
+		float abs( float a )
+		{
+			if( a < 0 )
+			{
+				return -a;
+			}
+			return a;
+		}
 
 	private:
 
