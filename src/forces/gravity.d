@@ -67,42 +67,12 @@ class Gravity : Force
 				float delX = ( distX / dist ) * force / 100000.0f * deltaTime;
 				float delY = ( distY / dist ) * force / 100000.0f * deltaTime;
 
-				A.XAcceleration = A.XAcceleration + delX;// * 0.1f;
-				A.YAcceleration = A.YAcceleration + delY;// * 0.1f;
+				A.XAcceleration = A.XAcceleration + delX;
+				A.YAcceleration = A.YAcceleration + delY;
 
-				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
-				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
+				B.XAcceleration = B.XAcceleration - delX;
+				B.YAcceleration = B.YAcceleration - delY;
 			}
-
-				/*
-			if( dist < A.Mass )
-			{
-				float delX = 0.0f;
-				float delY = 0.0f;
-
-				if( abs( distX ) < ( A.Mass * 0.9f ) )
-				{
-					delX = sgn( distX ) * abs( distX ) * ( A.Mass - abs( distX ) );
-				}
-				if( abs( distY ) < ( A.Mass * 0.9f ) )
-				{
-					delY = sgn( distY ) * abs( distY ) * ( A.Mass - abs( distY ) );
-				}
-				delX *= 0.001f;
-				delY *= 0.001f;
-
-				if( ( abs( delX ) > 10 ) || ( abs( delY ) > 10 ) )
-				{
-					log.info( "Problems" );
-				}
-
-				A.XAcceleration = A.XAcceleration + delX;// * 0.1f;
-				A.YAcceleration = A.YAcceleration + delY;// * 0.1f;
-
-				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
-				B.XAcceleration = B.XAcceleration - delX;// * 0.1f;
-			}
-			*/
 		}
 
 	protected:
