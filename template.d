@@ -17,9 +17,9 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module mODULE;
+module mODULE; /// TODO rename me
 
-class MODULE
+class MODULE /// TODO rename me
 {
 	public:
 		this()
