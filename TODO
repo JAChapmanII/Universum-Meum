@@ -1,3 +1,14 @@
+2/5/10
+
+Update the TODO, really important :D
+
+Fix repel to use that elastic code
+
+Fix everything now that it's all borked. To help with this, look into using less objects as that
+could very well be screwing things up
+
+1/5/10
+
 The main thing that needs done code-wise at this point is to have the gravity and repel forces
 reimplemented properly. The way we were going to do it, where you can define different polygons
 and percents to apply I think would help a ton here, as we could have gravity drop off at radius
@@ -7,6 +18,8 @@ Other huge thing to do is separate the simulation part from the render part, suc
 threads or anything that'll split them up.
 
 A script that checks for basic parse errors would be nice.
+
+Before 1/5/10
 
 display.d:
 	- Decide on the number of dimensions (a lot of OpenGL code will be different)
