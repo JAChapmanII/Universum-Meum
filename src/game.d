@@ -17,8 +17,9 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module display;
+module game;
 
+import tango.util.container.LinkedList;
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
 import Integer = tango.text.convert.Integer;
@@ -28,29 +29,31 @@ import derelict.sdl.sdl;
 
 import entity;
 
-Logger log;
+// Set up logging
+Logger log; //{{{
 static this()
 {
-	log = Log.lookup( "display" );
+	log = Log.lookup( "game" );
 	log.add( new AppendConsole() );
 }
+// }}}
 
 static char[] PROGRAM_NAME = "Universum Meum";
 
-public class Display
+public class Game
 {
 	public:
-		static Display Instance( uint iWidth, uint iHeight, uint iBPP )
+		static Game Instance( uint iWidth, uint iHeight, uint iBPP )
 		{ //{{{
 			if( m_Instance is null )
 			{
 				try
 				{
-					m_Instance = new Display( iWidth, iHeight, iBPP );
+					m_Instance = new Game( iWidth, iHeight, iBPP );
 				}
 				catch( Exception e )
 				{
-					log.fatal( "Display could not be instantiated." );
+					log.fatal( "Game could not be instantiated." );
 					throw e;
 				}
 			}
@@ -96,7 +99,7 @@ public class Display
 		} //}}}
 
 		void Draw()
-		{
+		{ //{{{
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			foreach( i; m_Entities )
 			{
@@ -110,7 +113,7 @@ public class Display
 				}
 			}
 			SDL_GL_SwapBuffers();
-		}
+		} //}}}
 
 		void ProcessInput()
 		{ //{{{
@@ -147,15 +150,30 @@ public class Display
 					// A key was pressed
 					case SDL_KEYDOWN:
 					{ //{{{
-						if( m_Event.key.keysym.sym == 27 )
-						{
-							isDone = true;
-						}
+						m_Keypresses.add( new Keypress( m_Event.key.keysym.sym, GetTicks ) );
 						break;
 					} //}}}
 
 					// A key was released
 					case SDL_KEYUP:
+					{ //{{{
+						foreach( i; m_Keypresses )
+						{
+							if( i == m_Event.key.keysym.sym )
+							{
+								m_Keypresses.remove( i );
+								break;
+							}
+						}
+						break;
+					} //}}}
+
+					case SDL_MOUSEMOTIONEVENT:
+					{ //{{{
+						break;
+					} //}}}
+
+					case SDL_MOUSEBUTTONEVENT:
 					{ //{{{
 						break;
 					} //}}}
@@ -169,6 +187,18 @@ public class Display
 			}
 
 			return;
+		} //}}}
+
+		bool isPressed( int toCheckFor = 27 )
+		{ //{{{
+			foreach( i; m_Keypresses )
+			{
+				if( i == toCheckFor )
+				{
+					return true;
+				}
+			}
+			return false;
 		} //}}}
 
 		// {G,S}etter for m_Width
@@ -215,9 +245,9 @@ public class Display
 		} //}}}
 
 		uint GetTicks()
-		{
+		{ //{{{
 			return SDL_GetTicks();
-		}
+		} //}}}
 
 		void WaitFor()
 		{ //{{{
@@ -240,9 +270,9 @@ public class Display
 		} //}}}
 
 		void sleep( uint microSeconds = 1000 )
-		{
+		{ //{{{
 			SDL_Delay( microSeconds );
-		}
+		} //}}}
 
 		// {G,S}etter for m_TickInterval
 		void TickInterval( uint nTickInterval ) //{{{
@@ -278,6 +308,8 @@ public class Display
 		this( uint iWidth, uint iHeight, uint iBPP )
 		{
 			InitSGL( iWidth, iHeight, iBPP );
+			m_Keypresses = new LinkedList!( Keypress );
+			m_Clicks = new LinkedList!( Click );
 		}
 
 		// load modules needed to interface with C libs SDL, GL, IL
@@ -354,7 +386,7 @@ public class Display
 			}
 		} //}}}
 
-		static Display m_Instance;
+		static Game m_Instance;
 
 		uint m_TickInterval;
 		uint m_NextTime;
@@ -367,9 +399,13 @@ public class Display
 		uint m_Height;
 		uint m_BPP;
 
-		SDL_Event m_Event;
-
 		Entity[] m_Entities;
+
+		SDL_Event m_Event;
+		LinkedList!( Keypress ) m_Keypresses;
+		LinkedList!( Click ) m_Clicks;
+		uint[ 2 ] m_Cursor;
+
 
 		//}}}
 
