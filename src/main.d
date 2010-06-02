@@ -154,12 +154,14 @@ int main( char[][] )
 		m_ParticleSystem.AddParticle( m_Particles[ i ] );
 	}
 
+	log.info( "Setting particle position based on entity position" );
 	m_Particles[ 0 ].Position( 200.0f, 150.0f );
 	m_Particles[ 1 ].Position( 600.0f, 150.0f );
 	m_Particles[ 2 ].Position( 200.0f, 450.0f );
 	m_Particles[ 3 ].Position( 600.0f, 450.0f );
 	m_Particles[ 4 ].Position( 500.0f, 300.0f );
 
+	log.info( "Setting up the sun" );
 	m_Particles[ 5 ].Position( 400.0f, 300.0f );
 	m_Particles[ 5 ].Radius( 25.0f );
 	m_Particles[ 5 ].Mass( 2500000.0f );
@@ -210,15 +212,11 @@ int main( char[][] )
 			m_Particles[ 2 ].Position( 200.0f, 450.0f );
 			m_Particles[ 3 ].Position( 600.0f, 450.0f );
 
-			m_Particles[ 0 ].CurrentVelocities( 0.0f, 0.0f );
-			m_Particles[ 1 ].CurrentVelocities( 0.0f, 0.0f );
-			m_Particles[ 2 ].CurrentVelocities( 0.0f, 0.0f );
-			m_Particles[ 3 ].CurrentVelocities( 0.0f, 0.0f );
-
-			m_Particles[ 0 ].CurrentAcceleration( 0.0f, 0.0f );
-			m_Particles[ 1 ].CurrentAcceleration( 0.0f, 0.0f );
-			m_Particles[ 2 ].CurrentAcceleration( 0.0f, 0.0f );
-			m_Particles[ 3 ].CurrentAcceleration( 0.0f, 0.0f );
+			foreach( i; m_Particles )
+			{
+				i.CurrentVelocities( 0.0f, 0.0f );
+				i.CurrentAcceleration( 0.0f, 0.0f );
+			}
 		}
 
 		m_ParticleSystem.Work();
