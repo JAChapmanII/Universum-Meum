@@ -210,15 +210,15 @@ int main( char[][] )
 			m_Particles[ 2 ].Position( 200.0f, 450.0f );
 			m_Particles[ 3 ].Position( 600.0f, 450.0f );
 
-			m_Particles[ 0 ].Velocity( 0.0f, 0.0f );
-			m_Particles[ 1 ].Velocity( 0.0f, 0.0f );
-			m_Particles[ 2 ].Velocity( 0.0f, 0.0f );
-			m_Particles[ 3 ].Velocity( 0.0f, 0.0f );
+			m_Particles[ 0 ].CurrentVelocities( 0.0f, 0.0f );
+			m_Particles[ 1 ].CurrentVelocities( 0.0f, 0.0f );
+			m_Particles[ 2 ].CurrentVelocities( 0.0f, 0.0f );
+			m_Particles[ 3 ].CurrentVelocities( 0.0f, 0.0f );
 
-			m_Particles[ 0 ].Acceleration( 0.0f, 0.0f );
-			m_Particles[ 1 ].Acceleration( 0.0f, 0.0f );
-			m_Particles[ 2 ].Acceleration( 0.0f, 0.0f );
-			m_Particles[ 3 ].Acceleration( 0.0f, 0.0f );
+			m_Particles[ 0 ].CurrentAcceleration( 0.0f, 0.0f );
+			m_Particles[ 1 ].CurrentAcceleration( 0.0f, 0.0f );
+			m_Particles[ 2 ].CurrentAcceleration( 0.0f, 0.0f );
+			m_Particles[ 3 ].CurrentAcceleration( 0.0f, 0.0f );
 		}
 
 		m_ParticleSystem.Work();

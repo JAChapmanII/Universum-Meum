@@ -51,14 +51,14 @@ class Particle
 		{
 			m_Acceleration[] = m_nextAcceleration;
 			m_nextAcceleration[] = [ 0.0f, 0.0f ];
-			m_Velocity[ 0 ] += m_nextVelocity[ 0 ];
-			m_Velocity[ 1 ] += m_nextVelocity[ 1 ];
+			m_Velocity[ 0 ] = m_nextVelocity[ 0 ];
+			m_Velocity[ 1 ] = m_nextVelocity[ 1 ];
 
-			CurrentXVelocity = CurrentXVelocity + CurrentXAcceleration * deltaTime;
-			CurrentYVelocity = CurrentYVelocity + CurrentYAcceleration * deltaTime;
+			CurrentXVelocity = XVelocity + XAcceleration * deltaTime;
+			CurrentYVelocity = YVelocity + YAcceleration * deltaTime;
 
-			XPosition = XPosition + CurrentXVelocity * deltaTime;
-			YPosition = YPosition + CurrentYVelocity * deltaTime;
+			XPosition = XPosition + XVelocity * deltaTime;
+			YPosition = YPosition + YVelocity * deltaTime;
 		}
 
 		void AddForce( Force nForce )
@@ -105,7 +105,7 @@ class Particle
 		}
 
 		// {G,S}etter for m_Position[ 0 ]
-		float XPosition() //{{{
+		float XPosition () //{{{
 		{
 			return m_Position[ 0 ];
 		}
@@ -139,7 +139,7 @@ class Particle
 		}
 
 		// {G,S}etter for m_nextVelocity[ 0 ]
-		float XVelocity() //{{{
+		float NextXVelocity() //{{{
 		{
 			return m_nextVelocity[ 0 ];
 		}
@@ -149,7 +149,7 @@ class Particle
 		} //}}}
 
 		// {G,S}etter for m_nextVelocity[ 1 ]
-		float YVelocity() //{{{
+		float NextYVelocity() //{{{
 		{
 			return m_nextVelocity[ 1 ];
 		}
@@ -159,7 +159,7 @@ class Particle
 		} //}}}
 
 		// {G,S}etter for m_Velocity[ 0 ]
-		float CurrentXVelocity() //{{{
+		float XVelocity() //{{{
 		{
 			return m_Velocity[ 0 ];
 		}
@@ -169,7 +169,7 @@ class Particle
 		} //}}}
 
 		// {G,S}etter for m_Velocity[ 1 ]
-		float CurrentYVelocity() //{{{
+		float YVelocity() //{{{
 		{
 			return m_Velocity[ 1 ];
 		}
@@ -178,6 +178,13 @@ class Particle
 			m_Velocity[ 1 ] = nYVelocity;
 		} //}}}
 
+		// Setter for Both m_Velocity
+		void CurrentVelocities( float nXVelocity, float nYVelocity) //{{{
+		{
+			m_Velocity[0] = nXVelocity;
+			m_Velocity[1] = nYVelocity;
+		}//}}}
+
 		void Acceleration( float nXAcceleration, float nYAcceleration )
 		{
 			XAcceleration = nXAcceleration;
@@ -185,7 +192,7 @@ class Particle
 		}
 
 		// {G,S}etter for m_nextAcceleration[ 0 ]
-		float XAcceleration() //{{{
+		float NextXAcceleration() //{{{
 		{
 			return m_nextAcceleration[ 0 ];
 		}
@@ -195,7 +202,7 @@ class Particle
 		} //}}}
 
 		// {G;,S}etter for m_nextAcceleration[ 1 ]
-		float YAcceleration() //{{{
+		float NextYAcceleration() //{{{
 		{
 			return m_nextAcceleration[ 1 ];
 		}
@@ -205,7 +212,7 @@ class Particle
 		} //}}}
 
 		// {G,S}etter for m_Acceleration[ 0 ]
-		float CurrentXAcceleration() //{{{
+		float XAcceleration() //{{{
 		{
 			return m_Acceleration[ 0 ];
 		}
@@ -215,7 +222,7 @@ class Particle
 		 } //}}}
 
 		// {G;,S}etter for m_Acceleration[ 1 ]
-		float CurrentYAcceleration() //{{{
+		float YAcceleration() //{{{
 		{
 			return m_Acceleration[ 1 ];
 		}
@@ -223,6 +230,14 @@ class Particle
 		{
 			m_Acceleration[ 1 ] += nYAcceleration;
 		} //}}}
+
+		// Setter for Both m_Acceleration
+		void CurrentAcceleration( float nXAcceleration, float nYAcceleration) //{{{
+		{
+			m_Acceleration[0] = nXAcceleration;
+			m_Acceleration[1] = nYAcceleration;
+		}//}}}
+
 
 		// {G,S}eetter for m_Mass
 		float Mass() //{{{
