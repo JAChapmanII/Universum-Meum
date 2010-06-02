@@ -28,32 +28,32 @@ class Point : Entity
 	public:
 		this( float iX, float iY )
 		{ //{{{
-			X = iX;
-			Y = iY;
+			XPosition = iX;
+			YPosition = iY;
 			Radius = 1;
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
 		this( float iX, float iY, float iRadius )
 		{ //{{{
-			X = iX;
-			Y = iY;
+			XPosition = iX;
+			YPosition = iY;
 			Radius = iRadius;
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
 		this( float iX, float iY, float iRadius, float iRed, float iGreen, float iBlue )
 		{ //{{{
-			X = iX;
-			Y = iY;
+			XPosition = iX;
+			YPosition = iY;
 			Radius = iRadius;
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
 		this( float iX, float iY, float iRadius, float iRed, float iGreen, float iBlue, float iAlpha )
 		{ //{{{
-			X = iX;
-			Y = iY;
+			XPosition = iX;
+			YPosition = iY;
 			Radius = iRadius;
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
@@ -63,7 +63,7 @@ class Point : Entity
 			glPointSize( Radius );
 			glColor4f( Red, Green, Blue, Alpha );
 			glBegin( GL_POINTS );
-			glVertex2f( X, Y );
+			glVertex2f( XPosition, YPosition );
 			glEnd();
 		} //}}}
 

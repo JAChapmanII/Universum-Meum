@@ -31,21 +31,21 @@ class Entity
 		}
 
 		// {G,S}etter for m_Position[ 0 ]
-		float X() //{{{
+		float XPosition() //{{{
 		{
 			return m_Position[ 0 ];
 		}
-		void X( float nX )
+		void XPosition( float nX )
 		{
 			m_Position[ 0 ] = nX;
 		} //}}}
 
 		// {G,S}etter for m_Position[ 1 ]
-		float Y() //{{{
+		float YPosition() //{{{
 		{
 			return m_Position[ 1 ];
 		}
-		void Y( float nY )
+		void YPosition( float nY )
 		{
 			m_Position[ 1 ] = nY;
 		} //}}}
