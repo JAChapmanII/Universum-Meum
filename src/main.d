@@ -31,7 +31,8 @@ import entities.point;
 import forces.gravity;
 import forces.repel;
 
-Logger log;
+// Set up the logger, and the Key associative array
+Logger log; //{{{
 uint[ char[] ] Key;
 static this()
 {
@@ -107,7 +108,7 @@ static this()
 	Key[ "System Request" ] = 317; Key[ "Break" ] = 318; Key[ "Menu" ] = 319;
 	Key[ "Power" ] = 320; Key[ "Euro" ] = 321; Key[ "Undo" ] = 322;
 	Key[ "Last" ] = 323; Key.rehash; //}}}
-}
+} //}}}
 
 int main( char[][] )
 {
@@ -125,17 +126,19 @@ int main( char[][] )
 	Repel m_Repel = Repel.Instance();
 
 	log.info( "Now a particle system and some particles" );
-	ParticleSystem m_ParticleSystem = new ParticleSystem( 0.1f );
-	Particle[ 4 ] m_Particles;
+	ParticleSystem m_ParticleSystem = new ParticleSystem( 0.001f );
+
+	const uint NUM_POINTS = 6;
+	Particle[ NUM_POINTS ] m_Particles;
 
 	log.info( "Now creating an array of points" );
-	Point[ 4 ] m_Points;
+	Point[ NUM_POINTS ] m_Points;
 	m_Points[ 0 ] = new Point( 200.0f, 150.0f, 10.0f, 1.0f, 0.0f, 0.0f );
 	m_Points[ 1 ] = new Point( 600.0f, 150.0f, 10.0f, 0.0f, 1.0f, 0.0f );
 	m_Points[ 2 ] = new Point( 200.0f, 450.0f, 10.0f, 0.0f, 0.0f, 1.0f );
 	m_Points[ 3 ] = new Point( 600.0f, 450.0f, 10.0f, 0.0f, 0.0f, 0.0f );
-	//m_Points[ 4 ] = new Point( 500.0f, 300.0f, 10.0f, 1.0f, 0.0f, 1.0f );
-	//m_Points[ 5 ] = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f );
+	m_Points[ 4 ] = new Point( 500.0f, 300.0f, 10.0f, 1.0f, 0.0f, 1.0f );
+	m_Points[ 5 ] = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f );
 
 	log.info( "Adding each point to game" );
 	foreach( i; m_Points )
@@ -144,13 +147,13 @@ int main( char[][] )
 	}
 
 	log.info( "Setting up each particle" );
-	for( uint i = 0; i < 4; ++i )
+	for( uint i = 0; i < NUM_POINTS; ++i )
 	{
 		m_Particles[ i ] = new Particle();
 		m_Particles[ i ].AddEntity( m_Points[ i ] );
 		m_Particles[ i ].Radius = 10.0f;
 		m_Particles[ i ].AddForce( m_Gravity );
-		//m_Particles[ i ].AddForce( m_Repel );
+		m_Particles[ i ].AddForce( m_Repel );
 		m_ParticleSystem.AddParticle( m_Particles[ i ] );
 	}
 
@@ -159,12 +162,12 @@ int main( char[][] )
 	m_Particles[ 1 ].CurrentPositions( 600.0f, 150.0f );
 	m_Particles[ 2 ].CurrentPositions( 200.0f, 450.0f );
 	m_Particles[ 3 ].CurrentPositions( 600.0f, 450.0f );
-	//m_Particles[ 4 ].Positions( 500.0f, 300.0f );
+	m_Particles[ 4 ].Positions( 500.0f, 300.0f );
 
-	//log.info( "Setting up the sun" );
-	//m_Particles[ 5 ].Position( 400.0f, 300.0f );
-	//m_Particles[ 5 ].Radius( 25.0f );
-	//m_Particles[ 5 ].Mass( 2500000.0f );
+	log.info( "Setting up the sun" );
+	m_Particles[ 5 ].Positions( 400.0f, 300.0f );
+	m_Particles[ 5 ].Radius( 25.0f );
+	m_Particles[ 5 ].Mass( 50.0f );
 
 	log.info( "Entering main game loop" );
 	float nX = 1.0f;
@@ -188,15 +191,6 @@ int main( char[][] )
 			}
 		}
 
-		/*
-		nX += 2.0f;
-		if( nX > 600.0f )
-		{
-			nX = 2.0f;
-		}
-		m_Points[ 0 ].X = nX;
-		*/
-
 		m_Game.ProcessInput();
 
 		if( ( !m_Game.isActive ) || ( m_Game.isPressed( Key[ "Space" ] ) ) )
@@ -215,13 +209,11 @@ int main( char[][] )
 
 		m_ParticleSystem.Work();
 
-		/*
 		rad -= 0.01f;
 		rad %= 2 * PI;
 
-		m_Particles[ 4 ].Position( 100.0f * cos( rad ) + 400.0f, 100.0f * sin( rad ) + 300.0f );
-		m_Particles[ 5 ].Position( 400.0f, 300.0f );
-		*/
+		m_Particles[ 4 ].CurrentPositions( 100.0f * cos( rad ) + 400.0f, 100.0f * sin( rad ) + 300.0f );
+		m_Particles[ 5 ].CurrentPositions( 400.0f, 300.0f );
 
 		m_Game.Draw();
 		m_Game.WaitFor();

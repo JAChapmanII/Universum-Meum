@@ -57,8 +57,19 @@ class Repel : Force
 
 		alias Instance opCall;
 
-		override void Work( Particle A, Particle B, float deltaTime )
+		override void Work( Particle A, Particle B, ref float deltaTime )
 		{
+			float distX = B.XPosition - A.XPosition;
+			float distY = B.YPosition - A.YPosition;
+			float dist =  sqrt( (distX*distX) + (distY*distY) );
+			if( (dist <= (A.Radius + B.Radius)) && (dist > 0.0f) )
+			{
+				A.XVelocity = 0.0f;
+				A.YVelocity = 0.0f;
+			}
+
+
+			/++
 			//log.info( "Repel has done work" );
 			float distX = B.XPosition - A.XPosition;
 			float distY = B.YPosition - A.YPosition;
@@ -85,7 +96,7 @@ class Repel : Force
 				float vx_cm = ( A.Mass*A.XVelocity + B.Mass*B.XVelocity ) / sumMass;
 				float vy_cm = ( A.Mass*A.YVelocity + B.Mass*B.YVelocity ) / sumMass;
 
-// *** return old velocities if balls are not approaching ***
+				// Return old velocities if balls are not approaching
 				/*
 				if ( (vx21*x21 + vy21*y21) >= 0)
 				{
@@ -93,9 +104,8 @@ class Repel : Force
 				}
 				*/
 
-// *** I have inserted the following statements to avoid a zero divide;
-//     (for single precision calculations, 1.0E-12 should be replaced by a larger value)
-
+				// *** I have inserted the following statements to avoid a zero divide;
+				//(for single precision calculations, 1.0E-12 should be replaced by a larger value)
 				float fy21 = 1.0E-12 * abs( y21 );
 				float sign;
 				if( abs( x21 ) < fy21 )
@@ -111,29 +121,19 @@ class Repel : Force
 					x21 = fy21 * sign;
 				}
 
-//     ***  update velocities ***
+				// Update Velocities ***
 				float a = y21 / x21;
 				float dvx2 = -2 * ( vx21 + a * vy21 ) / ( ( 1 + a*a ) * ( 1 + m21 ) );
 				//vx2=vx2+dvx2;
 				//vy2=vy2+a*dvx2;
-				A.XVelocity = A.XVelocity - m21*dvx2;
-				A.YVelocity = A.YVelocity - a*m21*dvx2;
+				A.XVelocity = A.XVelocity - (m21*dvx2)*0.001 * deltaTime;
+				A.YVelocity = A.YVelocity - (a*m21*dvx2)*0.001 * deltaTime;
 
-//     ***  velocity correction for inelastic collisions ***
-		/*
-       vx1=(vx1-vx_cm)*R + vx_cm;
-       vy1=(vy1-vy_cm)*R + vy_cm;
-       vx2=(vx2-vx_cm)*R + vx_cm;
-       vy2=(vy2-vy_cm)*R + vy_cm;
-	   */
-
-		/*
-				A.XVelocity = (A.Mass - B.Mass)/(A.Mass + B.Mass)*A.XVelocity +
-							  ( 2 * B.Mass )/( A.Mass + B.Mass)*B.XVelocity;
-				A.YVelocity = (A.Mass - B.Mass)/(A.Mass + B.Mass)*A.YVelocity +
-							  ( 2 * B.Mass )/( A.Mass + B.Mass)*B.YVelocity;
-							  */
+				// Velocity correction for inelastic collisions
+				//A.XVelocity = (A.XVelocity - vx_cm ) * 0.80 + vx_cm;
+				//A.YVelocity = (A.YVelocity - vy_cm ) * 0.80 + vy_cm;
 			}
+			+/
 		}
 
 	protected:

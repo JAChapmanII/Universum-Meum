@@ -19,6 +19,8 @@
 */// }}}
 module gravity;
 
+import tango.io.Stdout;
+
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
 import tango.math.Math;
@@ -36,7 +38,7 @@ static this()
 class Gravity : Force
 {
 	public:
-		static Gravity Instance( float iG = 1.0f )
+		static Gravity Instance( float iG = 12.0f )
 		{ //{{{
 			if( m_Instance is null )
 			{
@@ -55,24 +57,33 @@ class Gravity : Force
 
 		alias Instance opCall;
 
-		override void Work( Particle A, Particle B, float deltaTime )
-		{
+		override void Work( Particle A, Particle B, ref float deltaTime )
+		{ //{{{
 			//log.info( "Gravity has done work" );
 			float distX = B.XPosition - A.XPosition;
 			float distY = B.YPosition - A.YPosition;
-			float dist = sqrt( distX*distX + distY*distY );
-			if( dist > (A.Radius + B.Radius + 1.0) )
+			float dist2 = distX*distX + distY*distY;
+			float dist = sqrt( dist2 );
+			if( dist > (A.Radius+B.Radius+1.0) )
 			{
-				float force = ( GravityConstant * A.Mass * B.Mass ) / ( dist * dist );
+				float force = ( GravityConstant * A.Mass * B.Mass ) / ( dist2 );
 				float delX = ( distX / dist ) * force * deltaTime;
 				float delY = ( distY / dist ) * force * deltaTime;
 
-				A.XAcceleration = A.NextXAcceleration + delX;
-				A.YAcceleration = A.NextYAcceleration + delY;
-			}
-		}
+				float nXA = A.NextXAcceleration + delX;
+				float nYA = A.NextYAcceleration + delY;
 
-		// {G,S}etter m_GravityConstant
+				if( abs(nXA) > 3 || abs(nYA) > 3 )
+				{
+					Stdout.formatln( "----------- {} | {} -------------", nXA, nYA );
+				}
+
+				A.XAcceleration = nXA;
+				A.YAcceleration = nYA;
+			}
+		} //}}}
+
+		/// {G,S}etter m_GravityConstant
 		float GravityConstant() //{{{
 		{
 			return m_GravityConstant;

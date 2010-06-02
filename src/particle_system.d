@@ -19,6 +19,8 @@
 */// }}}
 module particle_system;
 
+import tango.io.Stdout;
+
 import tango.math.Math : sqrt;
 
 import force;
@@ -27,36 +29,43 @@ import particle;
 class ParticleSystem
 {
 	public:
-		this( float iStep = 1.0f, float iMaxStep = 500 )
+		this( float iStep = 1.0f, float iMaxSteps = 500.0f )
 		{
 			Step = iStep;
-			maxStep = iMaxStep;
+			MaxSteps = iMaxSteps;
 		}
 
 		void Work( float deltaTime = 1.0f )
 		{
-			float timePassed = 0.0f;
-			if( maxSpeed > ( deltaTime * Step ) )
+			float timeLeft = deltaTime;
+			while( timeLeft > 0.0f )
 			{
-				while( timePassed < deltaTime )
+				float currentMax = maxSpeed;
+				if( ( currentMax * timeLeft ) > Step )
 				{
-					float currentDelta = (Step / maxSpeed);
-					if (currentDelta < (deltaTime / maxStep))
+					float currentDelta = (Step / currentMax);
+					if (currentDelta < (deltaTime / MaxSteps))
 					{
-						currentDelta = (deltaTime / maxStep);
+						currentDelta = (deltaTime / MaxSteps);
+					}
+					if( currentDelta > timeLeft )
+					{
+						currentDelta = timeLeft;
 					}
 					WorkAll( currentDelta );
 					UpdateAll( currentDelta );
-
-					timePassed += currentDelta;
+					timeLeft -= currentDelta;
+				}
+				else
+				{
+					WorkAll( deltaTime );
+					UpdateAll( deltaTime );
+					timeLeft = 0.0f;
 				}
 			}
-
-			WorkAll( deltaTime - timePassed );
-			UpdateAll( deltaTime - timePassed );
 		}
 
-		void WorkAll( float deltaTime )
+		void WorkAll( ref float deltaTime )
 		{ //{{{
 			foreach( i; m_Particles )
 			{
@@ -67,7 +76,7 @@ class ParticleSystem
 			}
 		} //}}}
 
-		void UpdateAll( float deltaTime )
+		void UpdateAll( ref float deltaTime )
 		{ //{{{
 			foreach( i; m_Particles )
 			{
@@ -81,7 +90,7 @@ class ParticleSystem
 			float current = 0.0f;
 			foreach( i; m_Particles )
 			{
-				current = sqrt( i.XVelocity*i.XVelocity + i.YVelocity*i.YVelocity );
+				current = i.Speed;
 				if( current >= max )
 				{
 					max = current;
@@ -115,6 +124,18 @@ class ParticleSystem
 			return m_Step;
 		} //}}}
 
+		// {G,S}etter for m_MaxSteps
+		void MaxSteps( float nMax ) //{{{
+		{
+			if( (1.0f / Step) > (1.0 / nMax) )
+			{
+				m_MaxSteps = nMax;
+			}
+		}
+		float MaxSteps()
+		{
+			return m_MaxSteps;
+		} //}}}
 
 		void AddForce( Force nForce )
 		{ //{{{
@@ -144,9 +165,6 @@ class ParticleSystem
 
 
 	protected:
-
-		float maxStep;
-
 		float abs( float a )
 		{
 			if( a < 0 )
@@ -157,6 +175,7 @@ class ParticleSystem
 		}
 
 		float m_Step;
+		float m_MaxSteps;
 
 		Particle[] m_Particles;
 		Force[] m_Forces;

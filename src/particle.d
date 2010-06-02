@@ -19,8 +19,10 @@
 */// }}}
 module particle;
 
+import tango.io.Stdout;
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
+import tango.math.Math;
 
 import force;
 import entity;
@@ -37,7 +39,7 @@ class Particle
 	public:
 		this()
 		{ //{{{
-			m_Mass = 70.0f;
+			m_Mass = 20.0f;
 			m_Radius = 0.0f;
 			m_Acceleration[] = [ 0.0f, 0.0f ];
 			m_Velocity[] = [ 0.0f, 0.0f ];
@@ -45,16 +47,33 @@ class Particle
 
 			m_nextAcceleration[] = [ 0.0f, 0.0f ];
 			m_nextVelocity[] = [ 0.0f, 0.0f ];
+			m_Speed = 0.0f;
 		} //}}}
 
 		void Update( float deltaTime )
 		{ //{{{
-			m_Acceleration[] = m_nextAcceleration;
-			m_Velocity[] = m_nextVelocity;
-			m_Position[] = m_nextPosition;
+			m_Acceleration[ 0 ] = m_nextAcceleration[ 0 ];
+			m_Acceleration[ 1 ] = m_nextAcceleration[ 1 ];
+
+			m_Velocity[ 0 ] = m_nextVelocity[ 0 ];
+			m_Velocity[ 1 ] = m_nextVelocity[ 1 ];
+
+			m_Position[ 0 ] = m_nextPosition[ 0 ];
+			m_Position[ 1 ] = m_nextPosition[ 1 ];
 
 			CurrentXVelocity = XVelocity + XAcceleration * deltaTime;
 			CurrentYVelocity = YVelocity + YAcceleration * deltaTime;
+
+			Speed = sqrt( XVelocity*XVelocity + YVelocity*YVelocity );
+
+			if( abs( (XPosition + XVelocity*deltaTime)- XPosition ) > 2
+					|| abs( (YPosition + YVelocity*deltaTime)- YPosition ) > 2 )
+			{
+				Stdout.formatln( "----------------------------------------------------------------------" );
+				Stdout.formatln( " P  {}, {} || {}, {}",
+						XPosition, (XPosition + XVelocity*deltaTime),
+						YPosition, (YPosition + YVelocity*deltaTime) );
+			}
 
 			CurrentXPosition = XPosition + XVelocity * deltaTime;
 			CurrentYPosition = YPosition + YVelocity * deltaTime;
@@ -185,6 +204,7 @@ class Particle
 		void CurrentXVelocity( float nXVelocity )
 		{
 			m_Velocity[ 0 ] = nXVelocity;
+			Speed = sqrt( nXVelocity*nXVelocity + YVelocity*YVelocity );
 		} //}}}
 
 		// {G,S}etter for current YVelocity
@@ -195,6 +215,7 @@ class Particle
 		void CurrentYVelocity( float nYVelocity )
 		{
 			m_Velocity[ 1 ] = nYVelocity;
+			Speed = sqrt( XVelocity*XVelocity + nYVelocity*nYVelocity );
 		} //}}}
 
 		// Setter for both current Velocitys
@@ -202,6 +223,7 @@ class Particle
 		{
 			m_Velocity[ 0 ] = nXVelocity;
 			m_Velocity[ 1 ] = nYVelocity;
+			Speed = sqrt( nXVelocity*nXVelocity + nYVelocity*nYVelocity );
 		} //}}}
 
 
@@ -311,6 +333,16 @@ class Particle
 			m_Radius = nRadius;
 		} //}}}
 
+		// {G,S}eetter for m_Radius
+		float Speed() //{{{
+		{
+			return m_Speed;
+		}
+		void Speed( float nSpeed )
+		{
+			m_Speed = nSpeed;
+		} //}}}
+
 	protected:
 		float m_Mass;
 		float m_Radius;
@@ -322,6 +354,8 @@ class Particle
 		float[ 2 ] m_nextPosition;
 		float[ 2 ] m_nextVelocity;
 		float[ 2 ] m_nextAcceleration;
+
+		float m_Speed;
 
 		Entity[] m_Entities;
 		Force[] m_Forces;
