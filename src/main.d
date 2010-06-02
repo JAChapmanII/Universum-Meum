@@ -126,16 +126,16 @@ int main( char[][] )
 
 	log.info( "Now a particle system and some particles" );
 	ParticleSystem m_ParticleSystem = new ParticleSystem( 0.1f );
-	Particle[ 6 ] m_Particles;
+	Particle[ 4 ] m_Particles;
 
 	log.info( "Now creating an array of points" );
-	Point[ 6 ] m_Points;
+	Point[ 4 ] m_Points;
 	m_Points[ 0 ] = new Point( 200.0f, 150.0f, 10.0f, 1.0f, 0.0f, 0.0f );
 	m_Points[ 1 ] = new Point( 600.0f, 150.0f, 10.0f, 0.0f, 1.0f, 0.0f );
 	m_Points[ 2 ] = new Point( 200.0f, 450.0f, 10.0f, 0.0f, 0.0f, 1.0f );
 	m_Points[ 3 ] = new Point( 600.0f, 450.0f, 10.0f, 0.0f, 0.0f, 0.0f );
-	m_Points[ 4 ] = new Point( 500.0f, 300.0f, 10.0f, 1.0f, 0.0f, 1.0f );
-	m_Points[ 5 ] = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f );
+	//m_Points[ 4 ] = new Point( 500.0f, 300.0f, 10.0f, 1.0f, 0.0f, 1.0f );
+	//m_Points[ 5 ] = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f );
 
 	log.info( "Adding each point to game" );
 	foreach( i; m_Points )
@@ -144,30 +144,29 @@ int main( char[][] )
 	}
 
 	log.info( "Setting up each particle" );
-	for( uint i = 0; i < 6; ++i )
+	for( uint i = 0; i < 4; ++i )
 	{
 		m_Particles[ i ] = new Particle();
 		m_Particles[ i ].AddEntity( m_Points[ i ] );
 		m_Particles[ i ].Radius = 10.0f;
 		m_Particles[ i ].AddForce( m_Gravity );
-		m_Particles[ i ].AddForce( m_Repel );
+		//m_Particles[ i ].AddForce( m_Repel );
 		m_ParticleSystem.AddParticle( m_Particles[ i ] );
 	}
 
 	log.info( "Setting particle position based on entity position" );
-	m_Particles[ 0 ].Position( 200.0f, 150.0f );
-	m_Particles[ 1 ].Position( 600.0f, 150.0f );
-	m_Particles[ 2 ].Position( 200.0f, 450.0f );
-	m_Particles[ 3 ].Position( 600.0f, 450.0f );
-	m_Particles[ 4 ].Position( 500.0f, 300.0f );
+	m_Particles[ 0 ].CurrentPositions( 200.0f, 150.0f );
+	m_Particles[ 1 ].CurrentPositions( 600.0f, 150.0f );
+	m_Particles[ 2 ].CurrentPositions( 200.0f, 450.0f );
+	m_Particles[ 3 ].CurrentPositions( 600.0f, 450.0f );
+	//m_Particles[ 4 ].Positions( 500.0f, 300.0f );
 
-	log.info( "Setting up the sun" );
-	m_Particles[ 5 ].Position( 400.0f, 300.0f );
-	m_Particles[ 5 ].Radius( 25.0f );
-	m_Particles[ 5 ].Mass( 2500000.0f );
+	//log.info( "Setting up the sun" );
+	//m_Particles[ 5 ].Position( 400.0f, 300.0f );
+	//m_Particles[ 5 ].Radius( 25.0f );
+	//m_Particles[ 5 ].Mass( 2500000.0f );
 
 	log.info( "Entering main game loop" );
-	uint cnt = 0;
 	float nX = 1.0f;
 	float rad = 0.0f;
 	while( !m_Game.isDone )
@@ -178,10 +177,8 @@ int main( char[][] )
 			continue;
 		}
 
-		cnt++;
-		if( ( cnt > 100 ) || ( m_ParticleSystem.maxSpeed > 1 ) || ( m_ParticleSystem.maxAcceleration > 1 ) )
+		if( m_Game.isClicked )
 		{
-			cnt=0;
 			foreach( uint num, i; m_Particles )
 			{
 				Stdout.formatln( "{}: ( {}, {} ) < {}, {} > [ {}, {} ]", num,
@@ -191,41 +188,40 @@ int main( char[][] )
 			}
 		}
 
-		if( m_Game.isClicked )
-		{
-			Stdout.formatln( "LMB is down" );
-		}
-
+		/*
 		nX += 2.0f;
 		if( nX > 600.0f )
 		{
 			nX = 2.0f;
 		}
 		m_Points[ 0 ].X = nX;
+		*/
 
 		m_Game.ProcessInput();
 
 		if( ( !m_Game.isActive ) || ( m_Game.isPressed( Key[ "Space" ] ) ) )
 		{
-			m_Particles[ 0 ].Position( 200.0f, 150.0f );
-			m_Particles[ 1 ].Position( 600.0f, 150.0f );
-			m_Particles[ 2 ].Position( 200.0f, 450.0f );
-			m_Particles[ 3 ].Position( 600.0f, 450.0f );
+			m_Particles[ 0 ].CurrentPositions( 200.0f, 150.0f );
+			m_Particles[ 1 ].CurrentPositions( 600.0f, 150.0f );
+			m_Particles[ 2 ].CurrentPositions( 200.0f, 450.0f );
+			m_Particles[ 3 ].CurrentPositions( 600.0f, 450.0f );
 
 			foreach( i; m_Particles )
 			{
 				i.CurrentVelocities( 0.0f, 0.0f );
-				i.CurrentAcceleration( 0.0f, 0.0f );
+				i.CurrentAccelerations( 0.0f, 0.0f );
 			}
 		}
 
 		m_ParticleSystem.Work();
 
+		/*
 		rad -= 0.01f;
 		rad %= 2 * PI;
 
 		m_Particles[ 4 ].Position( 100.0f * cos( rad ) + 400.0f, 100.0f * sin( rad ) + 300.0f );
 		m_Particles[ 5 ].Position( 400.0f, 300.0f );
+		*/
 
 		m_Game.Draw();
 		m_Game.WaitFor();

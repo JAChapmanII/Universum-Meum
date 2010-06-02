@@ -65,8 +65,74 @@ class Repel : Force
 			float dist =  sqrt( (distX*distX) + (distY*distY) );
 			if( (dist <= (A.Radius + B.Radius)) && (dist > 0.0f) )
 			{
-				A.XVelocity = (A.XVelocity*A.Mass + B.XVelocity*B.Mass)/(500000*A.Mass);
-				A.YVelocity = (A.YVelocity*A.Mass + B.YVelocity*B.Mass)/(500000*A.Mass);
+
+				/*
+				void collision2Ds(double m1, double m2, double R,
+						double x1, double y1, double x2, double y2,
+						double& vx1, double& vy1, double& vx2, double& vy2)
+						*/
+
+				//double  m21, dvx2, a, x21, y21, vx21, vy21, fy21, sign, vx_cm, vy_cm;
+
+				float m21  = B.Mass / A.Mass;
+				float x21  = B.XPosition - A.XPosition;
+				float y21  = B.YPosition - A.YPosition;
+				float vx21 = B.XVelocity - A.XVelocity;
+				float vy21 = B.YVelocity - A.YVelocity;
+
+				float sumMass = A.Mass + B.Mass;
+
+				float vx_cm = ( A.Mass*A.XVelocity + B.Mass*B.XVelocity ) / sumMass;
+				float vy_cm = ( A.Mass*A.YVelocity + B.Mass*B.YVelocity ) / sumMass;
+
+// *** return old velocities if balls are not approaching ***
+				/*
+				if ( (vx21*x21 + vy21*y21) >= 0)
+				{
+					return;
+				}
+				*/
+
+// *** I have inserted the following statements to avoid a zero divide;
+//     (for single precision calculations, 1.0E-12 should be replaced by a larger value)
+
+				float fy21 = 1.0E-12 * abs( y21 );
+				float sign;
+				if( abs( x21 ) < fy21 )
+				{
+					if( x21 < 0 )
+					{
+						sign = -1;
+					}
+					else
+					{
+						sign = 1;
+					}
+					x21 = fy21 * sign;
+				}
+
+//     ***  update velocities ***
+				float a = y21 / x21;
+				float dvx2 = -2 * ( vx21 + a * vy21 ) / ( ( 1 + a*a ) * ( 1 + m21 ) );
+				//vx2=vx2+dvx2;
+				//vy2=vy2+a*dvx2;
+				A.XVelocity = A.XVelocity - m21*dvx2;
+				A.YVelocity = A.YVelocity - a*m21*dvx2;
+
+//     ***  velocity correction for inelastic collisions ***
+		/*
+       vx1=(vx1-vx_cm)*R + vx_cm;
+       vy1=(vy1-vy_cm)*R + vy_cm;
+       vx2=(vx2-vx_cm)*R + vx_cm;
+       vy2=(vy2-vy_cm)*R + vy_cm;
+	   */
+
+		/*
+				A.XVelocity = (A.Mass - B.Mass)/(A.Mass + B.Mass)*A.XVelocity +
+							  ( 2 * B.Mass )/( A.Mass + B.Mass)*B.XVelocity;
+				A.YVelocity = (A.Mass - B.Mass)/(A.Mass + B.Mass)*A.YVelocity +
+							  ( 2 * B.Mass )/( A.Mass + B.Mass)*B.YVelocity;
+							  */
 			}
 		}
 

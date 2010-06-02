@@ -36,7 +36,7 @@ static this()
 class Gravity : Force
 {
 	public:
-		static Gravity Instance( float iG = 0.00000000006f )
+		static Gravity Instance( float iG = 1.0f )
 		{ //{{{
 			if( m_Instance is null )
 			{
@@ -67,22 +67,20 @@ class Gravity : Force
 				float delX = ( distX / dist ) * force * deltaTime;
 				float delY = ( distY / dist ) * force * deltaTime;
 
-				A.XAcceleration = A.XAcceleration + delX;
-				A.YAcceleration = A.YAcceleration + delY;
-
-				//B.XAcceleration = B.XAcceleration - delX;
-				//B.YAcceleration = B.YAcceleration - delY;
+				A.XAcceleration = A.NextXAcceleration + delX;
+				A.YAcceleration = A.NextYAcceleration + delY;
 			}
 		}
 
-		float GravityConstant()
+		// {G,S}etter m_GravityConstant
+		float GravityConstant() //{{{
 		{
 			return m_GravityConstant;
 		}
 		void GravityConstant( float nG )
 		{
 			m_GravityConstant = nG;
-		}
+		} //}}}
 
 	protected:
 		this( float iG )
@@ -93,31 +91,6 @@ class Gravity : Force
 		static Gravity m_Instance;
 
 		float m_GravityConstant;
-
-		float sgn( float a )
-		{
-			if( a < 0 )
-			{
-				return -1.0f;
-			}
-			else if( a > 0 )
-			{
-				return 1.0f;
-			}
-			else
-			{
-				return 0.0f;
-			}
-		}
-
-		float abs( float a )
-		{
-			if( a < 0 )
-			{
-				return -a;
-			}
-			return a;
-		}
 
 	private:
 

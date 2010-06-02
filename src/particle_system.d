@@ -49,7 +49,6 @@ class ParticleSystem
 					UpdateAll( currentDelta );
 
 					timePassed += currentDelta;
-
 				}
 			}
 
@@ -59,11 +58,11 @@ class ParticleSystem
 
 		void WorkAll( float deltaTime )
 		{ //{{{
-			for( uint i = 0; i < m_Particles.length; i++ )
+			foreach( i; m_Particles )
 			{
-				for( uint j = 0; j < m_Particles.length; j++ )
+				foreach( j; m_Particles )
 				{
-					m_Particles[ i ].Work( m_Particles[ j ], deltaTime );
+					i.Work( j, deltaTime );
 				}
 			}
 		} //}}}
