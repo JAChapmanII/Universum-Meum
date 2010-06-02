@@ -189,6 +189,11 @@ int main( char[][] )
 			}
 		}
 
+		if( m_Game.isClicked )
+		{
+			Stdout.formatln( "LMB is down" );
+		}
+
 		nX += 2.0f;
 		if( nX > 600.0f )
 		{

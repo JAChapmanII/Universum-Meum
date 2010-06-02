@@ -29,6 +29,9 @@ import derelict.sdl.sdl;
 
 import entity;
 
+import keypress;
+import click;
+
 // Set up logging
 Logger log; //{{{
 static this()
@@ -159,7 +162,7 @@ public class Game
 					{ //{{{
 						foreach( i; m_Keypresses )
 						{
-							if( i == m_Event.key.keysym.sym )
+							if( i.SymCode == m_Event.key.keysym.sym )
 							{
 								m_Keypresses.remove( i );
 								break;
@@ -168,13 +171,30 @@ public class Game
 						break;
 					} //}}}
 
-					case SDL_MOUSEMOTIONEVENT:
+					case SDL_MOUSEMOTION:
 					{ //{{{
+						m_Cursor[ 0 ] = m_Event.motion.x;
+						m_Cursor[ 1 ] = m_Event.motion.y;
 						break;
 					} //}}}
 
-					case SDL_MOUSEBUTTONEVENT:
+					case SDL_MOUSEBUTTONDOWN:
 					{ //{{{
+						m_Clicks.add( new Click( m_Event.button.x, m_Event.button.y,
+									m_Event.button.button, GetTicks ) );
+						break;
+					} //}}}
+
+					case SDL_MOUSEBUTTONUP:
+					{ //{{{
+						foreach( i; m_Clicks )
+						{
+							if( i.Button == m_Event.button.button )
+							{
+								m_Clicks.remove( i );
+								break;
+							}
+						}
 						break;
 					} //}}}
 
@@ -189,11 +209,64 @@ public class Game
 			return;
 		} //}}}
 
+		bool isClicked( int toCheckFor =  SDL_BUTTON_LEFT )
+		{ //{{{
+			foreach( i; m_Clicks )
+			{
+				if( i.Button == toCheckFor )
+				{
+					return true;
+				}
+			}
+			return false;
+		} //}}}
+
+		uint ClickX( int button )
+		{ //{{{
+			foreach( i; m_Clicks )
+			{
+				if( i.Button == button )
+				{
+					return i.XPosition;
+				}
+			}
+			throw new Exception( "Button is not pressed" );
+		} //}}}
+
+		uint ClickY( int button )
+		{ //{{{
+			foreach( i; m_Clicks )
+			{
+				if( i.Button == button )
+				{
+					return i.YPosition;
+				}
+			}
+			throw new Exception( "Button is not pressed" );
+		} //}}}
+
+		uint ClickCreateTime( int button )
+		{ //{{{
+			foreach( i; m_Clicks )
+			{
+				if( i.Button == button )
+				{
+					return i.CreateTime;
+				}
+			}
+			throw new Exception( "Button is not pressed" );
+		} //}}}
+
+		void WarpMouse( uint nX, uint nY )
+		{ //{{{
+			SDL_WarpMouse( nX, nY);
+		} //}}}
+
 		bool isPressed( int toCheckFor = 27 )
 		{ //{{{
 			foreach( i; m_Keypresses )
 			{
-				if( i == toCheckFor )
+				if( i.SymCode == toCheckFor )
 				{
 					return true;
 				}
