@@ -122,6 +122,7 @@ int main( char[][] args )
 	m_Game.TickInterval = 1000 / 100;
 
 	const real rgConstant = 1024.0;
+	Stdout.formatln( "rgConstant: {} [so:{}]", rgConstant, real.sizeof );
 
 	log.info( "Creating a gravity force" );
 	Gravity m_Gravity = Gravity.Instance();
