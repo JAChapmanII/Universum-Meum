@@ -117,7 +117,7 @@ int main( char[][] )
 
 	log.info( "Creating a Game" );
 	Game m_Game = Game.Instance( 800, 600, 32 );
-	m_Game.TickInterval = 1000 / 100;
+	m_Game.TickInterval = 1000 / 50;
 
 	log.info( "Creating a gravity force" );
 	Gravity m_Gravity = Gravity.Instance( 256.0f );
@@ -126,43 +126,31 @@ int main( char[][] )
 	Repel m_Repel = Repel.Instance();
 
 	log.info( "Now a particle system and some particles" );
-	ParticleSystem m_ParticleSystem = new ParticleSystem( 0.01f, 10000.0f );
+	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0f, 10000.0f );
 
-	const uint NUM_POINTS = 1;
-	Particle[ NUM_POINTS ] m_Particles;
+	log.info( "Creating a particle" );
+	Particle m_Particle;
 
-	log.info( "Now creating an array of points" );
-	Point[ NUM_POINTS ] m_Points;
-	m_Points[ 0 ] = new Point( 200.0f, 150.0f, 10.0f, 1.0f, 0.0f, 0.0f );
-	//m_Points[ 1 ] = new Point( 600.0f, 150.0f, 10.0f, 0.0f, 1.0f, 0.0f );
-	//m_Points[ 2 ] = new Point( 200.0f, 450.0f, 10.0f, 0.0f, 0.0f, 1.0f );
-	//m_Points[ 3 ] = new Point( 600.0f, 450.0f, 10.0f, 0.0f, 0.0f, 0.0f );
-	//m_Points[ 4 ] = new Point( 500.0f, 300.0f, 10.0f, 1.0f, 0.0f, 1.0f );
+	log.info( "Now creating a point" );
+	Point m_Point;
+	m_Point = new Point( 200.0f, 150.0f, 10.0f, 1.0f, 0.0f, 0.0f );
 
-	log.info( "Adding each point to game" );
-	foreach( i; m_Points )
-	{
-		m_Game.AddEntity( i );
-	}
+	log.info( "Adding the point to game" );
+	m_Game.AddEntity( m_Point );
 
 	log.info( "Setting up each particle" );
-	for( uint i = 0; i < NUM_POINTS; ++i )
-	{
-		m_Particles[ i ] = new Particle();
-		m_Particles[ i ].AddEntity( m_Points[ i ] );
-		m_Particles[ i ].Radius = 10.0f;
-		m_Particles[ i ].AddForce( m_Gravity );
-		//m_Particles[ i ].AddForce( m_Repel );
-		m_ParticleSystem.AddParticle( m_Particles[ i ] );
-		m_Particles[ i ].Velocities( 0.0, 1.0 );
-	}
+	m_Particle = new Particle();
+	m_Particle.AddEntity( m_Point );
+	m_Particle.Radius = 10.0f;
+	m_Particle.AddForce( m_Gravity );
+	m_ParticleSystem.AddParticle( m_Particle );
+
+	log.info( "Giving Mr. Particle some velocity" );
+	m_Particle.CurrentVelocities( 4, -1 );
+	m_Particle.Velocities( 4, -1 );
 
 	log.info( "Setting particle position based on entity position" );
-	m_Particles[ 0 ].CurrentPositions( 200.0f, 150.0f );
-	//m_Particles[ 1 ].CurrentPositions( 600.0f, 150.0f );
-	//m_Particles[ 2 ].CurrentPositions( 200.0f, 450.0f );
-	//m_Particles[ 3 ].CurrentPositions( 600.0f, 450.0f );
-	//m_Particles[ 4 ].Positions( 500.0f, 300.0f );
+	m_Particle.CurrentPositions( 200.0f, 150.0f );
 
 	log.info( "Setting up the sun" );
 	Point m_SunPoint = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f );
@@ -171,16 +159,12 @@ int main( char[][] )
 	m_Sun.Positions( 400.0f, 300.0f );
 	m_Sun.Radius( 25.0f );
 	m_Sun.Mass( 30.0f );
+	m_Sun.AddForce( m_Gravity );
 
 	m_Game.AddEntity( m_SunPoint );
 	m_ParticleSystem.AddParticle( m_Sun );
 
-	//log.info( "Setting oribtal mass to 0" );
-	//m_Particles[ 4 ].Mass = 0.0f;
-
 	log.info( "Entering main game loop" );
-	float nX = 1.0f;
-	float rad = 0.0f;
 	while( !m_Game.isDone )
 	{
 		if( m_Game.isPressed( Key[ "Escape" ] ) )
@@ -191,37 +175,26 @@ int main( char[][] )
 
 		if( m_Game.isClicked )
 		{
-			foreach( uint num, i; m_Particles )
-			{
-				Stdout.formatln( "{}: ( {}, {} ) < {}, {} > [ {}, {} ]", num,
-					i.XPosition, i.YPosition,
-					i.XVelocity, i.YVelocity,
-					i.XAcceleration, i.YAcceleration );
-			}
+			Stdout.formatln( "( {}, {} ) < {}, {} > [ {}, {} ]",
+				m_Particle.XPosition, m_Particle.YPosition,
+				m_Particle.XVelocity, m_Particle.YVelocity,
+				m_Particle.XAcceleration, m_Particle.YAcceleration );
 		}
 
 		m_Game.ProcessInput();
 
+		/*
 		if( ( !m_Game.isActive ) || ( m_Game.isPressed( Key[ "Space" ] ) ) )
 		{
-			m_Particles[ 0 ].CurrentPositions( 200.0f, 150.0f );
-			//m_Particles[ 1 ].CurrentPositions( 600.0f, 150.0f );
-			//m_Particles[ 2 ].CurrentPositions( 200.0f, 450.0f );
-			//m_Particles[ 3 ].CurrentPositions( 600.0f, 450.0f );
+			m_Particle.CurrentPositions( 200.0f, 150.0f );
 
-			foreach( i; m_Particles )
-			{
-				i.CurrentVelocities( 0.0f, 0.0f );
-				i.CurrentAccelerations( 0.0f, 0.0f );
-			}
+			m_Particle.CurrentVelocities( 0.0f, 0.0f );
+			m_Particle.CurrentAccelerations( 0.0f, 0.0f );
 		}
+		*/
 
-		m_ParticleSystem.Work( m_Game.TickInterval / 25.0f );
+		m_ParticleSystem.Work( .1 );
 
-		rad -= 0.01f;
-		rad %= 2 * PI;
-
-		//m_Particles[ 4 ].CurrentPositions( 100.0f * cos( rad ) + 400.0f, 100.0f * sin( rad ) + 300.0f );
 		m_Sun.CurrentPositions( 400.0f, 300.0f );
 		m_Sun.CurrentVelocities( 0.0f, 0.0f );
 

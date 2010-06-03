@@ -60,58 +60,21 @@ class Gravity : Force
 		override void Work( Particle A, Particle B, ref real deltaTime )
 		{ //{{{
 			//log.info( "Gravity has done work" );
-			if( (A.XPosition != B.XPosition) && (A.YPosition != B.YPosition) )
+			real xDist = B.XPosition - A.XPosition;
+			real yDist = B.YPosition - A.YPosition;
+			real dist2 = (xDist * xDist) + (yDist * yDist);
+
+			if( dist2 > (A.Radius+B.Radius)*2.0 )
 			{
-				real xDist = B.XPosition - A.XPosition;
-				real yDist = B.YPosition - B.YPosition;
-				real dist2 = xDist*xDist + yDist*yDist;
+				real gravMass = GravityConstant * A.Mass * B.Mass;
 				real dist  = sqrt( dist2 );
+
 				A.XAcceleration = A.NextXAcceleration + deltaTime *
-					( GravityConstant * A.Mass * B.Mass )*(xDist/dist) /
-					( dist2 );
+					( gravMass )*(xDist/dist) / ( dist2 );
+
 				A.YAcceleration = A.NextYAcceleration + deltaTime *
-					( GravityConstant * A.Mass * B.Mass )*(yDist/dist) /
-					( dist2 );
-				/*
-				A.XAcceleration = A.NextXAcceleration + deltaTime * GravityConstant * A.Mass*B.Mass *
-					(B.XPosition - A.XPosition)/
-					(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
-					(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition)) *
-					sqrt(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
-						(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition))));
-
-				A.YAcceleration = A.NextYAcceleration + deltaTime * GravityConstant * A.Mass*B.Mass *
-					(B.YPosition - A.YPosition)/
-					(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
-					(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition)) *
-					sqrt(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
-						(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition))));
-						*/
+					( gravMass )*(yDist/dist) / ( dist2 );
 			}
-
-			/*
-			float distX = B.XPosition - A.XPosition;
-			float distY = B.YPosition - A.YPosition;
-			float dist2 = distX*distX + distY*distY;
-			float dist = sqrt( dist2 );
-			if( dist > (A.Radius+B.Radius)/2.0 )
-			{
-				float force = ( GravityConstant * A.Mass * B.Mass ) / ( dist2 );
-				float delX = ( distX / dist ) * force * deltaTime;
-				float delY = ( distY / dist ) * force * deltaTime;
-
-				float nXA = A.NextXAcceleration + delX;
-				float nYA = A.NextYAcceleration + delY;
-
-				if( abs(nXA) > 3 || abs(nYA) > 3 )
-				{
-					Stdout.formatln( "----------- {} | {} -------------", nXA, nYA );
-				}
-
-				A.XAcceleration = nXA;
-				A.YAcceleration = nYA;
-			}
-			*/
 		} //}}}
 
 		/// {G,S}etter m_GravityConstant

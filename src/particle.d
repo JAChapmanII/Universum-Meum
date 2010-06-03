@@ -47,11 +47,21 @@ class Particle
 
 			m_nextAcceleration[] = [ 0.0f, 0.0f ];
 			m_nextVelocity[] = [ 0.0f, 0.0f ];
+			m_nextPosition[] = [ 0.0, 0.0 ];
 			m_Speed = 0.0f;
 		} //}}}
 
 		void Update( real deltaTime )
 		{ //{{{
+			m_nextVelocity[ 0 ] += m_nextAcceleration[ 0 ] * deltaTime;
+			m_nextVelocity[ 1 ] += m_nextAcceleration[ 1 ] * deltaTime;
+
+			m_nextPosition[ 0 ] += m_nextVelocity[ 0 ] * deltaTime;
+			m_nextPosition[ 1 ] += m_nextVelocity[ 1 ] * deltaTime;
+
+			m_nextAcceleration[ 0 ] = 0.0;
+			m_nextAcceleration[ 1 ] = 0.0;
+
 			m_Acceleration[ 0 ] = m_nextAcceleration[ 0 ];
 			m_Acceleration[ 1 ] = m_nextAcceleration[ 1 ];
 
@@ -61,25 +71,13 @@ class Particle
 			m_Position[ 0 ] = m_nextPosition[ 0 ];
 			m_Position[ 1 ] = m_nextPosition[ 1 ];
 
-			CurrentXVelocity = XVelocity + XAcceleration * deltaTime;
-			CurrentYVelocity = YVelocity + YAcceleration * deltaTime;
-
-			Speed = sqrt( XVelocity*XVelocity + YVelocity*YVelocity );
-
-			if( abs( (XPosition + XVelocity*deltaTime)- XPosition ) > 2
-					|| abs( (YPosition + YVelocity*deltaTime)- YPosition ) > 2 )
+			foreach( i; m_Entities )
 			{
-				Stdout.formatln( "----------------------------------------------------------------------" );
-				Stdout.formatln( " P  {}, {} || {}, {}",
-						XPosition, (XPosition + XVelocity*deltaTime),
-						YPosition, (YPosition + YVelocity*deltaTime) );
+				i.XPosition = XPosition;
+				i.YPosition = YPosition;
 			}
 
-			CurrentXPosition = XPosition + XVelocity * deltaTime;
-			CurrentYPosition = YPosition + YVelocity * deltaTime;
-
-			m_nextAcceleration[] = [ 0.0f, 0.0f ];
-			m_Acceleration[] = [ 0.0f, 0.0f ];
+			Speed = sqrt( XVelocity*XVelocity + YVelocity*YVelocity );
 		} //}}}
 
 		void AddForce( Force nForce )
@@ -225,7 +223,6 @@ class Particle
 			m_Velocity[ 1 ] = nYVelocity;
 			Speed = sqrt( nXVelocity*nXVelocity + nYVelocity*nYVelocity );
 		} //}}}
-
 
 		// {G,S}etter for next XVelocity
 		real NextXVelocity() //{{{
