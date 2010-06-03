@@ -191,13 +191,13 @@ int main( char[][] args )
 		m_Particles[ i ].CurrentPositions( 400 + 100*cos( i * 2 * PI / numObjects ),
 										   300 + 100*sin( i * 2 * PI / numObjects ) );
 
-		switch( initVel )
+		switch( initVel ) /// Determine appropriate init velocities
 		{ //{{{
-			case 0:
+			case 0: /// Nothing
 			{
 				break;
 			}
-			case 1:
+			case 1: /// Random
 			{
 				real ranX = rand.fraction() * 16.0 - 8.0;
 				real ranY = rand.fraction() * 16.0 - 8.0;
@@ -205,10 +205,10 @@ int main( char[][] args )
 				m_Particles[ i ].Velocities( ranX, ranY  );
 				break;
 			}
-			case 2:
+			case 2: /// Clockwise spiral
 			{
 			}
-			case 3:
+			case 3: /// Counter-clockwise spiral
 			{
 			}
 			default:
@@ -251,8 +251,8 @@ int main( char[][] args )
 			continue;
 		}
 
-		if( m_Game.isClicked )
-		{
+		if( m_Game.isClicked ) /// Print informortive messages
+		{ //{{{
 			foreach( uint num, i; m_Particles )
 			{
 				Stdout.formatln( "{}: ( {}, {} ) < {}, {} > [ {}, {} ]", num,
@@ -260,7 +260,11 @@ int main( char[][] args )
 					i.XVelocity, i.YVelocity,
 					i.XAcceleration, i.YAcceleration );
 			}
-		}
+			Stdout.formatln( "Sun: ( {}, {} ) < {}, {} > [ {}, {} ]",
+				m_Sun.XPosition, m_Sun.YPosition,
+				m_Sun.XVelocity, m_Sun.YVelocity,
+				m_Sun.XAcceleration, m_Sun.YAcceleration );
+		} //}}}
 
 		m_Game.ProcessInput();
 
@@ -271,7 +275,7 @@ int main( char[][] args )
 			m_Game.XPosition = m_Sun.XPosition - 400;
 			m_Game.YPosition = m_Sun.YPosition - 300;
 		}
-		else
+		else /// Use arrows to move camera
 		{ //{{{
 			if( m_Game.isPressed( Key[ "Right" ] ) )
 			{
