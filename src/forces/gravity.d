@@ -38,7 +38,7 @@ static this()
 class Gravity : Force
 {
 	public:
-		static Gravity Instance( real iG = 12.0f )
+		static Gravity Instance( real iG = 1.0f )
 		{ //{{{
 			if( m_Instance is null )
 			{
@@ -59,14 +59,13 @@ class Gravity : Force
 
 		override void Work( Particle A, Particle B, ref real deltaTime )
 		{ //{{{
-			//log.info( "Gravity has done work" );
 			real xDist = B.XPosition - A.XPosition;
 			real yDist = B.YPosition - A.YPosition;
 			real dist2 = (xDist * xDist) + (yDist * yDist);
 
 			if( dist2 > 0 )
 			{
-				real gravMass = GravityConstant * A.Mass * B.Mass;
+				real gravMass = GravityConstant * B.Mass;
 				real dist  = sqrt( dist2 );
 
 				A.XAcceleration = A.NextXAcceleration +
