@@ -22,6 +22,9 @@ module main;
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
 import tango.math.Math;
+import tango.math.random.Twister;
+
+import integer = tango.text.convert.Integer;
 
 import tango.io.Stdout;
 import game;
@@ -114,15 +117,22 @@ int main( char[][] args )
 {
 	Stdout.formatln( "Welcome to Universum Meum." );
 
+	log.info( "Creating random number generator" );
+	auto rand = new Twister();
+	rand.seed();
 
 	log.info( "Creating a Game" );
-	Game m_Game = Game.Instance( 800, 600, 32 );
+	Game m_Game = Game.Instance( 800, 600, 32 ); //{{{
 	m_Game.XPosition = 0;
 	m_Game.YPosition = 0;
-	m_Game.TickInterval = 1000 / 100;
 
-	const real rgConstant = 1024.0;
-	Stdout.formatln( "rgConstant: {} [so:{}]", rgConstant, real.sizeof );
+	log.info( "Setting framerate to 100" );
+	m_Game.TickInterval = 1000 / 100;
+	//}}}
+
+	/// Create Gravity/Repel forces
+	const real rgConstant = 1024.0; //{{{
+	Stdout.formatln( "\trgConstant: {} [so:{}]", rgConstant, real.sizeof );
 
 	log.info( "Creating a gravity force" );
 	Gravity m_Gravity = Gravity.Instance();
@@ -132,34 +142,91 @@ int main( char[][] args )
 	Repel m_Repel = Repel.Instance();
 	m_Repel.RepelConstant = rgConstant;
 
-	Stdout.formatln( "Grav: {}\t\tRep: {}", m_Gravity.GravityConstant, m_Repel.RepelConstant );
+	Stdout.formatln( "\tGrav: {}\t\tRep: {}", m_Gravity.GravityConstant, m_Repel.RepelConstant );
+	//}}}
 
-	log.info( "Now a particle system and some particles" );
-	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0f, 10000.0f );
+	log.info( "Now a particle system" );
+	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
-	log.info( "Creating a particle" );
-	Particle m_Particle;
+	/// Process ars
+	uint numObjects = 0; //{{{
+	uint initVel = 0;
+	if( args.length > 1 )
+	{
+		numObjects = integer.parse( args[ 1 ] );
+		numObjects %= 255;
+		if( numObjects < 1 )
+		{
+			numObjects = 1;
+		}
+		Stdout.formatln( "Creating {} point(s)", numObjects );
+		if( args.length > 2 )
+		{
+			initVel = integer.parse( args[ 2 ] );
+			if( initVel < 0 )
+			{
+				initVel = 0;
+			}
+			initVel %= 4;
+			Stdout.formatln( "initVel method set to {}", initVel );
+		}
+	} //}}}
 
-	log.info( "Now creating a point" );
-	Point m_Point;
-	m_Point = new Point( 200.0f, 150.0f, 10.0f, 1.0f, 0.0f, 0.0f );
+	log.info( "Creating particles/points" );
+	Particle[] m_Particles;
+	Point[] m_Points;
+	m_Particles.length = numObjects;
+	m_Points.length = numObjects;
 
-	log.info( "Adding the point to game" );
-	m_Game.AddEntity( m_Point );
+	/// Create particles
+	for( uint i = 0; i < numObjects; i++ ) //{{{
+	{
+		m_Points[ i ] = new Point( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
+		m_Game.AddEntity( m_Points[ i ] );
 
-	log.info( "Setting up each particle" );
-	m_Particle = new Particle();
-	m_Particle.AddEntity( m_Point );
-	m_Particle.Radius = 10.0f;
-	m_ParticleSystem.AddParticle( m_Particle );
+		m_Particles[ i ] = new Particle();
+		m_Particles[ i ].AddEntity( m_Points[ i ] );
+		m_Particles[ i ].Radius = 10.0;
 
+		m_Particles[ i ].CurrentPositions( 400 + 100*cos( i * 2 * PI / numObjects ),
+										   300 + 100*sin( i * 2 * PI / numObjects ) );
 
-	log.info( "Setting particle position based on entity position" );
-	m_Particle.CurrentPositions( 200.0f, 150.0f );
+		switch( initVel )
+		{ //{{{
+			case 0:
+			{
+				break;
+			}
+			case 1:
+			{
+				real ranX = rand.fraction() * 16.0 - 8.0;
+				real ranY = rand.fraction() * 16.0 - 8.0;
+				Stdout.formatln( "Seeded particle {} with < {}, {} >", i, ranX, ranY );
+				m_Particles[ i ].Velocities( ranX, ranY  );
+				break;
+			}
+			case 2:
+			{
+			}
+			case 3:
+			{
+			}
+			default:
+			{
+				break;
+			}
+		} //}}}
+
+		m_Particles[ i ].AddForce( m_Gravity );
+		m_Particles[ i ].AddForce( m_Repel );
+
+		m_ParticleSystem.AddParticle( m_Particles[ i ] );
+	} //}}}
 
 	log.info( "Setting up the sun" );
-	Point m_SunPoint = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f );
+	Point m_SunPoint = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
 	Particle m_Sun = new Particle();
+
 	m_Sun.AddEntity( m_SunPoint );
 	m_Sun.Positions( 400.0f, 300.0f );
 	m_Sun.Radius( 25.0f );
@@ -167,24 +234,17 @@ int main( char[][] args )
 	m_Game.AddEntity( m_SunPoint );
 	m_ParticleSystem.AddParticle( m_Sun );
 
-
-	log.info( "Adding gravity to particles" );
 	m_Sun.AddForce( m_Gravity );
-	m_Particle.AddForce( m_Gravity );
-
-	log.info( "Adding repel to particles" );
 	m_Sun.AddForce( m_Repel );
-	m_Particle.AddForce( m_Repel );
 
-	log.info( "Giving Mr. Particle and the Sun some velocity" );
-	m_Particle.CurrentVelocities( 0, -1 );
-	m_Particle.Velocities( 0, -1 );
+	log.info( "Giving the Sun some velocity" );
 	m_Sun.CurrentVelocities( -4, 0 );
 	m_Sun.Velocities( -4, 0 );
+	//}}}
 
 	log.info( "Entering main game loop" );
 	while( !m_Game.isDone )
-	{
+	{ //{{{
 		if( m_Game.isPressed( Key[ "Escape" ] ) )
 		{
 			m_Game.isDone = true;
@@ -193,23 +253,26 @@ int main( char[][] args )
 
 		if( m_Game.isClicked )
 		{
-			Stdout.formatln( "( {}, {} ) < {}, {} > [ {}, {} ]",
-				m_Particle.XPosition, m_Particle.YPosition,
-				m_Particle.XVelocity, m_Particle.YVelocity,
-				m_Particle.XAcceleration, m_Particle.YAcceleration );
+			foreach( uint num, i; m_Particles )
+			{
+				Stdout.formatln( "{}: ( {}, {} ) < {}, {} > [ {}, {} ]", num,
+					i.XPosition, i.YPosition,
+					i.XVelocity, i.YVelocity,
+					i.XAcceleration, i.YAcceleration );
+			}
 		}
 
 		m_Game.ProcessInput();
 
-		m_ParticleSystem.Work( .05 );
+		m_ParticleSystem.Work( .02 );
 
-		if( args.length > 1 )
+		if( args[ $-1 ] == "lock" )
 		{
 			m_Game.XPosition = m_Sun.XPosition - 400;
 			m_Game.YPosition = m_Sun.YPosition - 300;
 		}
 		else
-		{
+		{ //{{{
 			if( m_Game.isPressed( Key[ "Right" ] ) )
 			{
 				m_Game.XPosition = m_Game.XPosition + 5;
@@ -224,11 +287,11 @@ int main( char[][] args )
 			{
 				m_Game.YPosition = m_Game.YPosition + 5;
 			}
-		}
+		} //}}}
 
 		m_Game.Draw();
 		m_Game.WaitFor();
-	}
+	} //}}}
 
 	Stdout.formatln( "Thanks for playing!" );
 	return 0;

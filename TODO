@@ -1,3 +1,9 @@
+Jun 03, 2010
+
+Implement scroll wheel support by adding in the viw width/height in addition to the actual window
+width and height. This way, you can get the scroll wheel events (SDL_BUTTON_WHEELDOWN and
+SDL_BUTTON_WHEELUP) as a means of zooming in and out by updating the view width/height.
+
 2/5/10
 
 Update the TODO, really important :D

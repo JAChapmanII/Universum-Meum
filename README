@@ -29,3 +29,13 @@ After the program is compiled, simply run:
 	./bin/Universum-Meum
 from the same directory from the Universum-Meum directory.
 
+To startup with more than the default number of particles, simply append tho number of particles
+you want to see. To start up with 5 particles use:
+	./bin/Universum-Meum 5
+
+To make each particle start with a random velocity, add a '1' after the number of particles:
+	./bin/Universum-Meum 5 1
+
+To make the screen lock onto the "Sun" make the last argument be "lock":
+	./bin/Universum-Meum 4 lock
+
