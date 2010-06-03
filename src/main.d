@@ -230,16 +230,16 @@ int main( char[][] args )
 	m_Sun.AddEntity( m_SunPoint );
 	m_Sun.Positions( 400.0f, 300.0f );
 	m_Sun.Radius( 25.0f );
-	m_Sun.Mass( 30.0f );
+	m_Sun.Mass( 62.5f );
 	m_Game.AddEntity( m_SunPoint );
 	m_ParticleSystem.AddParticle( m_Sun );
 
 	m_Sun.AddForce( m_Gravity );
 	m_Sun.AddForce( m_Repel );
 
-	log.info( "Giving the Sun some velocity" );
-	m_Sun.CurrentVelocities( -4, 0 );
-	m_Sun.Velocities( -4, 0 );
+	//log.info( "Giving the Sun some velocity" );
+	//m_Sun.CurrentVelocities( -4, 0 );
+	//m_Sun.Velocities( -4, 0 );
 	//}}}
 
 	log.info( "Entering main game loop" );
