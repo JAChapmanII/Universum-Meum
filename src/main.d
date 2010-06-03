@@ -117,9 +117,9 @@ int main( char[][] args )
 
 	log.info( "Creating a Game" );
 	Game m_Game = Game.Instance( 800, 600, 32 );
-	m_Game.XPosition = -400;
-	m_Game.YPosition = -300;
-	m_Game.TickInterval = 1000 / 200;
+	m_Game.XPosition = 0;
+	m_Game.YPosition = 0;
+	m_Game.TickInterval = 1000 / 100;
 
 	const real rgConstant = 1024.0;
 
