@@ -77,31 +77,19 @@ class Repel : Force
 				A.YAcceleration = A.NextYAcceleration -
 					( repMass ) * ( unitY ) / ( dist2 );
 
-				//A.XVelocity = A.XVelocity - unitX * B.Mass;
-				//A.YVelocity = A.YVelocity - unitY * B.Mass;
-
 				if( dist == (A.Radius+B.Radius/2) )
 				{
 					real theta = atan2( yDist, xDist );
-					real mag1 = A.Speed;
-					real mag2 = B.Speed;
 					real dir1 = atan2( A.YVelocity, A.XVelocity );
 					real dir2 = atan2( B.YVelocity, B.XVelocity );
-					real nXV1 = mag1*cos( dir1 - theta );
-					real nYV1 = mag1*sin( dir1 - theta );
-					real nXV2 = mag2*cos( dir2 - theta );
-					real nYV2 = mag2*sin( dir1 - theta );
-					real fXV1 = ((A.Mass-B.Mass)*nXV1 + (B.Mass+B.Mass)*nXV2)/(A.Mass+B.Mass);
-					real fXV2 = ((A.Mass+A.Mass)*nXV1 + (B.Mass-A.Mass)*nXV2)/(A.Mass+B.Mass);
-					real fYV1 = nYV1;
-					real fYV2 = nYV2;
+					real nYV1 = A.Speed * sin( dir1 - theta );
+					real fXV1 = ( ( A.Mass - B.Mass ) * ( A.Speed * cos( dir1 - theta ) ) + 2 *
+								B.Mass * ( B.Speed * cos( dir2 - theta ) ) ) / ( A.Mass + B.Mass );
 
-					A.XVelocity = cos(theta)*fXV1 + cos(theta+PI_2)*fYV1;
-					A.YVelocity = sin(theta)*fXV1 + sin(theta+PI_2)*fYV1;
+					real nYV2 = B.Speed * sin( dir1 - theta );
+					A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
+					A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
 				}
-
-				//A.Positions( A.XPosition - sectLength * unitX,
-				//			 A.YPosition - sectLength * unitY );
 			}
 		} //}}}
 
