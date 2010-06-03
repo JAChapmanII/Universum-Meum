@@ -29,21 +29,21 @@ import particle;
 class ParticleSystem
 {
 	public:
-		this( float iStep = 1.0f, float iMaxSteps = 500.0f )
+		this( real iStep = 1.0f, real iMaxSteps = 500.0f )
 		{
 			Step = iStep;
 			MaxSteps = iMaxSteps;
 		}
 
-		void Work( float deltaTime = 1.0f )
+		void Work( real deltaTime = 1.0f )
 		{
-			float timeLeft = deltaTime;
+			real timeLeft = deltaTime;
 			while( timeLeft > 0.0f )
 			{
-				float currentMax = maxSpeed;
+				real currentMax = maxSpeed;
 				if( ( currentMax * timeLeft ) > Step )
 				{
-					float currentDelta = (Step / currentMax);
+					real currentDelta = (Step / currentMax);
 					if (currentDelta < (deltaTime / MaxSteps))
 					{
 						currentDelta = (deltaTime / MaxSteps);
@@ -65,7 +65,7 @@ class ParticleSystem
 			}
 		}
 
-		void WorkAll( ref float deltaTime )
+		void WorkAll( ref real deltaTime )
 		{ //{{{
 			foreach( i; m_Particles )
 			{
@@ -76,7 +76,7 @@ class ParticleSystem
 			}
 		} //}}}
 
-		void UpdateAll( ref float deltaTime )
+		void UpdateAll( ref real deltaTime )
 		{ //{{{
 			foreach( i; m_Particles )
 			{
@@ -84,10 +84,10 @@ class ParticleSystem
 			}
 		} //}}}
 
-		float maxSpeed()
+		real maxSpeed()
 		{ //{{{
-			float max = 0.0f;
-			float current = 0.0f;
+			real max = 0.0f;
+			real current = 0.0f;
 			foreach( i; m_Particles )
 			{
 				current = i.Speed;
@@ -99,10 +99,10 @@ class ParticleSystem
 			return max;
 		} //}}}
 
-		float maxAcceleration()
+		real maxAcceleration()
 		{ //{{{
-			float max = 0.0f;
-			float current = 0.0f;
+			real max = 0.0f;
+			real current = 0.0f;
 			foreach( i; m_Particles )
 			{
 				current = sqrt( i.XAcceleration*i.XAcceleration + i.YAcceleration*i.YAcceleration );
@@ -115,24 +115,24 @@ class ParticleSystem
 		} //}}}
 
 		// {G,S}etter for m_Step
-		void Step( float nStep ) //{{{
+		void Step( real nStep ) //{{{
 		{
 			m_Step = nStep;
 		}
-		float Step()
+		real Step()
 		{
 			return m_Step;
 		} //}}}
 
 		// {G,S}etter for m_MaxSteps
-		void MaxSteps( float nMax ) //{{{
+		void MaxSteps( real nMax ) //{{{
 		{
 			if( (1.0f / Step) > (1.0 / nMax) )
 			{
 				m_MaxSteps = nMax;
 			}
 		}
-		float MaxSteps()
+		real MaxSteps()
 		{
 			return m_MaxSteps;
 		} //}}}
@@ -165,7 +165,7 @@ class ParticleSystem
 
 
 	protected:
-		float abs( float a )
+		real abs( real a )
 		{
 			if( a < 0 )
 			{
@@ -174,8 +174,8 @@ class ParticleSystem
 			return a;
 		}
 
-		float m_Step;
-		float m_MaxSteps;
+		real m_Step;
+		real m_MaxSteps;
 
 		Particle[] m_Particles;
 		Force[] m_Forces;
