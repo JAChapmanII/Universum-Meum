@@ -57,15 +57,16 @@ class Repel : Force
 
 		alias Instance opCall;
 
-		override void Work( Particle A, Particle B, ref float deltaTime )
+		override void Work( Particle A, Particle B, ref real deltaTime )
 		{
-			float distX = B.XPosition - A.XPosition;
-			float distY = B.YPosition - A.YPosition;
-			float dist =  sqrt( (distX*distX) + (distY*distY) );
+			real distX = B.XPosition - A.XPosition;
+			real distY = B.YPosition - A.YPosition;
+			real dist =  sqrt( (distX*distX) + (distY*distY) );
 			if( (dist <= (A.Radius + B.Radius)) && (dist > 0.0f) )
 			{
-				A.XVelocity = 0.0f;
-				A.YVelocity = 0.0f;
+				A.Positions( A.XPosition - distX / 1.9, A.YPosition - distY / 1.9 );
+				A.Velocities( 0.0f, 0.0f );
+				A.Accelerations( 0.0f, 0.0f );
 			}
 
 

@@ -38,7 +38,7 @@ static this()
 class Gravity : Force
 {
 	public:
-		static Gravity Instance( float iG = 12.0f )
+		static Gravity Instance( real iG = 12.0f )
 		{ //{{{
 			if( m_Instance is null )
 			{
@@ -57,14 +57,44 @@ class Gravity : Force
 
 		alias Instance opCall;
 
-		override void Work( Particle A, Particle B, ref float deltaTime )
+		override void Work( Particle A, Particle B, ref real deltaTime )
 		{ //{{{
 			//log.info( "Gravity has done work" );
+			if( (A.XPosition != B.XPosition) && (A.YPosition != B.YPosition) )
+			{
+				real xDist = B.XPosition - A.XPosition;
+				real yDist = B.YPosition - B.YPosition;
+				real dist2 = xDist*xDist + yDist*yDist;
+				real dist  = sqrt( dist2 );
+				A.XAcceleration = A.NextXAcceleration + deltaTime *
+					( GravityConstant * A.Mass * B.Mass )*(xDist/dist) /
+					( dist2 );
+				A.YAcceleration = A.NextYAcceleration + deltaTime *
+					( GravityConstant * A.Mass * B.Mass )*(yDist/dist) /
+					( dist2 );
+				/*
+				A.XAcceleration = A.NextXAcceleration + deltaTime * GravityConstant * A.Mass*B.Mass *
+					(B.XPosition - A.XPosition)/
+					(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
+					(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition)) *
+					sqrt(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
+						(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition))));
+
+				A.YAcceleration = A.NextYAcceleration + deltaTime * GravityConstant * A.Mass*B.Mass *
+					(B.YPosition - A.YPosition)/
+					(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
+					(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition)) *
+					sqrt(((B.XPosition-A.XPosition)*(B.XPosition-A.XPosition) +
+						(B.YPosition-A.YPosition)*(B.YPosition-A.YPosition))));
+						*/
+			}
+
+			/*
 			float distX = B.XPosition - A.XPosition;
 			float distY = B.YPosition - A.YPosition;
 			float dist2 = distX*distX + distY*distY;
 			float dist = sqrt( dist2 );
-			if( dist > (A.Radius+B.Radius+1.0) )
+			if( dist > (A.Radius+B.Radius)/2.0 )
 			{
 				float force = ( GravityConstant * A.Mass * B.Mass ) / ( dist2 );
 				float delX = ( distX / dist ) * force * deltaTime;
@@ -81,27 +111,28 @@ class Gravity : Force
 				A.XAcceleration = nXA;
 				A.YAcceleration = nYA;
 			}
+			*/
 		} //}}}
 
 		/// {G,S}etter m_GravityConstant
-		float GravityConstant() //{{{
+		real GravityConstant() //{{{
 		{
 			return m_GravityConstant;
 		}
-		void GravityConstant( float nG )
+		void GravityConstant( real nG )
 		{
 			m_GravityConstant = nG;
 		} //}}}
 
 	protected:
-		this( float iG )
+		this( real iG )
 		{
 			m_GravityConstant = iG;
 		}
 
 		static Gravity m_Instance;
 
-		float m_GravityConstant;
+		real m_GravityConstant;
 
 	private:
 
