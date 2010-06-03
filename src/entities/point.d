@@ -26,7 +26,7 @@ import entity;
 class Point : Entity
 {
 	public:
-		this( float iX, float iY )
+		this( real iX, real iY )
 		{ //{{{
 			XPosition = iX;
 			YPosition = iY;
@@ -34,7 +34,7 @@ class Point : Entity
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( float iX, float iY, float iRadius )
+		this( real iX, real iY, real iRadius )
 		{ //{{{
 			XPosition = iX;
 			YPosition = iY;
@@ -42,7 +42,7 @@ class Point : Entity
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( float iX, float iY, float iRadius, float iRed, float iGreen, float iBlue )
+		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue )
 		{ //{{{
 			XPosition = iX;
 			YPosition = iY;
@@ -50,7 +50,7 @@ class Point : Entity
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		this( float iX, float iY, float iRadius, float iRed, float iGreen, float iBlue, float iAlpha )
+		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue, real iAlpha )
 		{ //{{{
 			XPosition = iX;
 			YPosition = iY;
@@ -68,16 +68,16 @@ class Point : Entity
 		} //}}}
 
 		// {G,S}etter for m_Radius
-		float Radius() //{{{
+		real Radius() //{{{
 		{
 			return m_Radius;
 		}
-		void Radius( float nRadius )
+		void Radius( real nRadius )
 		{
 			m_Radius = nRadius;
 		} //}}}
 
-		void Color( float nRed, float nGreen, float nBlue, float nAlpha )
+		void Color( real nRed, real nGreen, real nBlue, real nAlpha )
 		{ //{{{
 			m_Color[ 0 ] = nRed;
 			m_Color[ 1 ] = nGreen;
@@ -85,7 +85,7 @@ class Point : Entity
 			m_Color[ 3 ] = nAlpha;
 		} //}}}
 
-		void Color( float nRed, float nGreen, float nBlue )
+		void Color( real nRed, real nGreen, real nBlue )
 		{ //{{{
 			m_Color[ 0 ] = nRed;
 			m_Color[ 1 ] = nGreen;
@@ -93,48 +93,48 @@ class Point : Entity
 		} //}}}
 
 		// {G,S} for m_Color[ 0 ]
-		float Red() //{{{
+		real Red() //{{{
 		{
 			return m_Color[ 0 ];
 		}
-		void Red( float nRed )
+		void Red( real nRed )
 		{
 			m_Color[ 0 ] = nRed;
 		} //}}}
 
 		// {G,S} for m_Color[ 1 ]
-		float Green() //{{{
+		real Green() //{{{
 		{
 			return m_Color[ 1 ];
 		}
-		void Green( float nGreen )
+		void Green( real nGreen )
 		{
 			m_Color[ 1 ] = nGreen;
 		} //}}}
 
 		// {G,S} for m_Color[ 2 ]
-		float Blue() //{{{
+		real Blue() //{{{
 		{
 			return m_Color[ 2 ];
 		}
-		void Blue( float nBlue )
+		void Blue( real nBlue )
 		{
 			m_Color[ 2 ] = nBlue;
 		} //}}}
 
 		// {G,S} for m_Color[ 3 ]
-		float Alpha() //{{{
+		real Alpha() //{{{
 		{
 			return m_Color[ 3 ];
 		}
-		void Alpha( float nAlpha )
+		void Alpha( real nAlpha )
 		{
 			m_Color[ 3 ] = nAlpha;
 		} //}}}
 
 	protected:
-		float m_Radius;
-		float[ 4 ] m_Color;
+		real m_Radius;
+		real[ 4 ] m_Color;
 
 	private:
 
