@@ -110,7 +110,7 @@ static this()
 	Key[ "Last" ] = 323; Key.rehash; //}}}
 } //}}}
 
-int main( char[][] )
+int main( char[][] args )
 {
 	Stdout.formatln( "Welcome to Universum Meum." );
 
@@ -119,13 +119,19 @@ int main( char[][] )
 	Game m_Game = Game.Instance( 800, 600, 32 );
 	m_Game.XPosition = -400;
 	m_Game.YPosition = -300;
-	m_Game.TickInterval = 1000 / 10;
+	m_Game.TickInterval = 1000 / 200;
+
+	const real rgConstant = 1024.0;
 
 	log.info( "Creating a gravity force" );
-	Gravity m_Gravity = Gravity.Instance( 256.0f );
+	Gravity m_Gravity = Gravity.Instance();
+	m_Gravity.GravityConstant = rgConstant;
 
 	log.info( "Creating a repel force" );
 	Repel m_Repel = Repel.Instance();
+	m_Repel.RepelConstant = rgConstant;
+
+	Stdout.formatln( "Grav: {}\t\tRep: {}", m_Gravity.GravityConstant, m_Repel.RepelConstant );
 
 	log.info( "Now a particle system and some particles" );
 	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0f, 10000.0f );
@@ -144,12 +150,8 @@ int main( char[][] )
 	m_Particle = new Particle();
 	m_Particle.AddEntity( m_Point );
 	m_Particle.Radius = 10.0f;
-	m_Particle.AddForce( m_Gravity );
 	m_ParticleSystem.AddParticle( m_Particle );
 
-	log.info( "Giving Mr. Particle some velocity" );
-	m_Particle.CurrentVelocities( 4, -1 );
-	m_Particle.Velocities( 4, -1 );
 
 	log.info( "Setting particle position based on entity position" );
 	m_Particle.CurrentPositions( 200.0f, 150.0f );
@@ -161,10 +163,23 @@ int main( char[][] )
 	m_Sun.Positions( 400.0f, 300.0f );
 	m_Sun.Radius( 25.0f );
 	m_Sun.Mass( 30.0f );
-	m_Sun.AddForce( m_Gravity );
-
 	m_Game.AddEntity( m_SunPoint );
 	m_ParticleSystem.AddParticle( m_Sun );
+
+
+	log.info( "Adding gravity to particles" );
+	m_Sun.AddForce( m_Gravity );
+	m_Particle.AddForce( m_Gravity );
+
+	log.info( "Adding repel to particles" );
+	m_Sun.AddForce( m_Repel );
+	m_Particle.AddForce( m_Repel );
+
+	log.info( "Giving Mr. Particle and the Sun some velocity" );
+	m_Particle.CurrentVelocities( 0, -1 );
+	m_Particle.Velocities( 0, -1 );
+	m_Sun.CurrentVelocities( -4, 0 );
+	m_Sun.Velocities( -4, 0 );
 
 	log.info( "Entering main game loop" );
 	while( !m_Game.isDone )
@@ -185,40 +200,30 @@ int main( char[][] )
 
 		m_Game.ProcessInput();
 
-		/*
-		if( ( !m_Game.isActive ) || ( m_Game.isPressed( Key[ "Space" ] ) ) )
-		{
-			m_Particle.CurrentPositions( 200.0f, 150.0f );
+		m_ParticleSystem.Work( .05 );
 
-			m_Particle.CurrentVelocities( 0.0f, 0.0f );
-			m_Particle.CurrentAccelerations( 0.0f, 0.0f );
+		if( args.length > 1 )
+		{
+			m_Game.XPosition = m_Sun.XPosition - 400;
+			m_Game.YPosition = m_Sun.YPosition - 300;
 		}
-		*/
-
-		m_ParticleSystem.Work( .1 );
-
-		/*
-		m_Sun.CurrentPositions( 400.0f, 300.0f );
-		m_Sun.CurrentVelocities( 0.0f, 0.0f );
-		*/
-		//m_Game.XPosition = m_Sun.XPosition - 400;
-		//m_Game.YPosition = m_Sun.YPosition - 300;
-		if( m_Game.isPressed( Key[ "Right" ] ) )
+		else
 		{
-			m_Game.XPosition = m_Game.XPosition + 5;
-		} else if( m_Game.isPressed( Key[ "Left" ] ) )
-		{
-			m_Game.XPosition = m_Game.XPosition - 5;
+			if( m_Game.isPressed( Key[ "Right" ] ) )
+			{
+				m_Game.XPosition = m_Game.XPosition + 5;
+			} else if( m_Game.isPressed( Key[ "Left" ] ) )
+			{
+				m_Game.XPosition = m_Game.XPosition - 5;
+			}
+			if( m_Game.isPressed( Key[ "Up" ] ) )
+			{
+				m_Game.YPosition = m_Game.YPosition - 5;
+			} else if( m_Game.isPressed( Key[ "Down" ] ) )
+			{
+				m_Game.YPosition = m_Game.YPosition + 5;
+			}
 		}
-
-		if( m_Game.isPressed( Key[ "Up" ] ) )
-		{
-			m_Game.YPosition = m_Game.YPosition - 5;
-		} else if( m_Game.isPressed( Key[ "Down" ] ) )
-		{
-			m_Game.YPosition = m_Game.YPosition + 5;
-		}
-
 
 		m_Game.Draw();
 		m_Game.WaitFor();
