@@ -37,9 +37,6 @@ class ParticleSystem
 
 		void Work( real deltaTime = 1.0f )
 		{
-			WorkAll( deltaTime );
-			UpdateAll( deltaTime );
-			/*
 			real timeLeft = deltaTime;
 			while( timeLeft > 0.0f )
 			{
@@ -66,7 +63,6 @@ class ParticleSystem
 					timeLeft = 0.0f;
 				}
 			}
-			*/
 		}
 
 		void WorkAll( ref real deltaTime )

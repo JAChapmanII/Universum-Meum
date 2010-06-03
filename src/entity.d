@@ -55,7 +55,7 @@ class Entity
 		{
 		}
 
-		float[ 2 ] m_Position;
+		real[ 2 ] m_Position;
 
 	private:
 

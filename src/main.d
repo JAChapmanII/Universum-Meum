@@ -117,7 +117,9 @@ int main( char[][] )
 
 	log.info( "Creating a Game" );
 	Game m_Game = Game.Instance( 800, 600, 32 );
-	m_Game.TickInterval = 1000 / 50;
+	m_Game.XPosition = -400;
+	m_Game.YPosition = -300;
+	m_Game.TickInterval = 1000 / 10;
 
 	log.info( "Creating a gravity force" );
 	Gravity m_Gravity = Gravity.Instance( 256.0f );
@@ -195,8 +197,28 @@ int main( char[][] )
 
 		m_ParticleSystem.Work( .1 );
 
+		/*
 		m_Sun.CurrentPositions( 400.0f, 300.0f );
 		m_Sun.CurrentVelocities( 0.0f, 0.0f );
+		*/
+		//m_Game.XPosition = m_Sun.XPosition - 400;
+		//m_Game.YPosition = m_Sun.YPosition - 300;
+		if( m_Game.isPressed( Key[ "Right" ] ) )
+		{
+			m_Game.XPosition = m_Game.XPosition + 5;
+		} else if( m_Game.isPressed( Key[ "Left" ] ) )
+		{
+			m_Game.XPosition = m_Game.XPosition - 5;
+		}
+
+		if( m_Game.isPressed( Key[ "Up" ] ) )
+		{
+			m_Game.YPosition = m_Game.YPosition - 5;
+		} else if( m_Game.isPressed( Key[ "Down" ] ) )
+		{
+			m_Game.YPosition = m_Game.YPosition + 5;
+		}
+
 
 		m_Game.Draw();
 		m_Game.WaitFor();

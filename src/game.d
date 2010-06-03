@@ -43,7 +43,7 @@ static this()
 
 static char[] PROGRAM_NAME = "Universum Meum";
 
-public class Game
+public class Game : Entity
 {
 	public:
 		static Game Instance( uint iWidth, uint iHeight, uint iBPP )
@@ -101,8 +101,10 @@ public class Game
 			unloadModules();
 		} //}}}
 
-		void Draw()
+		override void Draw()
 		{ //{{{
+			glPushMatrix();
+			glTranslatef( -XPosition, -YPosition, 0 );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			foreach( i; m_Entities )
 			{
@@ -115,6 +117,7 @@ public class Game
 					i.Draw();
 				}
 			}
+			glPopMatrix();
 			SDL_GL_SwapBuffers();
 		} //}}}
 

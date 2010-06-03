@@ -64,15 +64,15 @@ class Gravity : Force
 			real yDist = B.YPosition - A.YPosition;
 			real dist2 = (xDist * xDist) + (yDist * yDist);
 
-			if( dist2 > (A.Radius+B.Radius)*2.0 )
+			if( dist2 > 0 )
 			{
 				real gravMass = GravityConstant * A.Mass * B.Mass;
 				real dist  = sqrt( dist2 );
 
-				A.XAcceleration = A.NextXAcceleration + deltaTime *
+				A.XAcceleration = A.NextXAcceleration +
 					( gravMass )*(xDist/dist) / ( dist2 );
 
-				A.YAcceleration = A.NextYAcceleration + deltaTime *
+				A.YAcceleration = A.NextYAcceleration +
 					( gravMass )*(yDist/dist) / ( dist2 );
 			}
 		} //}}}
