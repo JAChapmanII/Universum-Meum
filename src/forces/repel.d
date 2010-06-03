@@ -38,13 +38,13 @@ static this()
 class Repel : Force
 {
 	public:
-		static Repel Instance()
+		static Repel Instance( real iR = 1.0 )
 		{ //{{{
 			if( m_Instance is null )
 			{
 				try
 				{
-					m_Instance = new Repel();
+					m_Instance = new Repel( iR );
 				}
 				catch( Exception e )
 				{
@@ -58,91 +58,52 @@ class Repel : Force
 		alias Instance opCall;
 
 		override void Work( Particle A, Particle B, ref real deltaTime )
+		{ //{{{
+			real xDist = B.XPosition - A.XPosition;
+			real yDist = B.YPosition - A.YPosition;
+			real dist2 = (xDist * xDist) + (yDist * yDist);
+			real dist  = sqrt( dist2 );
+
+			if( ( dist < (A.Radius + B.Radius)/2 ) && ( dist2 > 0 ) )
+			{
+				real repMass = RepelConstant * B.Mass;
+				real sectLength = (A.Radius+B.Radius/2) - dist;
+				real unitX = xDist / dist;
+				real unitY = yDist / dist;
+
+				A.XAcceleration = A.NextXAcceleration -
+					( repMass ) * ( unitX ) / ( dist2 );
+
+				A.YAcceleration = A.NextYAcceleration -
+					( repMass ) * ( unitY ) / ( dist2 );
+
+				A.XVelocity = A.XVelocity - unitX * B.Mass;
+				A.YVelocity = A.YVelocity - unitY * B.Mass;
+
+				A.Positions( A.XPosition - sectLength * unitX,
+							 A.YPosition - sectLength * unitY );
+			}
+		} //}}}
+
+		/// {G,S}etter m_RepelConstant
+		real RepelConstant() //{{{
 		{
-			real distX = B.XPosition - A.XPosition;
-			real distY = B.YPosition - A.YPosition;
-			real dist =  sqrt( (distX*distX) + (distY*distY) );
-			if( (dist <= (A.Radius + B.Radius)) && (dist > 0.0f) )
-			{
-				A.Positions( A.XPosition - distX / 1.9, A.YPosition - distY / 1.9 );
-				A.Velocities( 0.0f, 0.0f );
-				A.Accelerations( 0.0f, 0.0f );
-			}
-
-
-			/++
-			//log.info( "Repel has done work" );
-			float distX = B.XPosition - A.XPosition;
-			float distY = B.YPosition - A.YPosition;
-			float dist =  sqrt( (distX*distX) + (distY*distY) );
-			if( (dist <= (A.Radius + B.Radius)) && (dist > 0.0f) )
-			{
-
-				/*
-				void collision2Ds(double m1, double m2, double R,
-						double x1, double y1, double x2, double y2,
-						double& vx1, double& vy1, double& vx2, double& vy2)
-						*/
-
-				//double  m21, dvx2, a, x21, y21, vx21, vy21, fy21, sign, vx_cm, vy_cm;
-
-				float m21  = B.Mass / A.Mass;
-				float x21  = B.XPosition - A.XPosition;
-				float y21  = B.YPosition - A.YPosition;
-				float vx21 = B.XVelocity - A.XVelocity;
-				float vy21 = B.YVelocity - A.YVelocity;
-
-				float sumMass = A.Mass + B.Mass;
-
-				float vx_cm = ( A.Mass*A.XVelocity + B.Mass*B.XVelocity ) / sumMass;
-				float vy_cm = ( A.Mass*A.YVelocity + B.Mass*B.YVelocity ) / sumMass;
-
-				// Return old velocities if balls are not approaching
-				/*
-				if ( (vx21*x21 + vy21*y21) >= 0)
-				{
-					return;
-				}
-				*/
-
-				// *** I have inserted the following statements to avoid a zero divide;
-				//(for single precision calculations, 1.0E-12 should be replaced by a larger value)
-				float fy21 = 1.0E-12 * abs( y21 );
-				float sign;
-				if( abs( x21 ) < fy21 )
-				{
-					if( x21 < 0 )
-					{
-						sign = -1;
-					}
-					else
-					{
-						sign = 1;
-					}
-					x21 = fy21 * sign;
-				}
-
-				// Update Velocities ***
-				float a = y21 / x21;
-				float dvx2 = -2 * ( vx21 + a * vy21 ) / ( ( 1 + a*a ) * ( 1 + m21 ) );
-				//vx2=vx2+dvx2;
-				//vy2=vy2+a*dvx2;
-				A.XVelocity = A.XVelocity - (m21*dvx2)*0.001 * deltaTime;
-				A.YVelocity = A.YVelocity - (a*m21*dvx2)*0.001 * deltaTime;
-
-				// Velocity correction for inelastic collisions
-				//A.XVelocity = (A.XVelocity - vx_cm ) * 0.80 + vx_cm;
-				//A.YVelocity = (A.YVelocity - vy_cm ) * 0.80 + vy_cm;
-			}
-			+/
+			return m_RepelConstant;
 		}
+		void RepelConstant( real nR )
+		{
+			m_RepelConstant = nR;
+		} //}}}
 
 	protected:
-		this()
+		this( real iR )
 		{
+			m_RepelConstant = iR;
 		}
 
 		static Repel m_Instance;
+
+		real m_RepelConstant;
 
 	private:
 
