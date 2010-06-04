@@ -1,5 +1,12 @@
 Jun 03, 2010
 
+Finish up what I started on dynamic particle creation, mainly figure out that damn algorithm for
+mapping click X/Y to actual X/Y.
+
+Split off repel, gravity, and point to be in a different project dir, just like the end equivalent
+should work. Create a new program/new code to take the files, parse them as necessary and then
+generate new output files/binaries based on the information contained within.
+
 Implement scroll wheel support by adding in the viw width/height in addition to the actual window
 width and height. This way, you can get the scroll wheel events (SDL_BUTTON_WHEELDOWN and
 SDL_BUTTON_WHEELUP) as a means of zooming in and out by updating the view width/height.
@@ -53,3 +60,4 @@ force.d:
 		to allow easy duplication of wanted effect
 	- Make these have a virtual "work" then?
 
+# vim: textwidth=100: fo+=tc:

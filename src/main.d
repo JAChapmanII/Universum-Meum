@@ -34,6 +34,8 @@ import entities.point;
 import forces.gravity;
 import forces.repel;
 
+import derelict.sdl.sdl;
+
 // Set up the logger, and the Key associative array
 Logger log; //{{{
 uint[ char[] ] Key;
@@ -154,7 +156,7 @@ int main( char[][] args )
 	if( args.length > 1 )
 	{
 		numObjects = integer.parse( args[ 1 ] );
-		numObjects %= 255;
+		numObjects %= 24;
 		if( numObjects < 1 )
 		{
 			numObjects = 1;
@@ -242,6 +244,7 @@ int main( char[][] args )
 	//m_Sun.Velocities( -4, 0 );
 	//}}}
 
+	uint lastSpawn = 0;
 	log.info( "Entering main game loop" );
 	while( !m_Game.isDone )
 	{ //{{{
@@ -266,14 +269,97 @@ int main( char[][] args )
 				m_Sun.XAcceleration, m_Sun.YAcceleration );
 		} //}}}
 
+		/// Create new particles dynamically
+		if( ( m_Game.isClicked( SDL_BUTTON_RIGHT ) ) && ( m_Particles.length < 24 ) )
+		{ //{{{
+			if( m_Game.ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
+			{
+				lastSpawn = m_Game.ClickCreateTime( SDL_BUTTON_RIGHT );
+				log.info( "Created new particle based on RMB press" );
+				uint pNum = m_Particles.length;
+				Stdout.formatln( "Number {}!", pNum );
+				m_Particles.length = pNum + 1;
+				m_Points.length = pNum + 1;
+
+				m_Points[ pNum ] = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+				m_Game.AddEntity( m_Points[ pNum ] );
+
+				m_Particles[ pNum ] = new Particle();
+				m_Particles[ pNum ].AddEntity( m_Points[ pNum ] );
+				m_Particles[ pNum ].Radius = 10.0;
+
+				// TODO TODO Oh god, why...
+				real xPos = (m_Game.ClickX( SDL_BUTTON_RIGHT ) / m_Game.Width) * m_Game.ViewWidth -
+					m_Game.XPosition;
+				real yPos = m_Game.ViewHeight -
+					(m_Game.ClickY( SDL_BUTTON_RIGHT ) / m_Game.Height) * m_Game.ViewHeight +
+					m_Game.YPosition;
+				Stdout.formatln( "Created at ( {}, {} )", xPos, yPos );
+
+				m_Particles[ pNum ].CurrentPositions( xPos, yPos );
+
+				switch( initVel ) /// Determine appropriate init velocities
+				{ //{{{
+					case 0: /// Nothing
+					{
+						break;
+					}
+					case 1: /// Random
+					{
+						real ranX = rand.fraction() * 16.0 - 8.0;
+						real ranY = rand.fraction() * 16.0 - 8.0;
+						Stdout.formatln( "New particle with < {}, {} >", ranX, ranY );
+						m_Particles[ pNum ].Velocities( ranX, ranY  );
+						break;
+					}
+					case 2: /// Clockwise spiral
+					{
+					}
+					case 3: /// Counter-clockwise spiral
+					{
+					}
+					default:
+					{
+						break;
+					}
+				} //}}}
+
+				m_Particles[ pNum ].AddForce( m_Gravity );
+				m_Particles[ pNum ].AddForce( m_Repel );
+
+				m_ParticleSystem.AddParticle( m_Particles[ pNum ] );
+			}
+		} //}}}
+
+		if( m_Game.isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
+		{ //{{{
+			Stdout.formatln( "Size changed" );
+			m_Game.ResizeViewport( m_Game.ViewWidth - 25, m_Game.ViewHeight - 25 );
+			foreach( i; m_Points )
+			{
+				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
+			}
+			m_SunPoint.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
+		} //}}}
+		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
+		{ //{{{
+			Stdout.formatln( "Size changed" );
+			m_Game.ResizeViewport( m_Game.ViewWidth + 25, m_Game.ViewHeight + 25 );
+			foreach( i; m_Points )
+			{
+				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
+			}
+			m_SunPoint.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
+		} //}}}
+
 		m_Game.ProcessInput();
 
 		m_ParticleSystem.Work( .02 );
 
 		if( args[ $-1 ] == "lock" )
 		{
-			m_Game.XPosition = m_Sun.XPosition - 400;
-			m_Game.YPosition = m_Sun.YPosition - 300;
+			m_Game.XPosition = m_Sun.XPosition - m_Game.ViewWidth / 2;
+			m_Game.YPosition = m_Sun.YPosition - m_Game.ViewHeight / 2;
 		}
 		else /// Use arrows to move camera
 		{ //{{{
@@ -286,10 +372,10 @@ int main( char[][] args )
 			}
 			if( m_Game.isPressed( Key[ "Up" ] ) )
 			{
-				m_Game.YPosition = m_Game.YPosition - 5;
+				m_Game.YPosition = m_Game.YPosition + 5;
 			} else if( m_Game.isPressed( Key[ "Down" ] ) )
 			{
-				m_Game.YPosition = m_Game.YPosition + 5;
+				m_Game.YPosition = m_Game.YPosition - 5;
 			}
 		} //}}}
 

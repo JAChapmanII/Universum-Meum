@@ -80,6 +80,8 @@ public class Game : Entity
 			Width = iWidth;
 			Height = iHeight;
 			BPP = iBPP;
+			ViewWidth = iWidth;
+			ViewHeight = iHeight;
 
 			SDL_WM_SetCaption( cast( char* )PROGRAM_NAME, null );
 
@@ -88,9 +90,10 @@ public class Game : Entity
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glEnable( GL_POINT_SMOOTH );
 			glEnable( GL_DEPTH_TEST );
+
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
-			glOrtho( 0, Width, Height, 0, -10, 10 );
+			glOrtho( 0, Width, 0, Height, -10, 10 );
 			glMatrixMode( GL_MODELVIEW );
 			glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
@@ -99,6 +102,21 @@ public class Game : Entity
 		{ //{{{
 			SDL_Quit();
 			unloadModules();
+		} //}}}
+
+		void ResizeViewport( real nWidth, real nHeight )
+		{ //{{{
+			m_ViewWidth = nWidth;
+			m_ViewHeight = nHeight;
+			ResizeViewport();
+		} //}}}
+
+		void ResizeViewport()
+		{ //{{{
+			glMatrixMode( GL_PROJECTION );
+			glLoadIdentity();
+			glOrtho( 0, ViewWidth, 0, ViewHeight, -10, 10 );
+			glMatrixMode( GL_MODELVIEW );
 		} //}}}
 
 		override void Draw()
@@ -123,6 +141,15 @@ public class Game : Entity
 
 		void ProcessInput()
 		{ //{{{
+			/// Ditch old mousewheel events
+			foreach( i; m_Clicks ) //{{{
+			{
+				if( ( i.Button == SDL_BUTTON_WHEELUP ) || ( i.Button == SDL_BUTTON_WHEELDOWN ) )
+				{
+					m_Clicks.remove( i );
+					break;
+				}
+			} //}}}
 			// handle all SDL events that we might've received in this loop
 			// iteration TODO can this SDL_Poll... error?
 			while( SDL_PollEvent( &m_Event ) )
@@ -190,6 +217,11 @@ public class Game : Entity
 
 					case SDL_MOUSEBUTTONUP:
 					{ //{{{
+						if( ( m_Event.button.button == SDL_BUTTON_WHEELUP ) ||
+							( m_Event.button.button == SDL_BUTTON_WHEELDOWN ) )
+						{
+							break;
+						}
 						foreach( i; m_Clicks )
 						{
 							if( i.Button == m_Event.button.button )
@@ -212,7 +244,7 @@ public class Game : Entity
 			return;
 		} //}}}
 
-		bool isClicked( int toCheckFor =  SDL_BUTTON_LEFT )
+		bool isClicked( int toCheckFor = SDL_BUTTON_LEFT )
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
@@ -380,6 +412,26 @@ public class Game : Entity
 			return m_isActive;
 		} //}}}
 
+		// {G,S}etter for m_ViewWidth
+		void ViewWidth( real nViewWidth ) //{{{
+		{
+			m_ViewWidth = nViewWidth;
+		}
+		real ViewWidth()
+		{
+			return m_ViewWidth;
+		} //}}}
+
+		// {G,S}etter for m_ViewHeight
+		void ViewHeight( real nViewHeight ) //{{{
+		{
+			m_ViewHeight = nViewHeight;
+		}
+		real ViewHeight()
+		{
+			return m_ViewHeight;
+		} //}}}
+
 	protected: //{{{
 		this( uint iWidth, uint iHeight, uint iBPP )
 		{
@@ -475,13 +527,15 @@ public class Game : Entity
 		uint m_Height;
 		uint m_BPP;
 
+		real m_ViewWidth;
+		real m_ViewHeight;
+
 		Entity[] m_Entities;
 
 		SDL_Event m_Event;
 		LinkedList!( Keypress ) m_Keypresses;
 		LinkedList!( Click ) m_Clicks;
 		uint[ 2 ] m_Cursor;
-
 
 		//}}}
 
