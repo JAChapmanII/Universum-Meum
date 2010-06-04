@@ -283,17 +283,17 @@ int main( char[][] args )
 
 				m_Points[ pNum ] = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
 				m_Game.AddEntity( m_Points[ pNum ] );
+				m_Points[ pNum ].ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 
 				m_Particles[ pNum ] = new Particle();
 				m_Particles[ pNum ].AddEntity( m_Points[ pNum ] );
 				m_Particles[ pNum ].Radius = 10.0;
 
-				// TODO TODO Oh god, why...
-				real xPos = (m_Game.ClickX( SDL_BUTTON_RIGHT ) / m_Game.Width) * m_Game.ViewWidth -
-					m_Game.XPosition;
-				real yPos = m_Game.ViewHeight -
-					(m_Game.ClickY( SDL_BUTTON_RIGHT ) / m_Game.Height) * m_Game.ViewHeight +
-					m_Game.YPosition;
+				real xPos = m_Game.ClickX( SDL_BUTTON_RIGHT );
+				real yPos = m_Game.ClickY( SDL_BUTTON_RIGHT );
+				xPos = xPos / m_Game.Width * m_Game.ViewWidth + m_Game.XPosition;
+				yPos = (1.0 - (yPos / m_Game.Height)) * m_Game.ViewHeight + m_Game.YPosition;
+
 				Stdout.formatln( "Created at ( {}, {} )", xPos, yPos );
 
 				m_Particles[ pNum ].CurrentPositions( xPos, yPos );
@@ -333,7 +333,6 @@ int main( char[][] args )
 
 		if( m_Game.isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
-			Stdout.formatln( "Size changed" );
 			m_Game.ResizeViewport( m_Game.ViewWidth - 25, m_Game.ViewHeight - 25 );
 			foreach( i; m_Points )
 			{
@@ -343,7 +342,6 @@ int main( char[][] args )
 		} //}}}
 		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
 		{ //{{{
-			Stdout.formatln( "Size changed" );
 			m_Game.ResizeViewport( m_Game.ViewWidth + 25, m_Game.ViewHeight + 25 );
 			foreach( i; m_Points )
 			{
