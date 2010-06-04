@@ -1,7 +1,24 @@
-Jun 03, 2010
+Jun 04, 2010
 
-Finish up what I started on dynamic particle creation, mainly figure out that damn algorithm for
-mapping click X/Y to actual X/Y.
+Get the zooming to look normal in non-lock mode. Need to determine the current center of the screen,
+and then simply reposition the camera after the zoom. Zoom might also want to be added to game to
+work out some other problems.
+
+The repel might still want to be tweaked to be cubic or something, something that gets stuff out of
+aanother particle quickly, but doesn't affect it too much after that. This current antigrav
+simulation might be the best way to do it, I don't know.
+
+Somebody should really go through and comment the code better
+To go with this, somebody should make a new logging function for each module that is able to have
+numbers in it or something, that is really annoying. Maybe some function that can be imported that
+just emulates Stdout() on a string, that would be nice.
+
+Figure out what else we have to do, and prune out thing that have already been done.
+
+Make it so that if you're going to place a particle on top of another, it just deletes the old one
+or rig LMB to make, and RMB to delete the nearest one/underneath cursor one.
+
+Jun 03, 2010
 
 Split off repel, gravity, and point to be in a different project dir, just like the end equivalent
 should work. Create a new program/new code to take the files, parse them as necessary and then
