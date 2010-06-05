@@ -245,6 +245,7 @@ int main( char[][] args )
 	//}}}
 
 	uint lastSpawn = 0;
+	real xCenter, yCenter;
 	log.info( "Entering main game loop" );
 	while( !m_Game.isDone )
 	{ //{{{
@@ -254,7 +255,7 @@ int main( char[][] args )
 			continue;
 		}
 
-		if( m_Game.isClicked ) /// Print informortive messages
+		if( m_Game.isClicked ) /// Print *cough* informortive messages
 		{ //{{{
 			foreach( uint num, i; m_Particles )
 			{
@@ -267,6 +268,18 @@ int main( char[][] args )
 				m_Sun.XPosition, m_Sun.YPosition,
 				m_Sun.XVelocity, m_Sun.YVelocity,
 				m_Sun.XAcceleration, m_Sun.YAcceleration );
+		} //}}}
+
+		xCenter = m_Game.XCenter();
+		yCenter = m_Game.YCenter();
+
+		if( m_Game.isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
+		{ //{{{
+			Stdout.formatln( "Screen: ( {}, {} ) [ {}/{}, {}/{} ] < {}, {} >",
+					m_Game.XPosition, m_Game.YPosition,
+					m_Game.ViewWidth, m_Game.Width,
+					m_Game.ViewHeight, m_Game.Height,
+					m_Game.XCenter, m_Game.YCenter );
 		} //}}}
 
 		/// Create new particles dynamically
@@ -334,6 +347,7 @@ int main( char[][] args )
 		if( m_Game.isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
 			m_Game.ResizeViewport( m_Game.ViewWidth - 25, m_Game.ViewHeight - 25 );
+			m_Game.Centers( xCenter, yCenter );
 			foreach( i; m_Points )
 			{
 				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
@@ -343,6 +357,7 @@ int main( char[][] args )
 		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
 		{ //{{{
 			m_Game.ResizeViewport( m_Game.ViewWidth + 25, m_Game.ViewHeight + 25 );
+			m_Game.Centers( xCenter, yCenter );
 			foreach( i; m_Points )
 			{
 				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
@@ -356,8 +371,7 @@ int main( char[][] args )
 
 		if( args[ $-1 ] == "lock" )
 		{
-			m_Game.XPosition = m_Sun.XPosition - m_Game.ViewWidth / 2;
-			m_Game.YPosition = m_Sun.YPosition - m_Game.ViewHeight / 2;
+			m_Game.Centers( m_Sun.XPosition, m_Sun.YPosition );
 		}
 		else /// Use arrows to move camera
 		{ //{{{

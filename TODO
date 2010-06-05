@@ -1,8 +1,15 @@
+Jun 05, 2010
+
+Nolan !!!!!!!!!!! - Give me an email, lest I think you're slacking out on me :p We should probably
+both always look at the TODO whenever we pull, to see if there are anything done/undone etc.
+
+As an update to the documentation thing, ddoc can generate code documentation when a declaration is
+proceeded with a /// comment. Also, my vim is set up to highlight those lines differently so they're
+eaiser to see, if you want that to work on yours let me know.
+
 Jun 04, 2010
 
-Get the zooming to look normal in non-lock mode. Need to determine the current center of the screen,
-and then simply reposition the camera after the zoom. Zoom might also want to be added to game to
-work out some other problems.
+Zoom might also want to be added to game to work out some other problems.
 
 The repel might still want to be tweaked to be cubic or something, something that gets stuff out of
 aanother particle quickly, but doesn't affect it too much after that. This current antigrav

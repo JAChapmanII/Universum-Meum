@@ -309,7 +309,7 @@ public class Game : Entity
 			return false;
 		} //}}}
 
-		// {G,S}etter for m_Width
+		/// {G,S}etter for m_Width
 		void Width( uint nWidth ) //{{{
 		{
 			m_Width = nWidth;
@@ -319,7 +319,7 @@ public class Game : Entity
 			return m_Width;
 		} //}}}
 
-		// {G,S}etter for m_Height
+		/// {G,S}etter for m_Height
 		void Height( uint nHeight ) //{{{
 		{
 			m_Height = nHeight;
@@ -329,7 +329,7 @@ public class Game : Entity
 			return m_Height;
 		} //}}}
 
-		// {G,S}etter for m_BPP
+		/// {G,S}etter for m_BPP
 		void BPP( uint nBPP ) //{{{
 		{
 			m_BPP = nBPP;
@@ -382,7 +382,7 @@ public class Game : Entity
 			SDL_Delay( microSeconds );
 		} //}}}
 
-		// {G,S}etter for m_TickInterval
+		/// {G,S}etter for m_TickInterval
 		void TickInterval( uint nTickInterval ) //{{{
 		{
 			m_TickInterval = nTickInterval;
@@ -392,7 +392,7 @@ public class Game : Entity
 			return m_TickInterval;
 		} //}}}
 
-		// {G,S}etter for m_isDone
+		/// {G,S}etter for m_isDone
 		void isDone( bool nState ) //{{{
 		{
 			m_isDone = nState;
@@ -402,7 +402,7 @@ public class Game : Entity
 			return m_isDone;
 		} //}}}
 
-		// {G,S}etter for m_isActive
+		/// {G,S}etter for m_isActive
 		void isActive( bool nState ) //{{{
 		{
 			m_isActive = nState;
@@ -412,7 +412,7 @@ public class Game : Entity
 			return m_isActive;
 		} //}}}
 
-		// {G,S}etter for m_ViewWidth
+		/// {G,S}etter for m_ViewWidth
 		void ViewWidth( real nViewWidth ) //{{{
 		{
 			m_ViewWidth = nViewWidth;
@@ -422,7 +422,7 @@ public class Game : Entity
 			return m_ViewWidth;
 		} //}}}
 
-		// {G,S}etter for m_ViewHeight
+		/// {G,S}etter for m_ViewHeight
 		void ViewHeight( real nViewHeight ) //{{{
 		{
 			m_ViewHeight = nViewHeight;
@@ -430,6 +430,33 @@ public class Game : Entity
 		real ViewHeight()
 		{
 			return m_ViewHeight;
+		} //}}}
+
+		/// Setter for both X/Y centers
+		void Centers( real nXC, real nYC ) //{{{
+		{
+			XPosition = nXC - ViewWidth / 2;
+			YPosition = nYC - ViewHeight / 2;
+		} //}}}
+
+		/// {G,S}etter for the X center
+		real XCenter() //{{{
+		{
+			return ViewWidth / 2 + XPosition;
+		}
+		void XCenter( real nXC )
+		{
+			XPosition = nXC - ViewWidth / 2;
+		} //}}}
+
+		/// {G,S}etter for the Y center
+		real YCenter() //{{{
+		{
+			return ViewHeight / 2 + YPosition;
+		}
+		void YCenter( real nYC )
+		{
+			YPosition = nYC - ViewHeight / 2;
 		} //}}}
 
 	protected: //{{{
