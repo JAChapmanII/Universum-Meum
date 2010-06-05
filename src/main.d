@@ -244,11 +244,29 @@ int main( char[][] args )
 	//m_Sun.Velocities( -4, 0 );
 	//}}}
 
+	log.info( "Setting up the cursor" );
+	Point m_CursorPoint = new Point( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
+	m_Game.WarpMouse( 400, 300 );
+	Particle m_Cursor = new Particle();
+
+	m_Cursor.AddEntity( m_CursorPoint );
+	m_Cursor.Positions( 400.0f, 300.0f );
+	m_Cursor.Radius( 0.0f );
+	m_Cursor.Mass( 0.0f );
+	m_Game.AddEntity( m_CursorPoint );
+	m_ParticleSystem.AddParticle( m_Cursor );
+
+	//m_Cursor.AddForce( m_Gravity );
+	//m_Cursor.AddForce( m_Repel );
+	//}}}
+
 	uint lastSpawn = 0;
 	real xCenter, yCenter;
 	log.info( "Entering main game loop" );
 	while( !m_Game.isDone )
 	{ //{{{
+		m_Game.ProcessInput();
+
 		if( m_Game.isPressed( Key[ "Escape" ] ) )
 		{
 			m_Game.isDone = true;
@@ -273,6 +291,12 @@ int main( char[][] args )
 		xCenter = m_Game.XCenter();
 		yCenter = m_Game.YCenter();
 
+		m_Cursor.CurrentPositions(
+			cast(uint)(
+				cast(real)(m_Game.CursorX) / m_Game.Width*m_Game.ViewWidth + m_Game.XPosition ),
+			cast(uint)(
+				(1.0 - (cast(real)(m_Game.CursorY) / m_Game.Height))*m_Game.ViewHeight + m_Game.YPosition) );
+
 		if( m_Game.isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
 		{ //{{{
 			Stdout.formatln( "Screen: ( {}, {} ) [ {}/{}, {}/{} ] < {}, {} >",
@@ -282,65 +306,70 @@ int main( char[][] args )
 					m_Game.XCenter, m_Game.YCenter );
 		} //}}}
 
-		/// Create new particles dynamically
-		if( ( m_Game.isClicked( SDL_BUTTON_RIGHT ) ) && ( m_Particles.length < 24 ) )
+		/// Create new particles dynamically, or delete them if the mouse is on one
+		if( m_Game.isClicked( SDL_BUTTON_RIGHT ) )
 		{ //{{{
 			if( m_Game.ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
 			{
 				lastSpawn = m_Game.ClickCreateTime( SDL_BUTTON_RIGHT );
-				log.info( "Created new particle based on RMB press" );
-				uint pNum = m_Particles.length;
-				Stdout.formatln( "Number {}!", pNum );
-				m_Particles.length = pNum + 1;
-				m_Points.length = pNum + 1;
-
-				m_Points[ pNum ] = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
-				m_Game.AddEntity( m_Points[ pNum ] );
-				m_Points[ pNum ].ZoomLevel = m_Game.Width / m_Game.ViewWidth;
-
-				m_Particles[ pNum ] = new Particle();
-				m_Particles[ pNum ].AddEntity( m_Points[ pNum ] );
-				m_Particles[ pNum ].Radius = 10.0;
-
 				real xPos = m_Game.ClickX( SDL_BUTTON_RIGHT );
 				real yPos = m_Game.ClickY( SDL_BUTTON_RIGHT );
-				xPos = xPos / m_Game.Width * m_Game.ViewWidth + m_Game.XPosition;
-				yPos = (1.0 - (yPos / m_Game.Height)) * m_Game.ViewHeight + m_Game.YPosition;
 
-				Stdout.formatln( "Created at ( {}, {} )", xPos, yPos );
+				if( ( dist < 10 ) && ( m_Particles.length < 24 ) )
+				{
+					log.info( "Created new particle based on RMB press" );
+					uint pNum = m_Particles.length;
+					Stdout.formatln( "Number {}!", pNum );
+					m_Particles.length = pNum + 1;
+					m_Points.length = pNum + 1;
 
-				m_Particles[ pNum ].CurrentPositions( xPos, yPos );
+					m_Points[ pNum ] = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+					m_Game.AddEntity( m_Points[ pNum ] );
+					m_Points[ pNum ].ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 
-				switch( initVel ) /// Determine appropriate init velocities
-				{ //{{{
-					case 0: /// Nothing
-					{
-						break;
-					}
-					case 1: /// Random
-					{
-						real ranX = rand.fraction() * 16.0 - 8.0;
-						real ranY = rand.fraction() * 16.0 - 8.0;
-						Stdout.formatln( "New particle with < {}, {} >", ranX, ranY );
-						m_Particles[ pNum ].Velocities( ranX, ranY  );
-						break;
-					}
-					case 2: /// Clockwise spiral
-					{
-					}
-					case 3: /// Counter-clockwise spiral
-					{
-					}
-					default:
-					{
-						break;
-					}
-				} //}}}
+					m_Particles[ pNum ] = new Particle();
+					m_Particles[ pNum ].AddEntity( m_Points[ pNum ] );
+					m_Particles[ pNum ].Radius = 10.0;
 
-				m_Particles[ pNum ].AddForce( m_Gravity );
-				m_Particles[ pNum ].AddForce( m_Repel );
+					Stdout.formatln( "Created at ( {}, {} )", xPos, yPos );
 
-				m_ParticleSystem.AddParticle( m_Particles[ pNum ] );
+					m_Particles[ pNum ].CurrentPositions( xPos, yPos );
+
+					switch( initVel ) /// Determine appropriate init velocities
+					{ //{{{
+						case 0: /// Nothing
+						{
+							break;
+						}
+						case 1: /// Random
+						{
+							real ranX = rand.fraction() * 16.0 - 8.0;
+							real ranY = rand.fraction() * 16.0 - 8.0;
+							Stdout.formatln( "New particle with < {}, {} >", ranX, ranY );
+							m_Particles[ pNum ].Velocities( ranX, ranY  );
+							break;
+						}
+						case 2: /// Clockwise spiral
+						{
+						}
+						case 3: /// Counter-clockwise spiral
+						{
+						}
+						default:
+						{
+							break;
+						}
+					} //}}}
+
+					m_Particles[ pNum ].AddForce( m_Gravity );
+					m_Particles[ pNum ].AddForce( m_Repel );
+
+					m_ParticleSystem.AddParticle( m_Particles[ pNum ] );
+				}
+				else
+				{
+					log.info( "Killed particle based on RMB press" );
+				}
 			}
 		} //}}}
 
@@ -364,8 +393,6 @@ int main( char[][] args )
 			}
 			m_SunPoint.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 		} //}}}
-
-		m_Game.ProcessInput();
 
 		m_ParticleSystem.Work( .02 );
 

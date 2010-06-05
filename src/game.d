@@ -294,6 +294,8 @@ public class Game : Entity
 
 		void WarpMouse( uint nX, uint nY )
 		{ //{{{
+			m_Cursor[ 0 ] = nX;
+			m_Cursor[ 1 ] = nY;
 			SDL_WarpMouse( nX, nY);
 		} //}}}
 
@@ -457,6 +459,26 @@ public class Game : Entity
 		void YCenter( real nYC )
 		{
 			YPosition = nYC - ViewHeight / 2;
+		} //}}}
+
+		/// {G,S}etter for the Cursor X
+		uint CursorX() //{{{
+		{
+			return m_Cursor[ 0 ];
+		}
+		void CursorX( uint nCX )
+		{
+			WarpMouse( nCX, m_Cursor[ 1 ] );
+		} //}}}
+
+		/// {G,S}etter for the Cursor X
+		uint CursorY() //{{{
+		{
+			return m_Cursor[ 1 ];
+		}
+		void CursorY( uint nCY )
+		{
+			WarpMouse( m_Cursor[ 0 ], nCY );
 		} //}}}
 
 	protected: //{{{
