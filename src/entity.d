@@ -30,22 +30,28 @@ class Entity
 		{
 		}
 
-		// {G,S}etter for m_Position[ 0 ]
-		float XPosition() //{{{
+		void Positions( real nX, real nY )
+		{ //{{{
+			m_Position[ 0 ] = nX;
+			m_Position[ 1 ] = nY;
+		} //}}}
+
+		/// {G,S}etter for m_Position[ 0 ]
+		real XPosition() //{{{
 		{
 			return m_Position[ 0 ];
 		}
-		void XPosition( float nX )
+		void XPosition( real nX )
 		{
 			m_Position[ 0 ] = nX;
 		} //}}}
 
-		// {G,S}etter for m_Position[ 1 ]
-		float YPosition() //{{{
+		/// {G,S}etter for m_Position[ 1 ]
+		real YPosition() //{{{
 		{
 			return m_Position[ 1 ];
 		}
-		void YPosition( float nY )
+		void YPosition( real nY )
 		{
 			m_Position[ 1 ] = nY;
 		} //}}}
