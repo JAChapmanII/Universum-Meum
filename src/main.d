@@ -141,6 +141,7 @@ int main( char[][] args )
 	buf.length = 0;
 
 	log.info( "Creating a Game" );
+	Stdout.formatln( "W: {}\tH: {}", gWidth, gHeight );
 	Game m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
 	m_Game.XPosition = 0;
 	m_Game.YPosition = 0;
