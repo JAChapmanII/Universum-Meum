@@ -346,7 +346,8 @@ int main( char[][] args )
 
 		if( m_Game.isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
-			m_Game.ResizeViewport( m_Game.ViewWidth - 25, m_Game.ViewHeight - 25 );
+			m_Game.ResizeViewport( m_Game.ViewWidth - m_Game.Width / 24,
+								   m_Game.ViewHeight - m_Game.Height / 24 );
 			m_Game.Centers( xCenter, yCenter );
 			foreach( i; m_Points )
 			{
@@ -356,7 +357,8 @@ int main( char[][] args )
 		} //}}}
 		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
 		{ //{{{
-			m_Game.ResizeViewport( m_Game.ViewWidth + 25, m_Game.ViewHeight + 25 );
+			m_Game.ResizeViewport( m_Game.ViewWidth + m_Game.Width / 24,
+								   m_Game.ViewHeight + m_Game.Height / 24 );
 			m_Game.Centers( xCenter, yCenter );
 			foreach( i; m_Points )
 			{
