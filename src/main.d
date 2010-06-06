@@ -312,10 +312,10 @@ int main( char[][] args )
 			if( m_Game.ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
 			{
 				lastSpawn = m_Game.ClickCreateTime( SDL_BUTTON_RIGHT );
-				real xPos = m_Game.ClickX( SDL_BUTTON_RIGHT );
-				real yPos = m_Game.ClickY( SDL_BUTTON_RIGHT );
+				real xPos = m_CursorPoint.XPosition;
+				real yPos = m_CursorPoint.YPosition;
 
-				if( ( dist < 10 ) && ( m_Particles.length < 24 ) )
+				if( ( m_Particles.length < 24 ) )
 				{
 					log.info( "Created new particle based on RMB press" );
 					uint pNum = m_Particles.length;
