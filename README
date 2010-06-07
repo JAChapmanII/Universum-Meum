@@ -39,12 +39,16 @@ To make each particle start with a random velocity, add a '1' after the number o
 To make the screen lock onto the "Sun" make the last argument be "lock":
 	./bin/Universum-Meum 4 lock
 
+Once the game is running it will prompt you in the console to input a width and a height for the
+window. Once you do this you'll be up and running! Take a look at the Controls section for more
+information.
+
 
 Controls:
 
 Particle manipulation:
-	Once the game is up, simply right click anywhere to create a new particle. Hopefully one day
-	you'll be able to delete those suckers too ^^
+	Once the game is running, right click in an empty place to create a new particle.
+	To delete a particle, right click when the cursor is on one.
 
 Panning/zooming:
 	If "lock" is not passed as an argument, you can use the arrow keys to pan the view.
