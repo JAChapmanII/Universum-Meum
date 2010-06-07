@@ -57,6 +57,8 @@ class Repel : Force
 
 		alias Instance opCall;
 
+		/// In the case of a perefct collision, uses elastic collision code. Otherwise, it uses the
+		/// gravity code *-2 to simulate anti-gravity.
 		override void Work( Particle A, Particle B, ref real deltaTime )
 		{ //{{{
 			real xDist = B.XPosition - A.XPosition;
