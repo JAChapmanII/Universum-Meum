@@ -1,8 +1,8 @@
-Jun 05, 2010
+Jun 07, 2010
 
-Welcome to the experimental branch! Basically, what needs done is to finish implementing particle
-deletion by switching the particle array to a linked list. See the last commit messages in full to
-see what I'm talking about.
+
+
+Jun 05, 2010
 
 Nolan !!!!!!!!!!! - Give me an email, lest I think you're slacking out on me :p We should probably
 both always look at the TODO whenever we pull, to see if there are anything done/undone etc.
