@@ -106,6 +106,16 @@ class Particle
 			}
 		} //}}}
 
+		/// Return first entity in m_Entities or null if there are none.
+		Entity GetEntity()
+		{ //{{{
+			if( m_Entities.length > 0 )
+			{
+				return m_Entities[ 0 ];
+			}
+			return null;
+		} //}}}
+
 		void Work( Particle B, real deltaTime )
 		{ //{{{
 			foreach( i; m_Forces )

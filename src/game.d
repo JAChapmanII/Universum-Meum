@@ -119,6 +119,7 @@ public class Game : Entity
 			glMatrixMode( GL_MODELVIEW );
 		} //}}}
 
+		/// Iterates through each actor that has been registered and calls its Draw function
 		override void Draw()
 		{ //{{{
 			glPushMatrix();
@@ -142,6 +143,9 @@ public class Game : Entity
 		void ProcessInput()
 		{ //{{{
 			/// Ditch old mousewheel events
+			/// TODO look into a better way to do this, as currently we're throwing away potentially
+			/// valid data. This is because each mouse wheel "click" is actually a press and release
+			/// at the same time. /TODO
 			foreach( i; m_Clicks ) //{{{
 			{
 				if( ( i.Button == SDL_BUTTON_WHEELUP ) || ( i.Button == SDL_BUTTON_WHEELDOWN ) )
@@ -294,6 +298,8 @@ public class Game : Entity
 
 		void WarpMouse( uint nX, uint nY )
 		{ //{{{
+			m_Cursor[ 0 ] = nX;
+			m_Cursor[ 1 ] = nY;
 			SDL_WarpMouse( nX, nY);
 		} //}}}
 
@@ -343,12 +349,19 @@ public class Game : Entity
 		{ //{{{
 			if( !( nEntity is null ) )
 			{
-				m_Entities.length = m_Entities.length + 1;
-				m_Entities[ $-1 ] = nEntity;
+				m_Entities.add( nEntity );
 			}
 			else
 			{
 				log.warn( "Tried to add a null entity" );
+			}
+		} //}}}
+
+		void RemoveEntity( Entity toRemove )
+		{ //{{{
+			if( m_Entities.contains( toRemove ) )
+			{
+				m_Entities.remove( toRemove, true );
 			}
 		} //}}}
 
@@ -459,12 +472,33 @@ public class Game : Entity
 			YPosition = nYC - ViewHeight / 2;
 		} //}}}
 
+		/// {G,S}etter for the Cursor X
+		uint CursorX() //{{{
+		{
+			return m_Cursor[ 0 ];
+		}
+		void CursorX( uint nCX )
+		{
+			WarpMouse( nCX, m_Cursor[ 1 ] );
+		} //}}}
+
+		/// {G,S}etter for the Cursor X
+		uint CursorY() //{{{
+		{
+			return m_Cursor[ 1 ];
+		}
+		void CursorY( uint nCY )
+		{
+			WarpMouse( m_Cursor[ 0 ], nCY );
+		} //}}}
+
 	protected: //{{{
 		this( uint iWidth, uint iHeight, uint iBPP )
 		{
 			InitSGL( iWidth, iHeight, iBPP );
 			m_Keypresses = new LinkedList!( Keypress );
 			m_Clicks = new LinkedList!( Click );
+			m_Entities = new LinkedList!( Entity );
 		}
 
 		// load modules needed to interface with C libs SDL, GL, IL
@@ -557,7 +591,7 @@ public class Game : Entity
 		real m_ViewWidth;
 		real m_ViewHeight;
 
-		Entity[] m_Entities;
+		LinkedList!( Entity ) m_Entities;
 
 		SDL_Event m_Event;
 		LinkedList!( Keypress ) m_Keypresses;

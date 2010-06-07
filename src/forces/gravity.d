@@ -57,6 +57,8 @@ class Gravity : Force
 
 		alias Instance opCall;
 
+		/// Determines the amount of acceleration between particle A and B due to gravity, and then
+		/// applies this amount to Particle A. [It is expected this will also work on B, A]
 		override void Work( Particle A, Particle B, ref real deltaTime )
 		{ //{{{
 			real xDist = B.XPosition - A.XPosition;
