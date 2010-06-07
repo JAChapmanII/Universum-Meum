@@ -20,6 +20,7 @@
 module particle_system;
 
 import tango.io.Stdout;
+import tango.util.container.LinkedList;
 
 import tango.math.Math : sqrt;
 
@@ -33,6 +34,7 @@ class ParticleSystem
 		{
 			Step = iStep;
 			MaxSteps = iMaxSteps;
+			m_Particles = new LinkedList!( Particle );
 		}
 
 		void Work( real deltaTime = 1.0f )
@@ -154,8 +156,7 @@ class ParticleSystem
 		{ //{{{
 			if( !( nParticle is null ) )
 			{
-				m_Particles.length = m_Particles.length + 1;
-				m_Particles[ $-1 ] = nParticle;
+				m_Particles.add( nParticle );
 			}
 			else
 			{
@@ -163,6 +164,13 @@ class ParticleSystem
 			}
 		} //}}}
 
+		void RemoveParticle( Particle toRemove )
+		{ //{{{
+			if( m_Particles.contains( toRemove ) )
+			{
+				m_Particles.remove( toRemove, true );
+			}
+		} //}}}
 
 	protected:
 		real abs( real a )
@@ -177,7 +185,7 @@ class ParticleSystem
 		real m_Step;
 		real m_MaxSteps;
 
-		Particle[] m_Particles;
+		LinkedList!( Particle ) m_Particles;
 		Force[] m_Forces;
 
 	private:

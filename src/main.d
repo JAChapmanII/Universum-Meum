@@ -19,6 +19,7 @@
 */// }}}
 module main;
 
+import tango.util.container.LinkedList;
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
 import tango.math.Math;
@@ -30,6 +31,7 @@ import tango.io.Stdout;
 import game;
 import particle;
 import particle_system;
+import entity;
 import entities.point;
 import forces.gravity;
 import forces.repel;
@@ -175,23 +177,25 @@ int main( char[][] args )
 	} //}}}
 
 	log.info( "Creating particles/points" );
-	Particle[] m_Particles;
-	Point[] m_Points;
-	m_Particles.length = numObjects;
-	m_Points.length = numObjects;
+	LinkedList!( Particle ) m_Particles = new LinkedList!( Particle );
+	LinkedList!( Point ) m_Points = new LinkedList!( Point );
+	//m_Particles.length = numObjects;
+	//m_Points.length = numObjects;
 
 	/// Create particles
 	for( uint i = 0; i < numObjects; i++ ) //{{{
 	{
-		m_Points[ i ] = new Point( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
-		m_Game.AddEntity( m_Points[ i ] );
+		Point nPoint = new Point( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
+		m_Points.add( nPoint );
+		m_Game.AddEntity( nPoint );
 
-		m_Particles[ i ] = new Particle();
-		m_Particles[ i ].AddEntity( m_Points[ i ] );
-		m_Particles[ i ].Radius = 10.0;
+		Particle nParticle = new Particle();
+		m_Particles.add( nParticle );
+		nParticle.AddEntity( nPoint );
+		nParticle.Radius = 10.0;
 
-		m_Particles[ i ].CurrentPositions( 400 + 100*cos( i * 2 * PI / numObjects ),
-										   300 + 100*sin( i * 2 * PI / numObjects ) );
+		nParticle.CurrentPositions( 400 + 100*cos( i * 2 * PI / numObjects ),
+									300 + 100*sin( i * 2 * PI / numObjects ) );
 
 		switch( initVel ) /// Determine appropriate init velocities
 		{ //{{{
@@ -204,7 +208,7 @@ int main( char[][] args )
 				real ranX = rand.fraction() * 16.0 - 8.0;
 				real ranY = rand.fraction() * 16.0 - 8.0;
 				Stdout.formatln( "Seeded particle {} with < {}, {} >", i, ranX, ranY );
-				m_Particles[ i ].Velocities( ranX, ranY  );
+				nParticle.Velocities( ranX, ranY  );
 				break;
 			}
 			case 2: /// Clockwise spiral
@@ -219,10 +223,10 @@ int main( char[][] args )
 			}
 		} //}}}
 
-		m_Particles[ i ].AddForce( m_Gravity );
-		m_Particles[ i ].AddForce( m_Repel );
+		nParticle.AddForce( m_Gravity );
+		nParticle.AddForce( m_Repel );
 
-		m_ParticleSystem.AddParticle( m_Particles[ i ] );
+		m_ParticleSystem.AddParticle( nParticle );
 	} //}}}
 
 	log.info( "Setting up the sun" );
@@ -275,14 +279,15 @@ int main( char[][] args )
 
 		if( m_Game.isClicked ) /// Print *cough* informortive messages
 		{ //{{{
-			foreach( uint num, i; m_Particles )
+			Stdout.formatln( "There are {} particles and 1 sun currently...", m_Particles.size );
+			foreach( Particle i; m_Particles )
 			{
-				Stdout.formatln( "{}: ( {}, {} ) < {}, {} > [ {}, {} ]", num,
+				Stdout.formatln( "\t: ( {}, {} ) < {}, {} > [ {}, {} ]",
 					i.XPosition, i.YPosition,
 					i.XVelocity, i.YVelocity,
 					i.XAcceleration, i.YAcceleration );
 			}
-			Stdout.formatln( "Sun: ( {}, {} ) < {}, {} > [ {}, {} ]",
+			Stdout.formatln( "\tSun: ( {}, {} ) < {}, {} > [ {}, {} ]",
 				m_Sun.XPosition, m_Sun.YPosition,
 				m_Sun.XVelocity, m_Sun.YVelocity,
 				m_Sun.XAcceleration, m_Sun.YAcceleration );
@@ -315,60 +320,82 @@ int main( char[][] args )
 				real xPos = m_CursorPoint.XPosition;
 				real yPos = m_CursorPoint.YPosition;
 
-				if( ( m_Particles.length < 24 ) )
-				{
-					log.info( "Created new particle based on RMB press" );
-					uint pNum = m_Particles.length;
-					Stdout.formatln( "Number {}!", pNum );
-					m_Particles.length = pNum + 1;
-					m_Points.length = pNum + 1;
-
-					m_Points[ pNum ] = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
-					m_Game.AddEntity( m_Points[ pNum ] );
-					m_Points[ pNum ].ZoomLevel = m_Game.Width / m_Game.ViewWidth;
-
-					m_Particles[ pNum ] = new Particle();
-					m_Particles[ pNum ].AddEntity( m_Points[ pNum ] );
-					m_Particles[ pNum ].Radius = 10.0;
-
-					Stdout.formatln( "Created at ( {}, {} )", xPos, yPos );
-
-					m_Particles[ pNum ].CurrentPositions( xPos, yPos );
-
-					switch( initVel ) /// Determine appropriate init velocities
-					{ //{{{
-						case 0: /// Nothing
-						{
-							break;
-						}
-						case 1: /// Random
-						{
-							real ranX = rand.fraction() * 16.0 - 8.0;
-							real ranY = rand.fraction() * 16.0 - 8.0;
-							Stdout.formatln( "New particle with < {}, {} >", ranX, ranY );
-							m_Particles[ pNum ].Velocities( ranX, ranY  );
-							break;
-						}
-						case 2: /// Clockwise spiral
-						{
-						}
-						case 3: /// Counter-clockwise spiral
-						{
-						}
-						default:
-						{
-							break;
-						}
-					} //}}}
-
-					m_Particles[ pNum ].AddForce( m_Gravity );
-					m_Particles[ pNum ].AddForce( m_Repel );
-
-					m_ParticleSystem.AddParticle( m_Particles[ pNum ] );
-				}
+				log.info( "Setting minDist to infinity" );
+				real minDist2 = real.infinity;
+				Particle pMin;
+				log.info( "Starting dist checking loop" );
+				foreach( Particle i; m_Particles ) /// Determine minDist squared
+				{ //{{{
+					real cXDist = m_CursorPoint.XPosition - i.XPosition;
+					real cYDist = m_CursorPoint.YPosition - i.YPosition;
+					real cDist2 = cXDist*cXDist + cYDist*cYDist;
+					if( cDist2 < minDist2 )
+					{
+						Stdout.formatln( "New minDist = {}", cDist2 );
+						minDist2 = cDist2;
+						pMin = i;
+					}
+				} //}}}
+				if( minDist2 < 100 ) /// If we intersect with a particle, remove it
+				{ //{{{
+					log.info( "Removing..." );
+					Point eMin = cast( Point )( pMin.GetEntity );
+					m_ParticleSystem.RemoveParticle( pMin );
+					m_Particles.remove( pMin, true );
+					m_Points.remove( eMin, true );
+					m_Game.RemoveEntity( eMin );
+				} //}}}
 				else
 				{
-					log.info( "Killed particle based on RMB press" );
+					log.info( "No intersecting particle" );
+
+					if( ( m_Particles.size < 24 ) ) /// Make a new particle
+					{ //{{{
+						log.info( "Created new particle based on RMB press" );
+						uint pNum = m_Points.size + 1;
+						Stdout.formatln( "Number {}!", pNum );
+						Point nPoint = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+						m_Points.add( nPoint );
+						m_Game.AddEntity( nPoint );
+
+						Particle nParticle = new Particle();
+						m_Particles.add( nParticle );
+						nParticle.AddEntity( nPoint );
+						nParticle.Radius = 10.0;
+
+						nParticle.CurrentPositions( m_CursorPoint.XPosition, m_CursorPoint.YPosition );
+
+						switch( initVel ) /// Determine appropriate init velocities
+						{ //{{{
+							case 0: /// Nothing
+							{
+								break;
+							}
+							case 1: /// Random
+							{
+								real ranX = rand.fraction() * 16.0 - 8.0;
+								real ranY = rand.fraction() * 16.0 - 8.0;
+								Stdout.formatln( "Seeded particle {} with < {}, {} >", pNum, ranX, ranY );
+								nParticle.Velocities( ranX, ranY  );
+								break;
+							}
+							case 2: /// Clockwise spiral
+							{
+							}
+							case 3: /// Counter-clockwise spiral
+							{
+							}
+							default:
+							{
+								break;
+							}
+						} //}}}
+
+						nParticle.AddForce( m_Gravity );
+						nParticle.AddForce( m_Repel );
+
+						m_ParticleSystem.AddParticle( nParticle );
+					} //}}}
 				}
 			}
 		} //}}}
@@ -377,7 +404,7 @@ int main( char[][] args )
 		{ //{{{
 			m_Game.ResizeViewport( m_Game.ViewWidth - 25, m_Game.ViewHeight - 25 );
 			m_Game.Centers( xCenter, yCenter );
-			foreach( i; m_Points )
+			foreach( Point i; m_Points )
 			{
 				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 			}
@@ -387,7 +414,7 @@ int main( char[][] args )
 		{ //{{{
 			m_Game.ResizeViewport( m_Game.ViewWidth + 25, m_Game.ViewHeight + 25 );
 			m_Game.Centers( xCenter, yCenter );
-			foreach( i; m_Points )
+			foreach( Point i; m_Points )
 			{
 				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 			}
