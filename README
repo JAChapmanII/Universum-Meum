@@ -26,18 +26,18 @@ from the Universum Meum directory
 Running:
 
 After the program is compiled, simply run:
-	./bin/Universum-Meum
+	./bin/Universum-Meum{-target} # Note: by default the target is currently debug
 from the same directory from the Universum-Meum directory.
 
 To startup with more than the default number of particles, simply append tho number of particles
 you want to see. To start up with 5 particles use:
-	./bin/Universum-Meum 5
+	./bin/Universum-Meum{-target} 5
 
 To make each particle start with a random velocity, add a '1' after the number of particles:
-	./bin/Universum-Meum 5 1
+	./bin/Universum-Meum{-target} 5 1
 
 To make the screen lock onto the "Sun" make the last argument be "lock":
-	./bin/Universum-Meum 4 lock
+	./bin/Universum-Meum{-target} 4 lock
 
 Once the game is running it will prompt you in the console to input a width and a height for the
 window. Once you do this you'll be up and running! Take a look at the Controls section for more
@@ -52,8 +52,7 @@ Particle manipulation:
 
 Panning/zooming:
 	If "lock" is not passed as an argument, you can use the arrow keys to pan the view.
-
-	You can use the mousewheel to zoom in and out; however, it looks horrible when not in lock mode
+	You can use the mousewheel to zoom in and out
 
 Quiting:
 	Hit the "Esc"ape key.
@@ -65,6 +64,4 @@ Quiting:
 
 Printing a bunch of useless information:
 	Left mouse button
-
-
 
