@@ -1,0 +1,46 @@
+module example;
+
+// Standard imports first
+import tango.io.Stdout;
+
+// Module names all lower case, underscore to separate words
+import modules.other_example
+
+// All outside of project imports clumped based on project
+import libs.a.A;
+import libs.b.A;
+
+import poop.Toilet;
+import poop.Flush;
+
+/// Triple slashes for documentation
+class UppercaseForEachWord
+{
+	public:
+		void PublicMethod();
+
+		// Getter/Setter for m_ProtectedVariable
+		uint ProtectedVariable();
+		void ProtectedVariable( uint nProtectedVariable );
+
+	protected:
+		// Camel case for variables, prepend m_ for those belonging to classes
+		uint m_ProtectedVariable;
+}
+
+void RandomFunction();
+
+int main( char[][] args )
+{
+	if( args.length > 1 )
+	{
+		Stdout.formatln( "Argument one: {}", args[ 1 ] );
+	}
+
+	uint a = 5, b = 7;
+	uint c = ( a + ( b * b ) ) * args[ 0 ][ 0 ];
+
+	return 0;
+}
+
+// vim: ft=d:
