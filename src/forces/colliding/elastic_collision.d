@@ -17,7 +17,7 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module repel;
+module elastic_collision;
 
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
@@ -31,24 +31,24 @@ import particle;
 Logger log;
 static this()
 {
-	log = Log.lookup( "forces.repel" );
+	log = Log.lookup( "forces.elastic_collision" );
 	log.add( new AppendConsole() );
 }
 
-class Repel : Force
+class Elastic_collision : Force
 {
 	public:
-		static Repel Instance( real iR = 1.0 )
+		static Elastic_collision Instance( real iR = 1.0 )
 		{ //{{{
 			if( m_Instance is null )
 			{
 				try
 				{
-					m_Instance = new Repel( iR );
+					m_Instance = new Elastic_collision( iR );
 				}
 				catch( Exception e )
 				{
-					log.fatal( "Repel could not be instantiated." );
+					log.fatal( "Elastic_collision could not be instantiated." );
 					throw e;
 				}
 			}
@@ -68,7 +68,7 @@ class Repel : Force
 
 			if( ( dist < (A.Radius + B.Radius)/2 ) && ( dist2 > 0 ) )
 			{
-				real repMass = RepelConstant * B.Mass * 2;
+				real repMass = Elastic_collisionConstant * B.Mass * 1.2;
 				real sectLength = (A.Radius+B.Radius/2) - dist;
 				real unitX = xDist / dist;
 				real unitY = yDist / dist;
@@ -95,25 +95,25 @@ class Repel : Force
 			}
 		} //}}}
 
-		/// {G,S}etter m_RepelConstant
-		real RepelConstant() //{{{
+		/// {G,S}etter m_Elastic_collisionConstant
+		real Elastic_collisionConstant() //{{{
 		{
-			return m_RepelConstant;
+			return m_Elastic_collisionConstant;
 		}
-		void RepelConstant( real nR )
+		void Elastic_collisionConstant( real nR )
 		{
-			m_RepelConstant = nR;
+			m_Elastic_collisionConstant = nR;
 		} //}}}
 
 	protected:
 		this( real iR )
 		{
-			m_RepelConstant = iR;
+			m_Elastic_collisionConstant = iR;
 		}
 
-		static Repel m_Instance;
+		static Elastic_collision m_Instance;
 
-		real m_RepelConstant;
+		real m_Elastic_collisionConstant;
 
 	private:
 

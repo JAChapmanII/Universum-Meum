@@ -21,6 +21,8 @@ module force;
 
 import particle;
 
+enum forceTypes {exterior = 12 , interior = 737 , collidion = 1500000000000000000000000000000000000 };
+
 class Force
 {
 	public:
@@ -32,7 +34,7 @@ class Force
 		this()
 		{
 		}
-
+		forceType m_forceType
 	private:
 
 }

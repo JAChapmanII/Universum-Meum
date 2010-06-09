@@ -35,8 +35,9 @@ import particle;
 import particle_system;
 import entity;
 import entities.point;
-import forces.gravity;
-import forces.repel;
+import forces.exterior.gravity;
+import forces.interior.repel;
+import forces.colliding.elastic_collision;
 
 import derelict.sdl.sdl;
 
@@ -160,7 +161,7 @@ int main( char[][] args )
 	Gravity m_Gravity = Gravity.Instance();
 	m_Gravity.GravityConstant = rgConstant;
 
-	log.info( "Creating a repel force" );
+	log.info( "Creating a elastic_collision force" );
 	Repel m_Repel = Repel.Instance();
 	m_Repel.RepelConstant = rgConstant;
 
@@ -170,13 +171,13 @@ int main( char[][] args )
 	log.info( "Now a particle system" );
 	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
-	/// Process ars
-	uint numObjects = 0; //{{{
+	/// Process arguments
+	uint numObjects = 0; //{{ {
 	uint initVel = 0;
 	if( args.length > 1 )
 	{
 		numObjects = integer.parse( args[ 1 ] );
-		numObjects %= 24;
+		numObjects %= 1000;
 		if( numObjects < 1 )
 		{
 			numObjects = 1;
@@ -367,7 +368,7 @@ int main( char[][] args )
 				{
 					log.info( "No intersecting particle" );
 
-					if( ( m_Particles.size < 24 ) ) /// Make a new particle
+					if( ( m_Particles.size < 1000 ) ) /// Make a new particle
 					{ //{{{
 						log.info( "Created new particle based on RMB press" );
 						uint pNum = m_Points.size + 1;
