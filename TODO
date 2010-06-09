@@ -1,3 +1,8 @@
+Jun 09, 2010
+
+Implement auto time interval in particle systems Work so that it chooses the currentDelta so that it
+will make two particles collide, or finish out the current timeLeft.
+
 Jun 07, 2010
 
 
