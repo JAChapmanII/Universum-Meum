@@ -1,80 +1,75 @@
-Jun 09, 2010
+Design Problems:
+	- Current example "repel" looks bad. Get an example that will look realistic.
+		- Finish the forceType enumeration implementation to allow different forces to be applied
+		  only at certain times.
+		- Split off and make a force that is actually elastic/inelastic collisions
+			- Get a system were we can impose restrictions on the time step of ParticleSystem so
+			  that this force will actually ever be applied.
+		- Suggestion was made for the interpolation method to be non-quadratic. May or may not make
+		  a better "repel" force. Might be better suited for some template repel class.
+	- Timing system is flawed. Need a new implementation that is interval independent.
+		- Hopefully this will work out of the box with negative time changes
 
-Implement auto time interval in particle systems Work so that it chooses the currentDelta so that it
-will make two particles collide, or finish out the current timeLeft.
+Bugs:
+	- Our code sucks. It should suck less.
+	- There is no documentation really.
+		- In line documentation can be made with /// before a declaration. This can be (and is)
+		  extracted in the documentation target of the makefile.
+		- Pretty much everything should be documented, not just for us but for any end-user trying
+		  to add/make their own forces. It'd be nice to know the API
+	- Log more {,useful} stuff.
+		- Make a logging function that works like Stdout, so we can log variable values
+			- Might be able to do a Stdout onto a string actually.
 
-Jun 07, 2010
+Bad implementation:
+	- The whole hack-ish scroll wheel support.
+	- Some stuff uses lists, some uses arrays, make this consistent (array → linked list)
 
+Features:
+	- ParticleSystem should have a way of passing information it's calculating to each call of a
+	  Work function. This should save a crap load of processing time, especially on mirror calls.
+	- Zoom variable should be added to the Game class so it can pass it to every member getting
+	  Drawn or something like that. Then it can automatically be adjusted when the view/screen is
+	  adjusted.
+	- Template-ize the current repel force to allow different interpolation method.
+	- Template-ize the gravity force and call it "attract".
+		- Make gravity an instance of this template.
+	- Make forces be even more customizable by allowing polygons of multiplication.
+		- i.e., at radius <5 there is a 1 multiplier of effect, ot >=5 there is a 0 multiplier to
+		  have some force that applies fully if the distance is within 5 and 0 if it isn't.
+	- Make the thing multi-threaded
+		- First thing to do is split off rendering/simulating
+		- Second is to get the simulating thing to be safe to do on multiple particles at once and
+		  then spawn threads for each. [WARNING: horribly hard to do, I'm sure]
 
+Miscellaneous:
+	- Create more formal/rigorous coding style. Use it. Needs to be consistent.
+		- Extend HACKING file
+	- TODO looks like crap. Need to finish fixing it up so it's readable and easy to update.
+		- I like the way this is looking, but the back log still needs cleaned out.
+		- Make sure it is updated regularly
+	- Build system is bad, get on to ldc finally.
+		- In the meantime (if it's not too hard) a script that checks for basic parse-ability would
+		  bpEe nice. Maybe we can steal a YACC file that works for C or something? (YACC probably
+		  isn't what I mean, maybe Bison?)
 
-Jun 05, 2010
+Nolan:
+	- Learn how to use different branches
+	- Learn how to push different branches
+	- Learn importance of NEVER breaking the build in master
+	- You never did send me that email that the TODO has been mentioning since the 5th :p
 
-Nolan !!!!!!!!!!! - Give me an email, lest I think you're slacking out on me :p We should probably
-both always look at the TODO whenever we pull, to see if there are anything done/undone etc.
+Jeff:
+	- Make a more consistent work schedule
 
-As an update to the documentation thing, ddoc can generate code documentation when a declaration is
-proceeded with a /// comment. Also, my vim is set up to highlight those lines differently so they're
-eaiser to see, if you want that to work on yours let me know.
+New Coders:
+	- Contact us and tell us what you're interested in.
 
-Jun 04, 2010
-
-Zoom might also want to be added to game to work out some other problems.
-
-The repel might still want to be tweaked to be cubic or something, something that gets stuff out of
-aanother particle quickly, but doesn't affect it too much after that. This current antigrav
-simulation might be the best way to do it, I don't know.
-
-Somebody should really go through and comment the code better
-To go with this, somebody should make a new logging function for each module that is able to have
-numbers in it or something, that is really annoying. Maybe some function that can be imported that
-just emulates Stdout() on a string, that would be nice.
-
-Figure out what else we have to do, and prune out thing that have already been done.
-
-Make it so that if you're going to place a particle on top of another, it just deletes the old one
-or rig LMB to make, and RMB to delete the nearest one/underneath cursor one.
-
-Jun 03, 2010
+---------------------------------------------------------------------------------------------------
 
 Split off repel, gravity, and point to be in a different project dir, just like the end equivalent
 should work. Create a new program/new code to take the files, parse them as necessary and then
 generate new output files/binaries based on the information contained within.
-
-Implement scroll wheel support by adding in the viw width/height in addition to the actual window
-width and height. This way, you can get the scroll wheel events (SDL_BUTTON_WHEELDOWN and
-SDL_BUTTON_WHEELUP) as a means of zooming in and out by updating the view width/height.
-
-2/5/10
-
-Update the TODO, really important :D
-
-Fix repel to use that elastic code
-
-Fix everything now that it's all borked. To help with this, look into using less objects as that
-could very well be screwing things up
-
-1/5/10
-
-The main thing that needs done code-wise at this point is to have the gravity and repel forces
-reimplemented properly. The way we were going to do it, where you can define different polygons
-and percents to apply I think would help a ton here, as we could have gravity drop off at radius
-and have the repel pick up.
-
-Other huge thing to do is separate the simulation part from the render part, such as using two
-threads or anything that'll split them up.
-
-A script that checks for basic parse errors would be nice.
-
-Before 1/5/10
-
-display.d:
-	- Decide on the number of dimensions (a lot of OpenGL code will be different)
-		Note: We could use a actor based system where display only sets up the OpenGL environment
-		and then each actor then draws itself in whatever dimensions
-	- Make this file and whatever it imports be able to take arbitrary objects based on some class
-	  and display them in either 2 or 3 dimensions.
-	- Needs to be able to get the objects added easily, have some common interface for defining how
-	  shit is rendered
 
 main.d:
 	- This should look for different objects and seed conditions or something. Have the main GUI in
@@ -85,12 +80,5 @@ main.d:
 particle.d:
 	- Make it so that it holds some level of abstraction (e.g., "molecule") to class it under
 	- Add some set of predefined things for it to do that can be strung together in some other file
-	- Create some function called "work" or the like that is overridden in the other file
 
-force.d:
-	- Perhaps ditch in favor of allowing particles to do this?
-		Note: might be best to allow forces to be created and then they can be "work"'d from a
-		to allow easy duplication of wanted effect
-	- Make these have a virtual "work" then?
-
-# vim: textwidth=100: fo+=tc:
+# vim: textwidth=100: fo+=tc: spell:
