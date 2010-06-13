@@ -19,6 +19,7 @@
 */// }}}
 module game;
 
+import tango.io.Stdout;
 import tango.util.container.LinkedList;
 import tango.util.log.Log;
 import tango.util.log.AppendConsole;
@@ -86,8 +87,10 @@ public class Game : Entity
 
 			SDL_WM_SetCaption( cast( char* )PROGRAM_NAME, null );
 
+
 			glEnable( GL_TEXTURE_2D );
 			glEnable( GL_BLEND );
+			glEnable( GL_POINT_SMOOTH );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glEnable( GL_POINT_SMOOTH );
 			glEnable( GL_DEPTH_TEST );
@@ -114,6 +117,10 @@ public class Game : Entity
 			glOrtho( 0, ViewWidth, 0, ViewHeight, -10, 10 );
 			glMatrixMode( GL_MODELVIEW );
 			m_Zoom = Width() / ViewWidth();
+			if(Width / ViewWidth != Height / ViewHeight )
+			{
+				Stdout.formatln( "Axes zoom ratios not congruent.   W	{} |	H	{}", Width / ViewWidth, Height / ViewHeight);
+			}
 		} //}}}
 
 		/// Iterates through each actor that has been registered and calls its Draw function

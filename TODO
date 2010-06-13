@@ -9,8 +9,6 @@ eaiser to see, if you want that to work on yours let me know.
 
 Jun 04, 2010
 
-Zoom might also want to be added to game to work out some other problems.
-
 The repel might still want to be tweaked to be cubic or something, something that gets stuff out of
 aanother particle quickly, but doesn't affect it too much after that. This current antigrav
 simulation might be the best way to do it, I don't know.
@@ -81,9 +79,6 @@ Miscellaneous:
 		  isn't what I mean, maybe Bison?)
 
 Nolan:
-	- Learn how to use different branches
-	- Learn how to push different branches
-	- Learn importance of NEVER breaking the build in master
 	- You never did send me that email that the TODO has been mentioning since the 5th :p
 
 Jeff:
