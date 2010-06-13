@@ -34,12 +34,15 @@ import game;
 import particle;
 import particle_system;
 import entity;
+import entities.polygon;
 import entities.point;
 import forces.exterior.gravity;
 import forces.interior.repel;
 import forces.colliding.elastic_collision;
 
 import derelict.sdl.sdl;
+
+import derelict.opengl.gl;
 
 // Set up the logger, and the Key associative array
 Logger log; //{{{
@@ -153,6 +156,10 @@ int main( char[][] args )
 	m_Game.TickInterval = 1000 / 100;
 	//}}}
 
+	float floatArray[2];
+	glGetFloatv( GL_SMOOTH_POINT_SIZE_RANGE, cast( float* )( floatArray ) );
+	Stdout.formatln( "{} | {}", floatArray[0], floatArray[1]);
+
 	/// Create Gravity/Repel forces
 	const real rgConstant = 1024.0; //{{{
 	Stdout.formatln( "\trgConstant: {} [so:{}]", rgConstant, real.sizeof );
@@ -197,20 +204,20 @@ int main( char[][] args )
 
 	log.info( "Creating particles/points" );
 	LinkedList!( Particle ) m_Particles = new LinkedList!( Particle );
-	LinkedList!( Point ) m_Points = new LinkedList!( Point );
+	LinkedList!( Polygon ) m_Polygons = new LinkedList!( Polygon );
 	//m_Particles.length = numObjects;
-	//m_Points.length = numObjects;
+	//m_Polygons.length = numObjects;
 
 	/// Create particles
 	for( uint i = 0; i < numObjects; i++ ) //{{{
 	{
-		Point nPoint = new Point( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
-		m_Points.add( nPoint );
-		m_Game.AddEntity( nPoint );
+		Polygon nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
+		m_Polygons.add( nPolygon );
+		m_Game.AddEntity( nPolygon );
 
 		Particle nParticle = new Particle();
 		m_Particles.add( nParticle );
-		nParticle.AddEntity( nPoint );
+		nParticle.AddEntity( nPolygon );
 		nParticle.Radius = 10.0;
 
 		nParticle.CurrentPositions( m_Game.Width / 2 + 100*cos( i * 2 * PI / numObjects ),
@@ -249,14 +256,14 @@ int main( char[][] args )
 	} //}}}
 
 	log.info( "Setting up the sun" );
-	Point m_SunPoint = new Point( m_Game.Width / 2, m_Game.Height / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
+	Polygon m_SunPolygon = new Polygon( m_Game.Width / 2, m_Game.Height / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
 	Particle m_Sun = new Particle();
 
-	m_Sun.AddEntity( m_SunPoint );
+	m_Sun.AddEntity( m_SunPolygon );
 	m_Sun.Positions( gWidth / 2, gHeight / 2 );
 	m_Sun.Radius( 25.0f );
 	m_Sun.Mass( 62.5f );
-	m_Game.AddEntity( m_SunPoint );
+	m_Game.AddEntity( m_SunPolygon );
 	m_ParticleSystem.AddParticle( m_Sun );
 
 	m_Sun.AddForce( m_Gravity );
@@ -268,15 +275,15 @@ int main( char[][] args )
 	//}}}
 
 	log.info( "Setting up the cursor" );
-	Point m_CursorPoint = new Point( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
+	Polygon m_CursorPolygon = new Polygon( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
 	m_Game.WarpMouse( 400, 300 );
 	Particle m_Cursor = new Particle();
 
-	m_Cursor.AddEntity( m_CursorPoint );
+	m_Cursor.AddEntity( m_CursorPolygon );
 	m_Cursor.Positions( 400.0f, 300.0f );
 	m_Cursor.Radius( 0.0f );
 	m_Cursor.Mass( 0.0f );
-	m_Game.AddEntity( m_CursorPoint );
+	m_Game.AddEntity( m_CursorPolygon );
 	m_ParticleSystem.AddParticle( m_Cursor );
 
 	//m_Cursor.AddForce( m_Gravity );
@@ -336,8 +343,8 @@ int main( char[][] args )
 			if( m_Game.ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
 			{
 				lastSpawn = m_Game.ClickCreateTime( SDL_BUTTON_RIGHT );
-				real xPos = m_CursorPoint.XPosition;
-				real yPos = m_CursorPoint.YPosition;
+				real xPos = m_CursorPolygon.XPosition;
+				real yPos = m_CursorPolygon.YPosition;
 
 				log.info( "Setting minDist to infinity" );
 				real minDist2 = real.infinity;
@@ -345,8 +352,8 @@ int main( char[][] args )
 				log.info( "Starting dist checking loop" );
 				foreach( Particle i; m_Particles ) /// Determine minDist squared
 				{ //{{{
-					real cXDist = m_CursorPoint.XPosition - i.XPosition;
-					real cYDist = m_CursorPoint.YPosition - i.YPosition;
+					real cXDist = m_CursorPolygon.XPosition - i.XPosition;
+					real cYDist = m_CursorPolygon.YPosition - i.YPosition;
 					real cDist2 = cXDist*cXDist + cYDist*cYDist;
 					if( cDist2 < minDist2 )
 					{
@@ -358,10 +365,10 @@ int main( char[][] args )
 				if( minDist2 < 100 ) /// If we intersect with a particle, remove it
 				{ //{{{
 					log.info( "Removing..." );
-					Point eMin = cast( Point )( pMin.GetEntity );
+					Polygon eMin = cast( Polygon )( pMin.GetEntity );
 					m_ParticleSystem.RemoveParticle( pMin );
 					m_Particles.remove( pMin, true );
-					m_Points.remove( eMin, true );
+					m_Polygons.remove( eMin, true );
 					m_Game.RemoveEntity( eMin );
 				} //}}}
 				else
@@ -371,18 +378,18 @@ int main( char[][] args )
 					if( ( m_Particles.size < 1000 ) ) /// Make a new particle
 					{ //{{{
 						log.info( "Created new particle based on RMB press" );
-						uint pNum = m_Points.size + 1;
+						uint pNum = m_Polygons.size + 1;
 						Stdout.formatln( "Number {}!", pNum );
-						Point nPoint = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
-						m_Points.add( nPoint );
-						m_Game.AddEntity( nPoint );
+						Polygon nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+						m_Polygons.add( nPolygon );
+						m_Game.AddEntity( nPolygon );
 
 						Particle nParticle = new Particle();
 						m_Particles.add( nParticle );
-						nParticle.AddEntity( nPoint );
+						nParticle.AddEntity( nPolygon );
 						nParticle.Radius = 10.0;
 
-						nParticle.CurrentPositions( m_CursorPoint.XPosition, m_CursorPoint.YPosition );
+						nParticle.CurrentPositions( m_CursorPolygon.XPosition, m_CursorPolygon.YPosition );
 
 						switch( initVel ) /// Determine appropriate init velocities
 						{ //{{{
