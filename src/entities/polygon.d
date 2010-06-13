@@ -63,7 +63,8 @@ class Polygon : Entity
 		override void Draw( real m_Zoom = 1 )
 		{ //{{{
 				glColor4f( Red, Green, Blue, Alpha );
-				glBegin(GL_LINE_LOOP);
+				glPolygonMode( GL_FRONT , GL_FILL );
+				glBegin(GL_POLYGON);
 					for(int ii = 0; ii < numSegments; ii++)
 					{
 						float theta = 2.0f * PI * cast( float )( ii ) / cast( float )( numSegments );//get the current angle
