@@ -21,6 +21,8 @@ module force;
 
 import particle;
 
+enum forceType {exterior = 0, interior, collision };
+
 class Force
 {
 	public:
@@ -28,11 +30,21 @@ class Force
 		{
 		}
 
+		void Type( forceType nForceType )
+		{
+			m_ForceType = nForceType;
+		}
+		ForceType Type()
+		{
+			return m_ForceType;
+		}
+
 	protected:
 		this()
 		{
+			m_ForceType = null;
 		}
-
+		forceType m_ForceType;
 	private:
 
 }

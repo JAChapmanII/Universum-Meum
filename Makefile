@@ -11,10 +11,12 @@ DFLAGS=-no-export-dynamic -lldl
 
 all: ${PROG}
 
-${PROG}: dirs clean release
+${PROG}: debug
+
+full: dirs clean release documentation
 
 release:
-	${DD} -D -Dq${DOCDIR} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
+	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
 		${DFLAGS} -O -release ${SRCDIR}/${SRC}
 
 debug: dirs clean
@@ -24,6 +26,9 @@ debug: dirs clean
 profile:
 	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG}-profile -I${SRCDIR}/\
 		${DFLAGS} -g -debug -profile ${SRCDIR}/${SRC}
+
+documentation:
+	${DD} -p -D -Dq${DOCDIR} -I${SRCDIR} ${SRCDIR}/${SRC}
 
 dirs:
 	mkdir -p ${SRCDIR}

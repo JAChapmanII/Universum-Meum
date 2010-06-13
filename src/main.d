@@ -28,13 +28,16 @@ import tango.math.random.Twister;
 import integer = tango.text.convert.Integer;
 
 import tango.io.Stdout;
+import tango.io.Console;
+
 import game;
 import particle;
 import particle_system;
 import entity;
 import entities.point;
-import forces.gravity;
-import forces.repel;
+import forces.exterior.gravity;
+import forces.interior.repel;
+import forces.colliding.elastic_collision;
 
 import derelict.sdl.sdl;
 
@@ -125,8 +128,24 @@ int main( char[][] args )
 	auto rand = new Twister();
 	rand.seed();
 
+	uint gWidth, gHeight;
+	char[] buf;
+	while( ( gWidth = integer.parse( buf ) ) == 0 )
+	{
+		Stdout.formatln( "Please enter a width:" );
+		buf = Cin.get();
+	}
+	buf.length = 0;
+	while( ( gHeight = integer.parse( buf ) ) == 0 )
+	{
+		Stdout.formatln( "Please enter a height:" );
+		buf = Cin.get();
+	}
+	buf.length = 0;
+
 	log.info( "Creating a Game" );
-	Game m_Game = Game.Instance( 800, 600, 32 ); //{{{
+	Stdout.formatln( "W: {}\tH: {}", gWidth, gHeight );
+	Game m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
 	m_Game.XPosition = 0;
 	m_Game.YPosition = 0;
 
@@ -142,7 +161,7 @@ int main( char[][] args )
 	Gravity m_Gravity = Gravity.Instance();
 	m_Gravity.GravityConstant = rgConstant;
 
-	log.info( "Creating a repel force" );
+	log.info( "Creating a elastic_collision force" );
 	Repel m_Repel = Repel.Instance();
 	m_Repel.RepelConstant = rgConstant;
 
@@ -152,13 +171,13 @@ int main( char[][] args )
 	log.info( "Now a particle system" );
 	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
-	/// Process ars
-	uint numObjects = 0; //{{{
+	/// Process arguments
+	uint numObjects = 0; //{{ {
 	uint initVel = 0;
 	if( args.length > 1 )
 	{
 		numObjects = integer.parse( args[ 1 ] );
-		numObjects %= 24;
+		numObjects %= 1000;
 		if( numObjects < 1 )
 		{
 			numObjects = 1;
@@ -194,8 +213,8 @@ int main( char[][] args )
 		nParticle.AddEntity( nPoint );
 		nParticle.Radius = 10.0;
 
-		nParticle.CurrentPositions( 400 + 100*cos( i * 2 * PI / numObjects ),
-									300 + 100*sin( i * 2 * PI / numObjects ) );
+		nParticle.CurrentPositions( m_Game.Width / 2 + 100*cos( i * 2 * PI / numObjects ),
+									m_Game.Height / 2 + 100*sin( i * 2 * PI / numObjects ) );
 
 		switch( initVel ) /// Determine appropriate init velocities
 		{ //{{{
@@ -230,11 +249,11 @@ int main( char[][] args )
 	} //}}}
 
 	log.info( "Setting up the sun" );
-	Point m_SunPoint = new Point( 400.0f, 300.0f, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
+	Point m_SunPoint = new Point( m_Game.Width / 2, m_Game.Height / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
 	Particle m_Sun = new Particle();
 
 	m_Sun.AddEntity( m_SunPoint );
-	m_Sun.Positions( 400.0f, 300.0f );
+	m_Sun.Positions( gWidth / 2, gHeight / 2 );
 	m_Sun.Radius( 25.0f );
 	m_Sun.Mass( 62.5f );
 	m_Game.AddEntity( m_SunPoint );
@@ -349,12 +368,13 @@ int main( char[][] args )
 				{
 					log.info( "No intersecting particle" );
 
-					if( ( m_Particles.size < 24 ) ) /// Make a new particle
+					if( ( m_Particles.size < 1000 ) ) /// Make a new particle
 					{ //{{{
 						log.info( "Created new particle based on RMB press" );
 						uint pNum = m_Points.size + 1;
 						Stdout.formatln( "Number {}!", pNum );
 						Point nPoint = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+						nPoint.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 						m_Points.add( nPoint );
 						m_Game.AddEntity( nPoint );
 
@@ -402,7 +422,8 @@ int main( char[][] args )
 
 		if( m_Game.isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
-			m_Game.ResizeViewport( m_Game.ViewWidth - 25, m_Game.ViewHeight - 25 );
+			m_Game.ResizeViewport( m_Game.ViewWidth - m_Game.Width / 24,
+								   m_Game.ViewHeight - m_Game.Height / 24 );
 			m_Game.Centers( xCenter, yCenter );
 			foreach( Point i; m_Points )
 			{
@@ -412,7 +433,8 @@ int main( char[][] args )
 		} //}}}
 		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
 		{ //{{{
-			m_Game.ResizeViewport( m_Game.ViewWidth + 25, m_Game.ViewHeight + 25 );
+			m_Game.ResizeViewport( m_Game.ViewWidth + m_Game.Width / 24,
+								   m_Game.ViewHeight + m_Game.Height / 24 );
 			m_Game.Centers( xCenter, yCenter );
 			foreach( Point i; m_Points )
 			{

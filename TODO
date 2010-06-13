@@ -30,62 +30,70 @@ Make it so that if you're going to place a particle on top of another, it just d
 or rig LMB to make, and RMB to delete the nearest one/underneath cursor one.
 
 Jun 03, 2010
+=======
+Design Problems:
+	- Current example "repel" looks bad. Get an example that will look realistic.
+		- Finish the forceType enumeration implementation to allow different forces to be applied
+		  only at certain times.
+		- Split off and make a force that is actually elastic/inelastic collisions
+			- Get a system were we can impose restrictions on the time step of ParticleSystem so
+			  that this force will actually ever be applied.
+		- Suggestion was made for the interpolation method to be non-quadratic. May or may not make
+		  a better "repel" force. Might be better suited for some template repel class.
+	- Timing system is flawed. Need a new implementation that is interval independent.
+		- Hopefully this will work out of the box with negative time changes
 
-Split off repel, gravity, and point to be in a different project dir, just like the end equivalent
-should work. Create a new program/new code to take the files, parse them as necessary and then
-generate new output files/binaries based on the information contained within.
+Bugs:
+	- Our code sucks. It should suck less.
+	- There is no documentation really.
+		- In line documentation can be made with /// before a declaration. This can be (and is)
+		  extracted in the documentation target of the makefile.
+		- Pretty much everything should be documented, not just for us but for any end-user trying
+		  to add/make their own forces. It'd be nice to know the API
+	- Log more {,useful} stuff.
+		- Make a logging function that works like Stdout, so we can log variable values
+			- Might be able to do a Stdout onto a string actually.
 
-Implement scroll wheel support by adding in the viw width/height in addition to the actual window
-width and height. This way, you can get the scroll wheel events (SDL_BUTTON_WHEELDOWN and
-SDL_BUTTON_WHEELUP) as a means of zooming in and out by updating the view width/height.
+Bad implementation:
+	- The whole hack-ish scroll wheel support.
+	- Some stuff uses lists, some uses arrays, make this consistent (array → linked list)
 
-2/5/10
+Features:
+	- ParticleSystem should have a way of passing information it's calculating to each call of a
+	  Work function. This should save a crap load of processing time, especially on mirror calls.
+	- Zoom variable should be added to the Game class so it can pass it to every member getting
+	  Drawn or something like that. Then it can automatically be adjusted when the view/screen is
+	  adjusted.
+	- Template-ize the current repel force to allow different interpolation method.
+	- Template-ize the gravity force and call it "attract".
+		- Make gravity an instance of this template.
+	- Make forces be even more customizable by allowing polygons of multiplication.
+		- i.e., at radius <5 there is a 1 multiplier of effect, ot >=5 there is a 0 multiplier to
+		  have some force that applies fully if the distance is within 5 and 0 if it isn't.
+	- Make the thing multi-threaded
+		- First thing to do is split off rendering/simulating
+		- Second is to get the simulating thing to be safe to do on multiple particles at once and
+		  then spawn threads for each. [WARNING: horribly hard to do, I'm sure]
 
-Update the TODO, really important :D
+Miscellaneous:
+	- Create more formal/rigorous coding style. Use it. Needs to be consistent.
+		- Extend HACKING file
+	- TODO looks like crap. Need to finish fixing it up so it's readable and easy to update.
+		- I like the way this is looking, but the back log still needs cleaned out.
+		- Make sure it is updated regularly
+	- Build system is bad, get on to ldc finally.
+		- In the meantime (if it's not too hard) a script that checks for basic parse-ability would
+		  bpEe nice. Maybe we can steal a YACC file that works for C or something? (YACC probably
+		  isn't what I mean, maybe Bison?)
 
-Fix repel to use that elastic code
+Nolan:
+	- Learn how to use different branches
+	- Learn how to push different branches
+	- Learn importance of NEVER breaking the build in master
+	- You never did send me that email that the TODO has been mentioning since the 5th :p
 
-Fix everything now that it's all borked. To help with this, look into using less objects as that
-could very well be screwing things up
+Jeff:
+	- Make a more consistent work schedule
 
-1/5/10
-
-The main thing that needs done code-wise at this point is to have the gravity and repel forces
-reimplemented properly. The way we were going to do it, where you can define different polygons
-and percents to apply I think would help a ton here, as we could have gravity drop off at radius
-and have the repel pick up.
-
-Other huge thing to do is separate the simulation part from the render part, such as using two
-threads or anything that'll split them up.
-
-A script that checks for basic parse errors would be nice.
-
-Before 1/5/10
-
-display.d:
-	- Decide on the number of dimensions (a lot of OpenGL code will be different)
-		Note: We could use a actor based system where display only sets up the OpenGL environment
-		and then each actor then draws itself in whatever dimensions
-	- Make this file and whatever it imports be able to take arbitrary objects based on some class
-	  and display them in either 2 or 3 dimensions.
-	- Needs to be able to get the objects added easily, have some common interface for defining how
-	  shit is rendered
-
-main.d:
-	- This should look for different objects and seed conditions or something. Have the main GUI in
-	  here from which the person can select a project to be compiled/run
-	- Set up the main controls once a universe is loaded, zoom/save/quit/pan/rotate/fast/slow/pause
-	  and everything else it might need such as changing the abstraction level.
-
-particle.d:
-	- Make it so that it holds some level of abstraction (e.g., "molecule") to class it under
-	- Add some set of predefined things for it to do that can be strung together in some other file
-	- Create some function called "work" or the like that is overridden in the other file
-
-force.d:
-	- Perhaps ditch in favor of allowing particles to do this?
-		Note: might be best to allow forces to be created and then they can be "work"'d from a
-		to allow easy duplication of wanted effect
-	- Make these have a virtual "work" then?
-
-# vim: textwidth=100: fo+=tc:
+New Coders:
+	- Contact us and tell us what you're interested in.
