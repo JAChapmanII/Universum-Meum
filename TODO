@@ -13,8 +13,6 @@ eaiser to see, if you want that to work on yours let me know.
 
 Jun 04, 2010
 
-Zoom might also want to be added to game to work out some other problems.
-
 The repel might still want to be tweaked to be cubic or something, something that gets stuff out of
 aanother particle quickly, but doesn't affect it too much after that. This current antigrav
 simulation might be the best way to do it, I don't know.
@@ -61,9 +59,6 @@ Bad implementation:
 Features:
 	- ParticleSystem should have a way of passing information it's calculating to each call of a
 	  Work function. This should save a crap load of processing time, especially on mirror calls.
-	- Zoom variable should be added to the Game class so it can pass it to every member getting
-	  Drawn or something like that. Then it can automatically be adjusted when the view/screen is
-	  adjusted.
 	- Template-ize the current repel force to allow different interpolation method.
 	- Template-ize the gravity force and call it "attract".
 		- Make gravity an instance of this template.
@@ -87,9 +82,6 @@ Miscellaneous:
 		  isn't what I mean, maybe Bison?)
 
 Nolan:
-	- Learn how to use different branches
-	- Learn how to push different branches
-	- Learn importance of NEVER breaking the build in master
 	- You never did send me that email that the TODO has been mentioning since the 5th :p
 
 Jeff:
