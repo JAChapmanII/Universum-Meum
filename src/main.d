@@ -374,7 +374,6 @@ int main( char[][] args )
 						uint pNum = m_Points.size + 1;
 						Stdout.formatln( "Number {}!", pNum );
 						Point nPoint = new Point( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
-						nPoint.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 						m_Points.add( nPoint );
 						m_Game.AddEntity( nPoint );
 
@@ -425,22 +424,12 @@ int main( char[][] args )
 			m_Game.ResizeViewport( m_Game.ViewWidth - m_Game.Width / 24,
 								   m_Game.ViewHeight - m_Game.Height / 24 );
 			m_Game.Centers( xCenter, yCenter );
-			foreach( Point i; m_Points )
-			{
-				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
-			}
-			m_SunPoint.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 		} //}}}
 		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
 		{ //{{{
 			m_Game.ResizeViewport( m_Game.ViewWidth + m_Game.Width / 24,
 								   m_Game.ViewHeight + m_Game.Height / 24 );
 			m_Game.Centers( xCenter, yCenter );
-			foreach( Point i; m_Points )
-			{
-				i.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
-			}
-			m_SunPoint.ZoomLevel = m_Game.Width / m_Game.ViewWidth;
 		} //}}}
 
 		m_ParticleSystem.Work( .02 );

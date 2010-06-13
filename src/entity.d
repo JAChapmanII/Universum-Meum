@@ -22,9 +22,11 @@ module entity;
 class Entity
 {
 	public:
-		void Draw()
+		void Draw( real m_Zoom = 1 )
 		{
+
 		}
+
 
 		void Update()
 		{

@@ -28,7 +28,6 @@ class Point : Entity
 	public:
 		this( real iX, real iY )
 		{ //{{{
-			ZoomLevel = 1;
 			XPosition = iX;
 			YPosition = iY;
 			Radius = 1;
@@ -37,7 +36,6 @@ class Point : Entity
 
 		this( real iX, real iY, real iRadius )
 		{ //{{{
-			ZoomLevel = 1;
 			XPosition = iX;
 			YPosition = iY;
 			Radius = iRadius;
@@ -46,7 +44,6 @@ class Point : Entity
 
 		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue )
 		{ //{{{
-			ZoomLevel = 1;
 			XPosition = iX;
 			YPosition = iY;
 			Radius = iRadius;
@@ -55,16 +52,15 @@ class Point : Entity
 
 		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue, real iAlpha )
 		{ //{{{
-			ZoomLevel = 1;
 			XPosition = iX;
 			YPosition = iY;
 			Radius = iRadius;
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
 
-		override void Draw()
+		override void Draw( real m_Zoom = 1 )
 		{ //{{{
-			glPointSize( Radius * ZoomLevel );
+			glPointSize( Radius * m_Zoom );
 			glColor4f( Red, Green, Blue, Alpha );
 			glBegin( GL_POINTS );
 			glVertex2f( XPosition, YPosition );
@@ -79,16 +75,6 @@ class Point : Entity
 		void Radius( real nRadius )
 		{
 			m_Radius = nRadius;
-		} //}}}
-
-		// {G,S}etter for m_ZoomLevel
-		real ZoomLevel() //{{{
-		{
-			return m_ZoomLevel;
-		}
-		void ZoomLevel( real nZoomLevel )
-		{
-			m_ZoomLevel = nZoomLevel;
 		} //}}}
 
 		void Color( real nRed, real nGreen, real nBlue, real nAlpha )
@@ -148,7 +134,6 @@ class Point : Entity
 
 	protected:
 		real m_Radius;
-		real m_ZoomLevel;
 		real[ 4 ] m_Color;
 
 	private:

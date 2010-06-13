@@ -65,6 +65,8 @@ public class Game : Entity
 
 		alias Instance opCall;
 
+		real m_Zoom;
+
 		void InitSGL( uint iWidth, uint iHeight, uint iBPP )
 		{ //{{{
 			loadModules();
@@ -80,8 +82,7 @@ public class Game : Entity
 			Width = iWidth;
 			Height = iHeight;
 			BPP = iBPP;
-			ViewWidth = iWidth;
-			ViewHeight = iHeight;
+			ResizeViewport( iWidth, iHeight );
 
 			SDL_WM_SetCaption( cast( char* )PROGRAM_NAME, null );
 
@@ -90,11 +91,6 @@ public class Game : Entity
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glEnable( GL_POINT_SMOOTH );
 			glEnable( GL_DEPTH_TEST );
-
-			glMatrixMode( GL_PROJECTION );
-			glLoadIdentity();
-			glOrtho( 0, Width, 0, Height, -10, 10 );
-			glMatrixMode( GL_MODELVIEW );
 			glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
@@ -117,10 +113,11 @@ public class Game : Entity
 			glLoadIdentity();
 			glOrtho( 0, ViewWidth, 0, ViewHeight, -10, 10 );
 			glMatrixMode( GL_MODELVIEW );
+			m_Zoom = Width() / ViewWidth();
 		} //}}}
 
 		/// Iterates through each actor that has been registered and calls its Draw function
-		override void Draw()
+		override void Draw( real magZoom = 1 )
 		{ //{{{
 			glPushMatrix();
 			glTranslatef( -XPosition, -YPosition, 0 );
@@ -133,7 +130,7 @@ public class Game : Entity
 				}
 				else
 				{
-					i.Draw();
+					i.Draw( m_Zoom * magZoom );
 				}
 			}
 			glPopMatrix();
@@ -425,21 +422,21 @@ public class Game : Entity
 			return m_isActive;
 		} //}}}
 
-		/// {G,S}etter for m_ViewWidth
-		void ViewWidth( real nViewWidth ) //{{{
+		/// Getter for m_ViewWidth
+		/*void ViewWidth( real nViewWidth ) //{{{
 		{
 			m_ViewWidth = nViewWidth;
-		}
+		}*/
 		real ViewWidth()
 		{
 			return m_ViewWidth;
 		} //}}}
 
-		/// {G,S}etter for m_ViewHeight
-		void ViewHeight( real nViewHeight ) //{{{
+		/// Getter for m_ViewHeight
+		/*void ViewHeight( real nViewHeight ) //{{{
 		{
 			m_ViewHeight = nViewHeight;
-		}
+		}*/
 		real ViewHeight()
 		{
 			return m_ViewHeight;
@@ -492,7 +489,7 @@ public class Game : Entity
 			WarpMouse( m_Cursor[ 0 ], nCY );
 		} //}}}
 
-	protected: //{{{
+	protected : //{{{
 		this( uint iWidth, uint iHeight, uint iBPP )
 		{
 			InitSGL( iWidth, iHeight, iBPP );
@@ -597,6 +594,8 @@ public class Game : Entity
 		LinkedList!( Keypress ) m_Keypresses;
 		LinkedList!( Click ) m_Clicks;
 		uint[ 2 ] m_Cursor;
+
+		real e_Zoom = 1;
 
 		//}}}
 

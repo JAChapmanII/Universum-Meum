@@ -34,7 +34,7 @@ class Force
 		{
 			m_ForceType = nForceType;
 		}
-		ForceType Type()
+		forceType Type()
 		{
 			return m_ForceType;
 		}
@@ -42,7 +42,7 @@ class Force
 	protected:
 		this()
 		{
-			m_ForceType = null;
+			m_ForceType = cast( forceType )( null );
 		}
 		forceType m_ForceType;
 	private:
