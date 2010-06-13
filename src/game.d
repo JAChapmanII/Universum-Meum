@@ -86,8 +86,10 @@ public class Game : Entity
 
 			SDL_WM_SetCaption( cast( char* )PROGRAM_NAME, null );
 
+
 			glEnable( GL_TEXTURE_2D );
 			glEnable( GL_BLEND );
+			glEnable( GL_POINT_SMOOTH );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glEnable( GL_POINT_SMOOTH );
 			glEnable( GL_DEPTH_TEST );
