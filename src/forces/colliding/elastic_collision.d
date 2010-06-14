@@ -57,8 +57,7 @@ class Elastic_collision : Force
 
 		alias Instance opCall;
 
-		/// In the case of a perefct collision, uses elastic collision code. Otherwise, it uses the
-		/// gravity code *-2 to simulate anti-gravity.
+		/// In the case of a perefct collision, uses elastic collision code
 		override void Work( Particle A, Particle B, ref real deltaTime )
 		{ //{{{
 			real xDist = B.XPosition - A.XPosition;
@@ -66,32 +65,18 @@ class Elastic_collision : Force
 			real dist2 = (xDist * xDist) + (yDist * yDist);
 			real dist  = sqrt( dist2 );
 
-			if( ( dist < (A.Radius + B.Radius)/2 ) && ( dist2 > 0 ) )
+			if( dist == (A.Radius+B.Radius) )
 			{
-				real repMass = Elastic_collisionConstant * B.Mass * 1.2;
-				real sectLength = (A.Radius+B.Radius/2) - dist;
-				real unitX = xDist / dist;
-				real unitY = yDist / dist;
+				real theta = atan2( yDist, xDist );
+				real dir1 = atan2( A.YVelocity, A.XVelocity );
+				real dir2 = atan2( B.YVelocity, B.XVelocity );
+				real nYV1 = A.Speed * sin( dir1 - theta );
+				real fXV1 = ( ( A.Mass - B.Mass ) * ( A.Speed * cos( dir1 - theta ) ) + 2 *
+							B.Mass * ( B.Speed * cos( dir2 - theta ) ) ) / ( A.Mass + B.Mass );
 
-				A.XAcceleration = A.NextXAcceleration -
-					( repMass ) * ( unitX ) / ( dist2 );
-
-				A.YAcceleration = A.NextYAcceleration -
-					( repMass ) * ( unitY ) / ( dist2 );
-
-				if( dist == (A.Radius+B.Radius/2) )
-				{
-					real theta = atan2( yDist, xDist );
-					real dir1 = atan2( A.YVelocity, A.XVelocity );
-					real dir2 = atan2( B.YVelocity, B.XVelocity );
-					real nYV1 = A.Speed * sin( dir1 - theta );
-					real fXV1 = ( ( A.Mass - B.Mass ) * ( A.Speed * cos( dir1 - theta ) ) + 2 *
-								B.Mass * ( B.Speed * cos( dir2 - theta ) ) ) / ( A.Mass + B.Mass );
-
-					real nYV2 = B.Speed * sin( dir1 - theta );
-					A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
-					A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
-				}
+				real nYV2 = B.Speed * sin( dir1 - theta );
+				A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
+				A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
 			}
 		} //}}}
 
