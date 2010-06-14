@@ -62,21 +62,31 @@ class Polygon : Entity
 
 		override void Draw( real m_Zoom = 1 )
 		{ //{{{
-				glColor4f( Red, Green, Blue, Alpha );
-				glPolygonMode( GL_FRONT , GL_FILL );
-				glBegin(GL_POLYGON);
-					for(int ii = 0; ii < numSegments; ii++)
-					{
-						float theta = 2.0f * PI * cast( float )( ii ) / cast( float )( numSegments );//get the current angle
-						float x = Radius * cos(theta);//calculate the x component
-						float y = Radius * sin(theta);//calculate the y component
-						glVertex2f(x + XPosition, y + YPosition);//output vertex
-					}
-				glEnd();
-
+			glColor4f( Red, Green, Blue, Alpha );
+			glPolygonMode( GL_FRONT, GL_FILL );
+			glBegin( GL_POLYGON );
+				real delTheta = 2 * PI / cast( real )( NumSegments );
+				real theta = 0;
+				for( uint segment = 0; segment < NumSegments; ++segment )
+				{
+					theta = segment * delTheta;
+					glVertex2f( Radius * cos( theta ) + XPosition,
+								Radius * sin( theta ) + YPosition );
+				}
+			glEnd();
 		} //}}}
 
-		// {G,S}etter for m_Radius
+		/// {G,S}etter for m_NumSegments
+		uint NumSegments() //{{{
+		{
+			return m_NumSegments;
+		}
+		void NumSegments( uint nNumSegments )
+		{
+			m_NumSegments = nNumSegments;
+		} //}}}
+
+		/// {G,S}etter for m_Radius
 		real Radius() //{{{
 		{
 			return m_Radius;
@@ -144,7 +154,7 @@ class Polygon : Entity
 	protected:
 		real m_Radius;
 		real[ 4 ] m_Color;
-		int numSegments = 360;
+		uint m_NumSegments = 360;
 
 	private:
 
