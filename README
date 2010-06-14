@@ -23,6 +23,13 @@ development suite we use that we can offer. Once you have the build software, ex
 	make
 from the Universum Meum directory.
 
+There are several targets you can use, the default being "debug"
+	- full cleans everything and makes a release build and the documentatition
+	- release strips debug information and optimizes fully
+	- debug builds in debug information and does no optimization
+	- profile builds the same as debug, but also enables profiling (gprof information)
+	- documentation uses ddoc to make the documentation in docs/ (src code, not user manual)
+
 If anybody has created a worknig makefile for ldc, we'd love to see it and see if you can help us
 get ldc to work on our computers :)
 
