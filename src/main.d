@@ -428,11 +428,11 @@ int main( char[][] args )
 
 		if( m_Game.isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
-			if(m_Game.m_Zoom <= 24)
+			if( m_Game.m_Zoom <= 24 )
 			{
-			m_Game.ResizeViewport( m_Game.ViewWidth - cast( real )( m_Game.Width ) / 24.0f,
-								   m_Game.ViewHeight - cast( real )( m_Game.Height ) / 24.0f );
-			m_Game.Centers( xCenter, yCenter );
+				m_Game.ResizeViewport( m_Game.ViewWidth - cast( real )( m_Game.Width ) / 24.0f,
+									   m_Game.ViewHeight - cast( real )( m_Game.Height ) / 24.0f );
+				m_Game.Centers( xCenter, yCenter );
 			}
 		} //}}}
 		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
