@@ -1,30 +1,3 @@
-Jun 05, 2010
-
-Nolan !!!!!!!!!!! - Give me an email, lest I think you're slacking out on me :p We should probably
-both always look at the TODO whenever we pull, to see if there are anything done/undone etc.
-
-As an update to the documentation thing, ddoc can generate code documentation when a declaration is
-proceeded with a /// comment. Also, my vim is set up to highlight those lines differently so they're
-eaiser to see, if you want that to work on yours let me know.
-
-Jun 04, 2010
-
-The repel might still want to be tweaked to be cubic or something, something that gets stuff out of
-aanother particle quickly, but doesn't affect it too much after that. This current antigrav
-simulation might be the best way to do it, I don't know.
-
-Somebody should really go through and comment the code better
-To go with this, somebody should make a new logging function for each module that is able to have
-numbers in it or something, that is really annoying. Maybe some function that can be imported that
-just emulates Stdout() on a string, that would be nice.
-
-Figure out what else we have to do, and prune out thing that have already been done.
-
-Make it so that if you're going to place a particle on top of another, it just deletes the old one
-or rig LMB to make, and RMB to delete the nearest one/underneath cursor one.
-
-Jun 03, 2010
-=======
 Design Problems:
 	- Current example "repel" looks bad. Get an example that will look realistic.
 		- Finish the forceType enumeration implementation to allow different forces to be applied
@@ -47,7 +20,6 @@ Bugs:
 	- Log more {,useful} stuff.
 		- Make a logging function that works like Stdout, so we can log variable values
 			- Might be able to do a Stdout onto a string actually.
-	- Sun zooming is borked.
 
 Bad implementation:
 	- The whole hack-ish scroll wheel support.
@@ -79,6 +51,9 @@ Miscellaneous:
 		  isn't what I mean, maybe Bison?)
 
 Nolan:
+	- Follow the coding style
+		- If you have any problems with it, let me know and we'll adapt it. Just make sure
+		  everytihng is consistent.
 	- You never did send me that email that the TODO has been mentioning since the 5th :p
 
 Jeff:
