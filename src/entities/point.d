@@ -60,7 +60,8 @@ class Point : Entity
 
 		override void Draw( real m_Zoom = 1 )
 		{ //{{{
-			glPointSize( Radius * m_Zoom );
+			// glPointSize takes a diameter
+			glPointSize( Radius * 2 * m_Zoom );
 			glColor4f( Red, Green, Blue, Alpha );
 			glBegin( GL_POINTS );
 			glVertex2f( XPosition, YPosition );
