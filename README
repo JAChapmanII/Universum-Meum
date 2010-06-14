@@ -4,6 +4,7 @@ to build their own universe completely from scratch.
 UM is currently in pre-alhpa and many things do not work. If you'd like to help us hack, drop us a
 line either through github or through our emails.
 
+
 Obtaining:
 
 Github currently hosts the repo at http://github.com/JAChapmanII/Universum-Meum
@@ -20,7 +21,10 @@ longer works with gdc. We're trying to move to a newer (ldc-based) bulid system,
 Jeff an email and he'll try to help you build it. We also have an Arch Linux package with the exact
 development suite we use that we can offer. Once you have the build software, execute
 	make
-from the Universum Meum directory
+from the Universum Meum directory.
+
+If anybody has created a worknig makefile for ldc, we'd love to see it and see if you can help us
+get ldc to work on our computers :)
 
 
 Running:
@@ -47,12 +51,13 @@ information.
 Controls:
 
 Particle manipulation:
-	Once the game is running, right click in an empty place to create a new particle.
+	Right click in an empty place to create a new particle.
 	To delete a particle, right click when the cursor is on one.
 
 Panning/zooming:
 	If "lock" is not passed as an argument, you can use the arrow keys to pan the view.
-	You can use the mousewheel to zoom in and out
+	You can use the mousewheel to zoom in and out (If you zoom in too far, the camera will stop and
+													being able to view a 0x0 grid)
 
 Quiting:
 	Hit the "Esc"ape key.
