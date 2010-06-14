@@ -65,8 +65,6 @@ public class Game : Entity
 
 		alias Instance opCall;
 
-		real m_Zoom;
-
 		void InitSGL( uint iWidth, uint iHeight, uint iBPP )
 		{ //{{{
 			loadModules();
@@ -115,7 +113,7 @@ public class Game : Entity
 			glLoadIdentity();
 			glOrtho( 0, ViewWidth, 0, ViewHeight, -10, 10 );
 			glMatrixMode( GL_MODELVIEW );
-			m_Zoom = Width() / ViewWidth();
+			Zoom = Width() / ViewWidth();
 		} //}}}
 
 		/// Iterates through each actor that has been registered and calls its Draw function
@@ -132,7 +130,7 @@ public class Game : Entity
 				}
 				else
 				{
-					i.Draw( m_Zoom * magZoom );
+					i.Draw( Zoom * magZoom );
 				}
 			}
 			glPopMatrix();
@@ -481,7 +479,7 @@ public class Game : Entity
 			WarpMouse( nCX, m_Cursor[ 1 ] );
 		} //}}}
 
-		/// {G,S}etter for the Cursor X
+		/// {G,S}etter for the Cursor Y
 		uint CursorY() //{{{
 		{
 			return m_Cursor[ 1 ];
@@ -489,6 +487,16 @@ public class Game : Entity
 		void CursorY( uint nCY )
 		{
 			WarpMouse( m_Cursor[ 0 ], nCY );
+		} //}}}
+
+		/// {G,S}etter for the Zoom
+		void Zoom( real nZoom ) //{{{
+		{
+			m_Zoom = nZoom;
+		}
+		real Zoom()
+		{
+			return m_Zoom;
 		} //}}}
 
 	protected : //{{{
@@ -597,7 +605,7 @@ public class Game : Entity
 		LinkedList!( Click ) m_Clicks;
 		uint[ 2 ] m_Cursor;
 
-		real e_Zoom = 1;
+		real m_Zoom;
 
 		//}}}
 
