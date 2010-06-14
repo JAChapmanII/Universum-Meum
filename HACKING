@@ -17,7 +17,10 @@ import poop.Flush;
 class UppercaseForEachWord
 {
 	public:
-		void PublicMethod();
+		void PublicMethod()
+		{
+			Stdout.formatln( "Class methods use getter/setters too: {}", ProtectedVariable );
+		}
 
 		// Getter/Setter for m_ProtectedVariable
 		uint ProtectedVariable();
@@ -28,10 +31,14 @@ class UppercaseForEachWord
 		uint m_ProtectedVariable;
 }
 
-void RandomFunction();
+// Fold big long stuff, or logical blocks
+void RandomFunction()
+{ //{{{
+} //}}}
 
 int main( char[][] args )
 {
+	Stdout.formatln( "Invoked as; {}", args[ 0 ] );
 	if( args.length > 1 )
 	{
 		Stdout.formatln( "Argument one: {}", args[ 1 ] );
@@ -39,6 +46,8 @@ int main( char[][] args )
 
 	uint a = 5, b = 7;
 	uint c = ( a + ( b * b ) ) * args[ 0 ][ 0 ];
+
+	Stdout.formatln( "a: {} b: {} c: (a+(b^2))*{} = {}", a, b, args[ 0 ][ 0 ], c );
 
 	return 0;
 }
