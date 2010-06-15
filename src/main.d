@@ -154,7 +154,8 @@ int main( char[][] args )
 	m_Game.YPosition = 0;
 
 	log.info( "Setting framerate to 100" );
-	m_Game.TickInterval = 1000 / 100;
+	uint frameRate = 100;
+	m_Game.TickInterval = 1000 / frameRate;
 	//}}}
 
 	float floatArray[2];
@@ -463,6 +464,28 @@ int main( char[][] args )
 				m_Game.YPosition = m_Game.YPosition - 5;
 			}
 		} //}}}
+
+		if( m_Game.isPressed( Key[ "Key Pad Plus" ] ) )
+		{
+			frameRate += 5;
+			if( frameRate > 1000 )
+			{
+				frameRate = 1000;
+			}
+			Stdout.formatln( "New framerate: {}", frameRate );
+			m_Game.TickInterval = 1000 / frameRate;
+		}
+		else if( m_Game.isPressed( Key[ "Key Pad Minus" ] ) )
+		{
+			frameRate -= 5; frameRate %= 1000;
+			if( frameRate < 1 )
+			{
+				frameRate = 1;
+			}
+			Stdout.formatln( "New framerate: {}", frameRate );
+			m_Game.TickInterval = 1000 / frameRate;
+		}
+
 
 		m_Game.Draw();
 		m_Game.WaitFor();

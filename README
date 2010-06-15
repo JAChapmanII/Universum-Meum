@@ -66,6 +66,10 @@ Panning/zooming:
 	You can use the mousewheel to zoom in and out (If you zoom in too far, the camera will stop and
 													being able to view a 0x0 grid)
 
+Adjusting framerate:
+	+ on the keypad makes the framerate increase by 5 (<=1000)
+	- on the keypad makes the framerate decrease by 5 (>=1)
+
 Quiting:
 	Hit the "Esc"ape key.
 	If your WM has a "close" butotn, you can use that.
