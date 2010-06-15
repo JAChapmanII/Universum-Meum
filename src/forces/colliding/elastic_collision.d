@@ -35,8 +35,9 @@ static this()
 	log.add( new AppendConsole() );
 }
 
+/// Alters particle A by applying an force resulting from a elastic collision between A and B
 void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real deltaTime )
-{
+{ //{{{
 	real xDist = B.XPosition - A.XPosition;
 	real yDist = B.YPosition - A.YPosition;
 	real dist2 = (xDist * xDist) + (yDist * yDist);
@@ -55,6 +56,6 @@ void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real 
 		A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
 		A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
 	}
-}
+} //}}}
 
 Force DefaultElasticCollision = &ElasticCollision!( 0.0 );

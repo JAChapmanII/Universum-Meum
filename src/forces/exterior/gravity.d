@@ -35,8 +35,9 @@ static this()
 	log.add( new AppendConsole() );
 }
 
+/// Alters particle A by applying an acceleration equal to that of a force like gravity over deltaTime
 void Gravity( real gravConst )( Particle A, Particle B, ref real deltaTime )
-{
+{ //{{{{
 	real xDist = B.XPosition - A.XPosition;
 	real yDist = B.YPosition - A.YPosition;
 	real dist2 = (xDist * xDist) + (yDist * yDist);
@@ -52,6 +53,6 @@ void Gravity( real gravConst )( Particle A, Particle B, ref real deltaTime )
 		A.YAcceleration = A.NextYAcceleration +
 			( gravMass )*(yDist/dist) / ( dist2 );
 	}
-}
+} //}}}
 
 Force DefaultGravity = &Gravity!( 0.0 );

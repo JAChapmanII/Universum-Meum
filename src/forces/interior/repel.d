@@ -35,8 +35,9 @@ static this()
 	log.add( new AppendConsole() );
 }
 
+/// Alters particle A by applying an acceleration equal to that of a force like antigravity over deltaTime
 void Repel( real repConst )( Particle A, Particle B, ref real deltaTime )
-{
+{ //{{{
 	real xDist = B.XPosition - A.XPosition;
 	real yDist = B.YPosition - A.YPosition;
 	real dist2 = (xDist * xDist) + (yDist * yDist);
@@ -55,7 +56,6 @@ void Repel( real repConst )( Particle A, Particle B, ref real deltaTime )
 		A.YAcceleration = A.NextYAcceleration -
 			( repMass ) * ( unitY ) / ( dist2 );
 	}
-
-}
+} //}}}
 
 Force DefaultRepel = &Repel!( 0.0 );
