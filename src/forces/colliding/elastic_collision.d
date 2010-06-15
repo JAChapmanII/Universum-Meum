@@ -35,71 +35,26 @@ static this()
 	log.add( new AppendConsole() );
 }
 
-class Elastic_collision : Force
+void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real deltaTime )
 {
-	public:
-		static Elastic_collision Instance( real iR = 1.0 )
-		{ //{{{
-			if( m_Instance is null )
-			{
-				try
-				{
-					m_Instance = new Elastic_collision( iR );
-				}
-				catch( Exception e )
-				{
-					log.fatal( "Elastic_collision could not be instantiated." );
-					throw e;
-				}
-			}
-			return m_Instance;
-		} //}}}
+	real xDist = B.XPosition - A.XPosition;
+	real yDist = B.YPosition - A.YPosition;
+	real dist2 = (xDist * xDist) + (yDist * yDist);
+	real dist  = sqrt( dist2 );
 
-		alias Instance opCall;
+	if( dist == (A.Radius+B.Radius) )
+	{
+		real theta = atan2( yDist, xDist );
+		real dir1 = atan2( A.YVelocity, A.XVelocity );
+		real dir2 = atan2( B.YVelocity, B.XVelocity );
+		real nYV1 = A.Speed * sin( dir1 - theta );
+		real fXV1 = ( ( A.Mass - B.Mass ) * ( A.Speed * cos( dir1 - theta ) ) + 2 *
+					B.Mass * ( B.Speed * cos( dir2 - theta ) ) ) / ( A.Mass + B.Mass );
 
-		/// In the case of a perefct collision, uses elastic collision code
-		override void Work( Particle A, Particle B, ref real deltaTime )
-		{ //{{{
-			real xDist = B.XPosition - A.XPosition;
-			real yDist = B.YPosition - A.YPosition;
-			real dist2 = (xDist * xDist) + (yDist * yDist);
-			real dist  = sqrt( dist2 );
-
-			if( dist == (A.Radius+B.Radius) )
-			{
-				real theta = atan2( yDist, xDist );
-				real dir1 = atan2( A.YVelocity, A.XVelocity );
-				real dir2 = atan2( B.YVelocity, B.XVelocity );
-				real nYV1 = A.Speed * sin( dir1 - theta );
-				real fXV1 = ( ( A.Mass - B.Mass ) * ( A.Speed * cos( dir1 - theta ) ) + 2 *
-							B.Mass * ( B.Speed * cos( dir2 - theta ) ) ) / ( A.Mass + B.Mass );
-
-				real nYV2 = B.Speed * sin( dir1 - theta );
-				A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
-				A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
-			}
-		} //}}}
-
-		/// {G,S}etter m_Elastic_collisionConstant
-		real Elastic_collisionConstant() //{{{
-		{
-			return m_Elastic_collisionConstant;
-		}
-		void Elastic_collisionConstant( real nR )
-		{
-			m_Elastic_collisionConstant = nR;
-		} //}}}
-
-	protected:
-		this( real iR )
-		{
-			m_Elastic_collisionConstant = iR;
-		}
-
-		static Elastic_collision m_Instance;
-
-		real m_Elastic_collisionConstant;
-
-	private:
-
+		real nYV2 = B.Speed * sin( dir1 - theta );
+		A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
+		A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
+	}
 }
+
+Force DefaultElasticCollision = &ElasticCollision!( 0.0 );

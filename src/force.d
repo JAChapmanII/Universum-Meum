@@ -21,30 +21,5 @@ module force;
 
 import particle;
 
-enum forceType {exterior = 0, interior, collision };
+typedef void( *Force )( Particle, Particle, ref real );
 
-class Force
-{
-	public:
-		void Work( Particle A, Particle B, ref real deltaTime )
-		{
-		}
-
-		void Type( forceType nForceType )
-		{
-			m_ForceType = nForceType;
-		}
-		forceType Type()
-		{
-			return m_ForceType;
-		}
-
-	protected:
-		this()
-		{
-			m_ForceType = cast( forceType )( null );
-		}
-		forceType m_ForceType;
-	private:
-
-}

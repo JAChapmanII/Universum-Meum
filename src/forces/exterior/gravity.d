@@ -35,69 +35,23 @@ static this()
 	log.add( new AppendConsole() );
 }
 
-class Gravity : Force
+void Gravity( real gravConst )( Particle A, Particle B, ref real deltaTime )
 {
-	public:
-		static Gravity Instance( real iG = 1.0f )
-		{ //{{{
-			if( m_Instance is null )
-			{
-				try
-				{
-					m_Instance = new Gravity( iG );
-				}
-				catch( Exception e )
-				{
-					log.fatal( "Gravity could not be instantiated." );
-					throw e;
-				}
-			}
-			return m_Instance;
-		} //}}}
+	real xDist = B.XPosition - A.XPosition;
+	real yDist = B.YPosition - A.YPosition;
+	real dist2 = (xDist * xDist) + (yDist * yDist);
 
-		alias Instance opCall;
+	if( dist2 > 0 )
+	{
+		real gravMass = gravConst * B.Mass;
+		real dist  = sqrt( dist2 );
 
-		/// Determines the amount of acceleration between particle A and B due to gravity, and then
-		/// applies this amount to Particle A. [It is expected this will also work on B, A]
-		override void Work( Particle A, Particle B, ref real deltaTime )
-		{ //{{{
-			real xDist = B.XPosition - A.XPosition;
-			real yDist = B.YPosition - A.YPosition;
-			real dist2 = (xDist * xDist) + (yDist * yDist);
+		A.XAcceleration = A.NextXAcceleration +
+			( gravMass )*(xDist/dist) / ( dist2 );
 
-			if( dist2 > 0 )
-			{
-				real gravMass = GravityConstant * B.Mass;
-				real dist  = sqrt( dist2 );
-
-				A.XAcceleration = A.NextXAcceleration +
-					( gravMass )*(xDist/dist) / ( dist2 );
-
-				A.YAcceleration = A.NextYAcceleration +
-					( gravMass )*(yDist/dist) / ( dist2 );
-			}
-		} //}}}
-
-		/// {G,S}etter m_GravityConstant
-		real GravityConstant() //{{{
-		{
-			return m_GravityConstant;
-		}
-		void GravityConstant( real nG )
-		{
-			m_GravityConstant = nG;
-		} //}}}
-
-	protected:
-		this( real iG )
-		{
-			m_GravityConstant = iG;
-		}
-
-		static Gravity m_Instance;
-
-		real m_GravityConstant;
-
-	private:
-
+		A.YAcceleration = A.NextYAcceleration +
+			( gravMass )*(yDist/dist) / ( dist2 );
+	}
 }
+
+Force DefaultGravity = &Gravity!( 0.0 );

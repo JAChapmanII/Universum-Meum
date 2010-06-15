@@ -122,7 +122,7 @@ class Particle
 			{
 				if( !( i is null ) )
 				{
-					i.Work( this, B, deltaTime );
+					i( this, B, deltaTime );
 				}
 			}
 		} //}}}

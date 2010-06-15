@@ -35,71 +35,27 @@ static this()
 	log.add( new AppendConsole() );
 }
 
-class Repel : Force
+void Repel( real repConst )( Particle A, Particle B, ref real deltaTime )
 {
-	public:
-		static Repel Instance( real iR = 1.0 )
-		{ //{{{
-			if( m_Instance is null )
-			{
-				try
-				{
-					m_Instance = new Repel( iR );
-				}
-				catch( Exception e )
-				{
-					log.fatal( "Repel could not be instantiated." );
-					throw e;
-				}
-			}
-			return m_Instance;
-		} //}}}
+	real xDist = B.XPosition - A.XPosition;
+	real yDist = B.YPosition - A.YPosition;
+	real dist2 = (xDist * xDist) + (yDist * yDist);
+	real dist  = sqrt( dist2 );
 
-		alias Instance opCall;
+	if( ( dist < (A.Radius + B.Radius) ) && ( dist2 > 0 ) )
+	{
+		real repMass = repConst * B.Mass * 1.2;
+		real sectLength = (A.Radius+B.Radius) - dist;
+		real unitX = xDist / dist;
+		real unitY = yDist / dist;
 
-		/// Uses the gravity code *-2 to simulate anti-gravity.
-		override void Work( Particle A, Particle B, ref real deltaTime )
-		{ //{{{
-			real xDist = B.XPosition - A.XPosition;
-			real yDist = B.YPosition - A.YPosition;
-			real dist2 = (xDist * xDist) + (yDist * yDist);
-			real dist  = sqrt( dist2 );
+		A.XAcceleration = A.NextXAcceleration -
+			( repMass ) * ( unitX ) / ( dist2 );
 
-			if( ( dist < (A.Radius + B.Radius) ) && ( dist2 > 0 ) )
-			{
-				real repMass = RepelConstant * B.Mass * 1.2;
-				real sectLength = (A.Radius+B.Radius) - dist;
-				real unitX = xDist / dist;
-				real unitY = yDist / dist;
-
-				A.XAcceleration = A.NextXAcceleration -
-					( repMass ) * ( unitX ) / ( dist2 );
-
-				A.YAcceleration = A.NextYAcceleration -
-					( repMass ) * ( unitY ) / ( dist2 );
-			}
-		} //}}}
-
-		/// {G,S}etter m_RepelConstant
-		real RepelConstant() //{{{
-		{
-			return m_RepelConstant;
-		}
-		void RepelConstant( real nR )
-		{
-			m_RepelConstant = nR;
-		} //}}}
-
-	protected:
-		this( real iR )
-		{
-			m_RepelConstant = iR;
-		}
-
-		static Repel m_Instance;
-
-		real m_RepelConstant;
-
-	private:
+		A.YAcceleration = A.NextYAcceleration -
+			( repMass ) * ( unitY ) / ( dist2 );
+	}
 
 }
+
+Force DefaultRepel = &Repel!( 0.0 );

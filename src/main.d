@@ -36,6 +36,7 @@ import particle_system;
 import entity;
 import entities.polygon;
 import entities.point;
+import force;
 import forces.exterior.gravity;
 import forces.interior.repel;
 import forces.colliding.elastic_collision;
@@ -165,14 +166,11 @@ int main( char[][] args )
 	Stdout.formatln( "\trgConstant: {} [so:{}]", rgConstant, real.sizeof );
 
 	log.info( "Creating a gravity force" );
-	Gravity m_Gravity = Gravity.Instance();
-	m_Gravity.GravityConstant = rgConstant;
+	Force m_Gravity = &Gravity!( rgConstant );
 
 	log.info( "Creating a elastic_collision force" );
-	Repel m_Repel = Repel.Instance();
-	m_Repel.RepelConstant = rgConstant;
+	Force m_Repel = &Repel!( rgConstant );
 
-	Stdout.formatln( "\tGrav: {}\t\tRep: {}", m_Gravity.GravityConstant, m_Repel.RepelConstant );
 	//}}}
 
 	log.info( "Now a particle system" );
