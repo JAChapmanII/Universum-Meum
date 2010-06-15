@@ -154,7 +154,7 @@ class Polygon : Entity
 	protected:
 		real m_Radius;
 		real[ 4 ] m_Color;
-		uint m_NumSegments = 360;
+		uint m_NumSegments = 36;
 
 	private:
 
