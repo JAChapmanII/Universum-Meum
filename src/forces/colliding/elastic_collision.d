@@ -25,6 +25,8 @@ import Integer = tango.text.convert.Integer;
 
 import tango.math.Math;
 
+import tango.io.Stdout;
+import derelict.sdl.sdl;
 import force;
 import particle;
 
@@ -48,27 +50,38 @@ void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real 
 		return -1;
 	}
 
+if( A != B)
+{
+	real xDist = A.XPosition - B.XPosition;
+	real yDist = A.YPosition - B.YPosition;
+	real dist2 = (xDist * xDist) + (yDist * yDist);
+	real dist  = sqrt( dist2 );
 
-	real NextxDist = B.NextXPosition - A.NextXPosition;
-	real NextyDist = B.NextYPosition - A.NextYPosition;
-	real Nextdist2 = (NextxDist * NextxDist) + (NextyDist * NextyDist);
-	real Nextdist  = sqrt( Nextdist2 );
-
-	if( Nextdist < (A.Radius + B.Radius))
+	if( dist < (A.Radius + B.Radius))
 	{
-		if( NextxDist  < (A.Radius + B.Radius))
+		if( xDist  < (A.Radius + B.Radius))
 		{
-			A.XPosition = A.XPosition + ((0.5 * (sgn(A.NextXPosition - B.NextXPosition)))*((A.Radius + B.Radius) - (A.NextXPosition - B.NextXPosition)));
+			Stdout.formatln("A.XPosition is {}", A.XPosition);
+			A.XPosition = A.XPosition + ((0.5 * (sgn(xDist)))*((A.Radius + B.Radius) - (abs(xDist))));
 		}
-		if( NextyDist  < (A.Radius + B.Radius))
+
+		Stdout.formatln("A.XPosition is {}", A.XPosition);
+		Stdout.formatln("A.XPosition Dif is {}", ((0.5 * (sgn(xDist)))*((A.Radius + B.Radius) - (abs(xDist)))));
+
+//SDL_Delay(10000);
+
+
+		if( yDist  < (A.Radius + B.Radius))
 		{
-			A.YPosition = A.YPosition + ((0.5 * (sgn(A.NextYPosition - B.NextYPosition)))*((A.Radius + B.Radius) - (A.NextYPosition - B.NextYPosition)));
+			A.YPosition = A.YPosition + ((0.5 * (sgn(yDist)))*((A.Radius + B.Radius) - (abs(yDist))));
 		}
-	}
-		real xDist = B.XPosition - A.XPosition;
+
+
+
+		/*real xDist = B.XPosition - A.XPosition;
 		real yDist = B.YPosition - A.YPosition;
 		real dist2 = (xDist * xDist) + (yDist * yDist);
-		real dist  = sqrt( dist2 );
+		real dist  = sqrt( dist2 );*/
 
 		real theta = atan2( yDist, xDist );
 		real dir1 = atan2( A.YVelocity, A.XVelocity );
@@ -78,9 +91,10 @@ void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real 
 					B.Mass * ( B.Speed * cos( dir2 - theta ) ) ) / ( A.Mass + B.Mass );
 
 		real nYV2 = B.Speed * sin( dir1 - theta );
-		A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
-		A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
-
-		}//}}}
+		A.XVelocity = (cos(theta) * fXV1 + cos(theta+PI_2) * nYV1) * 0.5 ;
+		A.YVelocity = (sin(theta) * fXV1 + sin(theta+PI_2) * nYV1) * 0.5 ;
+		}
+	}
+}//}}}
 
 Force DefaultElasticCollision = &ElasticCollision!( 0.0 );
