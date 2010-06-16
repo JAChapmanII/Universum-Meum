@@ -34,13 +34,11 @@
 #include <SDL/SDL.h>
 #include <GL/gl.h>
 
+using namespace std;
 // Set up the logger, and the Key associative array
-Logger log; //{{{
-unsigned int[ char[] ] Key;
-static this()
+//{{{
+/*   TODO    unsigned int[ char[] ] Key;
 {
-	log = Log.lookup( "main" );
-	log.add( new AppendConsole() );
 	// Sets up the Key unsigned int <-> char map
 	Key[ "None" ] = -1; Key[ "First" ] = 1; Key[ "Backspace" ] = 8; //{{{
 	Key[ "Tab" ] = 9; Key[ "	" ] = 9; Key[ "Clear" ] = 12; Key[ "Enter" ] = 13;
@@ -112,17 +110,17 @@ static this()
 	Key[ "Power" ] = 320; Key[ "Euro" ] = 321; Key[ "Undo" ] = 322;
 	Key[ "Last" ] = 323; Key.rehash; //}}}
 } //}}}
-
-int main( char[][] args )
+*/
+int main( int argsc, const char* argsv[] )
 {
 	cout << "Welcome to Universum Meum.";
 
-	log.info( "Creating random number generator" );
-	auto rand = new Twister();
-	rand.seed();
+	cout << "Creating random number generator" ;
+	//   TODO   auto rand = new Twister();
+	//   TODO   rand.seed();
 
 	unsigned int gWidth, gHeight;
-	char[] buf;
+	/*  TODO   //Get input from user\\  char buf[];
 	while( ( gWidth = integer.parse( buf ) ) == 0 )
 	{
 		cout << "Please enter a width:";
@@ -135,35 +133,35 @@ int main( char[][] args )
 		buf = Cin.get();
 	}
 	buf.length = 0;
-
-	log.info( "Creating a Game" );
+	*/
+	cout << "Creating a Game" ;
 	cout << "W: {}\tH: {}" << gWidth << gHeight;
 	Game m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
 	m_Game.position.x = 0;
 	m_Game.position.y = 0;
 
-	log.info( "Setting framerate to 100" );
+	cout << "Setting framerate to 100" ;
 	unsigned int frameRate = 100;
 	m_Game.TickInterval = 1000 / frameRate;
 	//}}}
 
 	float floatArray[2];
 	glGetFloatv( GL_SMOOTH_POINT_SIZE_RANGE, cast( float* )( floatArray ) );
-	Stdout.formatln( "{} | {}", floatArray[0], floatArray[1]);
+	cout << floatArray[0] << " | "  << floatArray[1];
 
 	/// Create Gravity/Repel forces
 	const long double rgConstant = 1024.0; //{{{
 	cout << "\trgConstant: {} [so:{}]" << rgConstant << long double.sizeof;
 
-	log.info( "Creating a gravity force" );
+	cout << "Creating a gravity force" ;
 	Force m_Gravity = &Gravity!( rgConstant );
 
-	log.info( "Creating a elastic_collision force" );
+	cout <<  "Creating a elastic_collision force" ;
 	Force m_ElasticCollision = DefaultElasticCollision;
 
 	//}}}
 
-	log.info( "Now a particle system" );
+	cout << "Now a particle system" ;
 	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
 	/// Process arguments
@@ -190,7 +188,7 @@ int main( char[][] args )
 		}
 	} //}}}
 
-	log.info( "Creating particles/points" );
+	cout <<  "Creating particles/points" ;
 	LinkedList!( Particle ) m_Particles = new LinkedList!( Particle );
 	LinkedList!( Polygon ) m_Polygons = new LinkedList!( Polygon );
 	//m_Particles.length = numObjects;
@@ -212,7 +210,7 @@ int main( char[][] args )
 									m_Game.Height / 2 + 100*sin( i * 2 * PI / numObjects ) );
 
 		switch( initVel ) /// Determine appropriate init velocities
-		{ //{{{
+		{ / /{{{
 			case 0: /// Nothing
 			{
 				break;
@@ -221,7 +219,7 @@ int main( char[][] args )
 			{
 				long double ranX = rand.fraction() * 16.0 - 8.0;
 				long double ranY = rand.fraction() * 16.0 - 8.0;
-				Stdout.formatln( "Seeded particle {} with < {}, {} >", i, ranX, ranY );
+				cout <<  "Seeded particle " << i << " with < " << ranX << "," << ranY << ">" ;
 				nParticle.Velocities( ranX, ranY  );
 				break;
 			}
@@ -243,7 +241,7 @@ int main( char[][] args )
 		m_ParticleSystem.AddParticle( nParticle );
 	} //}}}
 
-	log.info( "Setting up the sun" );
+	cout << "Setting up the sun" ;
 	Polygon m_SunPolygon = new Polygon( m_Game.Width / 2, m_Game.Height / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
 	Particle m_Sun = new Particle();
 
@@ -262,7 +260,7 @@ int main( char[][] args )
 	//m_Sun.Velocities( -4, 0 );
 	//}}}
 
-	log.info( "Setting up the cursor" );
+	cout << "Setting up the cursor" ;
 	Polygon m_CursorPolygon = new Polygon( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
 	m_Game.WarpMouse( 400, 300 );
 	Particle m_Cursor = new Particle();
@@ -281,7 +279,7 @@ int main( char[][] args )
 
 	unsigned int lastSpawn = 0;
 	long double xCenter, yCenter;
-	log.info( "Entering main game loop" );
+	cout << "Entering main game loop" ;
 	while( !m_Game.isDone )
 	{ //{{{
 		m_Game.ProcessInput();
@@ -348,7 +346,7 @@ int main( char[][] args )
 				} //}}}
 				if( minDist2 < 100 ) /// If we intersect with a particle, remove it
 				{ //{{{
-					log.info( "Removing..." );
+					cout << "Removing..." ;
 					Polygon eMin = cast( Polygon )( pMin.GetEntity );
 					m_ParticleSystem.RemoveParticle( pMin );
 					m_Particles.remove( pMin, true );
@@ -357,11 +355,11 @@ int main( char[][] args )
 				} //}}}
 				else
 				{
-					log.info( "No intersecting particle" );
+					cout << "No intersecting particle" ;
 
 					if( ( m_Particles.size < 1000 ) ) /// Make a new particle
 					{ //{{{
-						log.info( "Created new particle based on RMB press" );
+						cout << "Created new particle based on RMB press" ;
 						unsigned int pNum = m_Polygons.size + 1;
 						cout << "Number {}!" << pNum;
 						Polygon nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
@@ -386,7 +384,7 @@ int main( char[][] args )
 							{
 								long double ranX = rand.fraction() * 16.0 - 8.0;
 								long double ranY = rand.fraction() * 16.0 - 8.0;
-								Stdout.formatln( "Seeded particle {} with < {}, {} >", pNum, ranX, ranY );
+							    cout << "Seeded particle " << pNum << " with < " << ranX << " , " << ranY << " >";
 								nParticle.Velocities( ranX, ranY  );
 								break;
 							}
