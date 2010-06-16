@@ -114,6 +114,39 @@ using namespace std;
 } //}}}
 */
 
+Vector< long double > detVelocity( unsigned int type = 0 )
+{
+	Vector< long double >* rVec = new Vector< long double >;
+	rVec->Zero();
+	switch( type ) /// Determine appropriate init velocities
+	{ // {{{
+		case 0: /// Nothing
+		{
+			break;
+		}
+		case 1: /// Random
+		{
+			// TODO get random number generation
+			long double ranX = 0;//rand.fraction() * 16.0 - 8.0;
+			long double ranY = 0;//rand.fraction() * 16.0 - 8.0;
+			rVec->x = ranX;
+			rVec->y = ranY;
+			break;
+		}
+		case 2: /// Clockwise spiral
+		{
+		}
+		case 3: /// Counter-clockwise spiral
+		{
+		}
+		default:
+		{
+			break;
+		}
+	} //}}}
+	return *rVec;
+}
+
 int main( int argc, const char* argv[] )
 {
 	cout << "Welcome to Universum Meum.\n";
@@ -219,33 +252,7 @@ int main( int argc, const char* argv[] )
 		nParticle->CurrentPositions( m_Game->Width() / 2 + 100*cos( i * 2 * PI / numObjects ),
 									 m_Game->Height() / 2 + 100*sin( i * 2 * PI / numObjects ) );
 
-		switch( initVel ) /// Determine appropriate init velocities
-		{ // {{{
-			case 0: /// Nothing
-			{
-				break;
-			}
-			case 1: /// Random
-			{
-				// TODO get random number generation
-				long double ranX = 0;//rand.fraction() * 16.0 - 8.0;
-				long double ranY = 0;//rand.fraction() * 16.0 - 8.0;
-				cout <<  "Seeded particle " << i << " with < " << ranX << "," << ranY << ">" ;
-				nParticle->Velocities( ranX, ranY  );
-				break;
-			}
-			case 2: /// Clockwise spiral
-			{
-			}
-			case 3: /// Counter-clockwise spiral
-			{
-			}
-			default:
-			{
-				break;
-			}
-		} //}}}
-
+		nParticle->Velocities( detVelocity( initVel ) );
 		nParticle->AddForce( m_Gravity );
 		nParticle->AddForce( m_ElasticCollision );
 
@@ -333,7 +340,7 @@ int main( int argc, const char* argv[] )
 			cout << "Cursor: (" << m_Cursor->XPosition() << ", " << m_Cursor->YPosition() << " )\n";
 		} //}}}
 
-		/* TODO I didn't bother with this yet because I bet it pisses away memory...
+		//TODO I didn't bother with this yet because I bet it pisses away memory...
 		/// Create new particles dynamically, or delete them if the mouse is on one
 		if( m_Game->isClicked( SDL_BUTTON_RIGHT ) )
 		{ //{{{
@@ -343,89 +350,72 @@ int main( int argc, const char* argv[] )
 				long double xPos = m_CursorPolygon->position.x;
 				long double yPos = m_CursorPolygon->position.y;
 
-				// TODO used to log
-				cout << "Setting minDist to infinity";
 				long double minDist2 = 1000000000;
-				Particle pMin;
-				// TODO used to log
-				cout << "Starting dist checking loop";
-				for( vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
+				Particle* pMin;
+				for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
 				{ //{{{
-					long double cXDist = m_CursorPolygon.position.x - i.XPosition;
-					long double cYDist = m_CursorPolygon.position.y - i.YPosition;
+					long double cXDist = m_CursorPolygon->position.x - (*i)->XPosition();
+					long double cYDist = m_CursorPolygon->position.y - (*i)->YPosition();
 					long double cDist2 = cXDist*cXDist + cYDist*cYDist;
 					if( cDist2 < minDist2 )
 					{
-						cout << "New minDist = {}" << cDist2;
 						minDist2 = cDist2;
-						pMin = i;
+						pMin = (*i);
 					}
 				} //}}}
 				if( minDist2 < 100 ) /// If we intersect with a particle, remove it
 				{ //{{{
 					cout << "Removing..." ;
-					Polygon eMin = cast( Polygon )( pMin.GetEntity );
-					m_ParticleSystem.RemoveParticle( pMin );
-					m_Particles.remove( pMin, true );
-					m_Polygons.remove( eMin, true );
-					m_Game.RemoveEntity( eMin );
+					Polygon* eMin = ( Polygon* )( pMin->GetEntity() );
+					m_ParticleSystem->RemoveParticle( pMin );
+					for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+					{
+						if( (*i) == pMin )
+						{
+							m_Particles.erase( i );
+						}
+					}
+					for( std::vector< Polygon* >::iterator i = m_Polygons.begin(); i != m_Polygons.end(); ++i )
+					{
+						if( (*i) == eMin )
+						{
+							m_Polygons.erase( i );
+						}
+					}
+					m_Game->RemoveEntity( eMin );
+					delete pMin;
+					delete eMin;
 				} //}}}
 				else
 				{
 					cout << "No intersecting particle" ;
 
-					if( ( m_Particles.size < 1000 ) ) /// Make a new particle
+					if( ( m_Particles.size() < 1000 ) ) /// Make a new particle
 					{ //{{{
 						cout << "Created new particle based on RMB press" ;
-						unsigned int pNum = m_Polygons.size + 1;
-						cout << "Number {}!" << pNum;
-						Polygon nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
-						m_Polygons.add( nPolygon );
-						m_Game.AddEntity( nPolygon );
+						unsigned int pNum = m_Polygons.size() + 1;
+						cout << "Number " << pNum << "\n";
+						Polygon* nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+						m_Polygons.push_back( nPolygon );
+						m_Game->AddEntity( nPolygon );
 
-						Particle nParticle = new Particle();
-						m_Particles.add( nParticle );
-						nParticle.AddEntity( nPolygon );
-						nParticle.Radius = 10.0;
+						Particle* nParticle = new Particle();
+						m_Particles.push_back( nParticle );
+						nParticle->AddEntity( nPolygon );
+						nParticle->Radius( 10.0 );
 
-						nParticle.CurrentPositions( m_CursorPolygon.position.x,
-								m_CursorPolygon.position.y );
+						nParticle->CurrentPositions( m_CursorPolygon->position.x,
+													 m_CursorPolygon->position.y );
 
-						switch( initVel ) /// Determine appropriate init velocities
-						{ //{{{
-							case 0: /// Nothing
-							{
-								break;
-							}
-							case 1: /// Random
-							{
-								long double ranX = rand.fraction() * 16.0 - 8.0;
-								long double ranY = rand.fraction() * 16.0 - 8.0;
-							    cout << "Seeded particle " << pNum << " with < " << ranX << " , " << ranY << " >";
-								nParticle.Velocities( ranX, ranY  );
-								break;
-							}
-							case 2: /// Clockwise spiral
-							{
-							}
-							case 3: /// Counter-clockwise spiral
-							{
-							}
-							default:
-							{
-								break;
-							}
-						} //}}}
+						nParticle->Velocities( detVelocity( initVel ) );
+						nParticle->AddForce( m_Gravity );
+						nParticle->AddForce( m_ElasticCollision );
 
-						nParticle.AddForce( m_Gravity );
-						nParticle.AddForce( m_ElasticCollision );
-
-						m_ParticleSystem.AddParticle( nParticle );
+						m_ParticleSystem->AddParticle( nParticle );
 					} //}}}
 				}
 			}
 		} //}}}
-		*/
 
 		//cout << "Proc wheel up\n";
 		if( m_Game->isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
