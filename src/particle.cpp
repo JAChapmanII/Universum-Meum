@@ -20,105 +20,101 @@
 #ifndef PARTICLE_CPP
 #define PARTICLE_CPP
 
+#include <vector>
+#include <math.h>
+
 #include "force.cpp"
 #include "entity.cpp"
-
-Logger log;
-static this()
-{
-	log = Log.lookup( "particle" );
-	log.add( new AppendConsole() );
-}
 
 class Particle
 {
 	public:
-		this()
+		typedef void( *Force )( Particle, Particle, long double );
+
+		Particle()
 		{ //{{{
 			m_Mass = 20.0f;
 			m_Radius = 0.0f;
-			m_Acceleration[] = [ 0.0f, 0.0f ];
-			m_Velocity[] = [ 0.0f, 0.0f ];
-			m_Position[] = [ 0.0f, 0.0f ];
+			m_Acceleration.Zero();
+			m_Velocity.Zero();
+			m_Position.Zero();
 
-			m_nextAcceleration[] = [ 0.0f, 0.0f ];
-			m_nextVelocity[] = [ 0.0f, 0.0f ];
-			m_nextPosition[] = [ 0.0, 0.0 ];
+			m_nextAcceleration.Zero();
+			m_nextVelocity.Zero();
+			m_nextPosition.Zero();
 			m_Speed = 0.0f;
 		} //}}}
 
 		void Update( long double deltaTime )
 		{ //{{{
-			m_nextVelocity[ 0 ] += m_nextAcceleration[ 0 ] * deltaTime;
-			m_nextVelocity[ 1 ] += m_nextAcceleration[ 1 ] * deltaTime;
+			m_nextVelocity.x += m_nextAcceleration.x * deltaTime;
+			m_nextVelocity.y += m_nextAcceleration.y * deltaTime;
 
-			m_nextPosition[ 0 ] += m_nextVelocity[ 0 ] * deltaTime;
-			m_nextPosition[ 1 ] += m_nextVelocity[ 1 ] * deltaTime;
+			m_nextPosition.x += m_nextVelocity.x * deltaTime;
+			m_nextPosition.y += m_nextVelocity.y * deltaTime;
 
-			m_nextAcceleration[ 0 ] = 0.0;
-			m_nextAcceleration[ 1 ] = 0.0;
+			m_nextAcceleration.x = 0.0;
+			m_nextAcceleration.y = 0.0;
 
-			m_Acceleration[ 0 ] = m_nextAcceleration[ 0 ];
-			m_Acceleration[ 1 ] = m_nextAcceleration[ 1 ];
+			m_Acceleration.x = m_nextAcceleration.x;
+			m_Acceleration.y = m_nextAcceleration.y;
 
-			m_Velocity[ 0 ] = m_nextVelocity[ 0 ];
-			m_Velocity[ 1 ] = m_nextVelocity[ 1 ];
+			m_Velocity.x = m_nextVelocity.x;
+			m_Velocity.y = m_nextVelocity.y;
 
-			m_Position[ 0 ] = m_nextPosition[ 0 ];
-			m_Position[ 1 ] = m_nextPosition[ 1 ];
+			m_Position.x = m_nextPosition.x;
+			m_Position.y = m_nextPosition.y;
 
-			foreach( i; m_Entities )
+			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); ++i )
 			{
-				i.position.x = XPosition;
-				i.position.y = YPosition;
+				i->position.x = XPosition();
+				i->position.y = YPosition();
 			}
 
-			Speed = sqrt( XVelocity*XVelocity + YVelocity*YVelocity );
+			Speed( sqrt( XVelocity()*XVelocity() + YVelocity()*YVelocity() ) );
 		} //}}}
 
-		void AddForce( Force nForce )
+		void AddForce( Force *nForce )
 		{ //{{{
-			if( !( nForce is null ) )
+			if( nForce != 0 )
 			{
-				m_Forces.length = m_Forces.length + 1;
-				m_Forces[ $-1 ] = nForce;
+				m_Forces.push_back( *nForce );
 			}
 			else
 			{
-				log.warn( "Tried to add a null force" );
+				// TODO Error
 			}
 		} //}}}
 
-		void AddEntity( Entity nEntity )
+		void AddEntity( Entity *nEntity )
 		{ //{{{
-			if( !( nEntity is null ) )
+			if( nEntity != 0 )
 			{
-				m_Entities.length = m_Entities.length + 1;
-				m_Entities[ $-1 ] = nEntity;
+				m_Entities.push_back( *nEntity );
 			}
 			else
 			{
-				log.warn( "Tried to add a null entity" );
+				// TODO error
 			}
 		} //}}}
 
 		/// Return first entity in m_Entities or null if there are none.
 		Entity GetEntity()
 		{ //{{{
-			if( m_Entities.length > 0 )
+			if( m_Entities.size() > 0 )
 			{
-				return m_Entities[ 0 ];
+				return m_Entities.front();
 			}
-			return null;
+			// TODO Error
 		} //}}}
 
 		void Work( Particle B, long double deltaTime )
 		{ //{{{
-			foreach( i; m_Forces )
+			for( std::vector< Force >::iterator i = m_Forces.begin(); i != m_Forces.end(); i++ )
 			{
-				if( !( i is null ) )
+				if( *i != 0 )
 				{
-					i( this, B, deltaTime );
+					(*i)( *this, B, deltaTime );
 				}
 			}
 		} //}}}
@@ -128,44 +124,44 @@ class Particle
 		// {G,S}etter for current XPosition
 		long double XPosition() //{{{
 		{
-			return m_Position[ 0 ];
+			return m_Position.x;
 		}
 		void CurrentXPosition( long double nXPosition )
 		{
-			m_Position[ 0 ] = nXPosition;
-			m_nextPosition[ 0 ] = nXPosition;
-			foreach( i; m_Entities )
+			m_Position.x = nXPosition;
+			m_nextPosition.x = nXPosition;
+			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
 			{
-				i.position.x = nXPosition;
+				i->position.x = nXPosition;
 			}
 		} //}}}
 
 		// {G,S}etter for current YPosition
 		long double YPosition() //{{{
 		{
-			return m_Position[ 1 ];
+			return m_Position.y;
 		}
 		void CurrentYPosition( long double nYPosition )
 		{
-			m_Position[ 1 ] = nYPosition;
-			m_nextPosition[ 1 ] = nYPosition;
-			foreach( i; m_Entities )
+			m_Position.y = nYPosition;
+			m_nextPosition.y = nYPosition;
+			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
 			{
-				i.position.y = nYPosition;
+				i->position.y = nYPosition;
 			}
 		} //}}}
 
 		// Setter for both current Positions
 		void CurrentPositions( long double nXPosition, long double nYPosition) //{{{
 		{
-			m_Position[ 0 ] = nXPosition;
-			m_Position[ 1 ] = nYPosition;
-			m_nextPosition[ 0 ] = nXPosition;
-			m_nextPosition[ 1 ] = nYPosition;
-			foreach( i; m_Entities )
+			m_Position.x = nXPosition;
+			m_Position.y = nYPosition;
+			m_nextPosition.x = nXPosition;
+			m_nextPosition.y = nYPosition;
+			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
 			{
-				i.position.x = nXPosition;
-				i.position.y = nYPosition;
+				i->position.x = nXPosition;
+				i->position.y = nYPosition;
 			}
 		} //}}}
 
@@ -173,28 +169,28 @@ class Particle
 		// {G,S}etter for next XPosition
 		long double NextXPosition() //{{{
 		{
-			return m_nextPosition[ 0 ];
+			return m_nextPosition.x;
 		}
 		void XPosition( long double nXPosition )
 		{
-			m_nextPosition[ 0 ] = nXPosition;
+			m_nextPosition.x = nXPosition;
 		} //}}}
 
 		// {G,S}etter for next YPosition
 		long double NextYPosition() //{{{
 		{
-			return m_nextPosition[ 1 ];
+			return m_nextPosition.y;
 		}
 		void YPosition( long double nYPosition )
 		{
-			m_nextPosition[ 1 ] = nYPosition;
+			m_nextPosition.y = nYPosition;
 		} //}}}
 
 		// Setter for both next Positions
 		void Positions( long double nXPosition, long double nYPosition ) //{{{
 		{
-			XPosition = nXPosition;
-			YPosition = nYPosition;
+			XPosition( nXPosition );
+			YPosition( nYPosition );
 		} //}}}
 		//}}}
 
@@ -203,58 +199,58 @@ class Particle
 		// {G,S}etter for current XVelocity
 		long double XVelocity() //{{{
 		{
-			return m_Velocity[ 0 ];
+			return m_Velocity.x;
 		}
 		void CurrentXVelocity( long double nXVelocity )
 		{
-			m_Velocity[ 0 ] = nXVelocity;
-			Speed = sqrt( nXVelocity*nXVelocity + YVelocity*YVelocity );
+			m_Velocity.x = nXVelocity;
+			Speed( sqrt( nXVelocity*nXVelocity + YVelocity()*YVelocity() ) );
 		} //}}}
 
 		// {G,S}etter for current YVelocity
 		long double YVelocity() //{{{
 		{
-			return m_Velocity[ 1 ];
+			return m_Velocity.y;
 		}
 		void CurrentYVelocity( long double nYVelocity )
 		{
-			m_Velocity[ 1 ] = nYVelocity;
-			Speed = sqrt( XVelocity*XVelocity + nYVelocity*nYVelocity );
+			m_Velocity.y = nYVelocity;
+			Speed( sqrt( XVelocity()*XVelocity() + nYVelocity*nYVelocity ) );
 		} //}}}
 
 		// Setter for both current Velocitys
 		void CurrentVelocities( long double nXVelocity, long double nYVelocity) //{{{
 		{
-			m_Velocity[ 0 ] = nXVelocity;
-			m_Velocity[ 1 ] = nYVelocity;
-			Speed = sqrt( nXVelocity*nXVelocity + nYVelocity*nYVelocity );
+			m_Velocity.x = nXVelocity;
+			m_Velocity.y = nYVelocity;
+			Speed( sqrt( nXVelocity*nXVelocity + nYVelocity*nYVelocity ) );
 		} //}}}
 
 		// {G,S}etter for next XVelocity
 		long double NextXVelocity() //{{{
 		{
-			return m_nextVelocity[ 0 ];
+			return m_nextVelocity.x;
 		}
 		void XVelocity( long double nXVelocity )
 		{
-			m_nextVelocity[ 0 ] = nXVelocity;
+			m_nextVelocity.x = nXVelocity;
 		} //}}}
 
 		// {G,S}etter for next YVelocity
 		long double NextYVelocity() //{{{
 		{
-			return m_nextVelocity[ 1 ];
+			return m_nextVelocity.y;
 		}
 		void YVelocity( long double nYVelocity )
 		{
-			m_nextVelocity[ 1 ] = nYVelocity;
+			m_nextVelocity.y = nYVelocity;
 		} //}}}
 
 		// Setter for both next Velocitys
 		void Velocities( long double nXVelocity, long double nYVelocity ) //{{{
 		{
-			XVelocity = nXVelocity;
-			YVelocity = nYVelocity;
+			XVelocity( nXVelocity );
+			YVelocity( nYVelocity );
 		} //}}}
 		//}}}
 
@@ -263,56 +259,56 @@ class Particle
 		// {G,S}etter for current XAcceleration
 		long double XAcceleration() //{{{
 		{
-			return m_Acceleration[ 0 ];
+			return m_Acceleration.x;
 		}
 		void CurrentXAcceleration( long double nXAcceleration )
 		{
-			m_Acceleration[ 0 ] = nXAcceleration;
+			m_Acceleration.x = nXAcceleration;
 		} //}}}
 
 		// {G,S}etter for current YAcceleration
 		long double YAcceleration() //{{{
 		{
-			return m_Acceleration[ 1 ];
+			return m_Acceleration.y;
 		}
 		void CurrentYAcceleration( long double nYAcceleration )
 		{
-			m_Acceleration[ 1 ] = nYAcceleration;
+			m_Acceleration.y = nYAcceleration;
 		} //}}}
 
 		// Setter for both current Accelerations
 		void CurrentAccelerations( long double nXAcceleration, long double nYAcceleration) //{{{
 		{
-			m_Acceleration[ 0 ] = nXAcceleration;
-			m_Acceleration[ 1 ] = nYAcceleration;
+			m_Acceleration.x = nXAcceleration;
+			m_Acceleration.y = nYAcceleration;
 		} //}}}
 
 
 		// {G,S}etter for next XAcceleration
 		long double NextXAcceleration() //{{{
 		{
-			return m_nextAcceleration[ 0 ];
+			return m_nextAcceleration.x;
 		}
 		void XAcceleration( long double nXAcceleration )
 		{
-			m_nextAcceleration[ 0 ] = nXAcceleration;
+			m_nextAcceleration.x = nXAcceleration;
 		} //}}}
 
 		// {G,S}etter for next YAcceleration
 		long double NextYAcceleration() //{{{
 		{
-			return m_nextAcceleration[ 1 ];
+			return m_nextAcceleration.y;
 		}
 		void YAcceleration( long double nYAcceleration )
 		{
-			m_nextAcceleration[ 1 ] = nYAcceleration;
+			m_nextAcceleration.y = nYAcceleration;
 		} //}}}
 
 		// Setter for both next Accelerations
 		void Accelerations( long double nXAcceleration, long double nYAcceleration ) //{{{
 		{
-			XAcceleration = nXAcceleration;
-			YAcceleration = nYAcceleration;
+			XAcceleration( nXAcceleration );
+			YAcceleration( nYAcceleration );
 		} //}}}
 		//}}}
 
@@ -350,21 +346,21 @@ class Particle
 		long double m_Mass;
 		long double m_Radius;
 
-		long double[ 2 ] m_Position;
-		long double[ 2 ] m_Velocity;
-		long double[ 2 ] m_Acceleration;
+		Vector< long double > m_Position;
+		Vector< long double > m_Velocity;
+		Vector< long double > m_Acceleration;
 
-		long double[ 2 ] m_nextPosition;
-		long double[ 2 ] m_nextVelocity;
-		long double[ 2 ] m_nextAcceleration;
+		Vector< long double > m_nextPosition;
+		Vector< long double > m_nextVelocity;
+		Vector< long double > m_nextAcceleration;
 
 		long double m_Speed;
 
-		Entity[] m_Entities;
-		Force[] m_Forces;
+		std::vector< Entity > m_Entities;
+		std::vector< Force > m_Forces;
 
 	private:
 
-}
+};
 
 #endif // "PARTICLE_CPP"
