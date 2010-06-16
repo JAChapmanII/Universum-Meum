@@ -25,49 +25,45 @@
 class Point : Entity
 {
 	public:
-		this( long double iX, long double iY )
+		Point( long double iX, long double iY )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = 1;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( 1 );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( long double iX, long double iY, long double iRadius )
+		Point( long double iX, long double iY, long double iRadius )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = iRadius;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( iRadius );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue )
+		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = iRadius;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		this( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha )
+		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = iRadius;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
 
-		override void Draw( long double m_Zoom = 1 )
+		void Draw( long double m_Zoom = 1 )
 		{ //{{{
 			// glPointSize takes a diameter
-			glPointSize( Radius * 2 * m_Zoom );
-			glColor4f( Red, Green, Blue, Alpha );
+			glPointSize( Radius() * 2 * m_Zoom );
+			glColor4f( Red(), Green(), Blue(), Alpha() );
 			glBegin( GL_POINTS );
-			glVertex2f( this.position.x, this.position.y );
+			glVertex2f( this->position.x, this->position.y );
 			glEnd();
 		} //}}}
 
@@ -138,7 +134,7 @@ class Point : Entity
 
 	protected:
 		long double m_Radius;
-		long double[ 4 ] m_Color;
+		long double m_Color[ 4 ];
 
 	private:
 
