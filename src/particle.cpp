@@ -65,10 +65,10 @@ class Particle
 			m_Position.x = m_nextPosition.x;
 			m_Position.y = m_nextPosition.y;
 
-			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); ++i )
+			for( std::vector< Entity* >::iterator i = m_Entities.begin(); i != m_Entities.end(); ++i )
 			{
-				i->position.x = XPosition();
-				i->position.y = YPosition();
+				(*i)->position.x = XPosition();
+				(*i)->position.y = YPosition();
 			}
 
 			Speed( sqrt( XVelocity()*XVelocity() + YVelocity()*YVelocity() ) );
@@ -90,7 +90,7 @@ class Particle
 		{ //{{{
 			if( nEntity != 0 )
 			{
-				m_Entities.push_back( *nEntity );
+				m_Entities.push_back( nEntity );
 			}
 			else
 			{
@@ -99,7 +99,7 @@ class Particle
 		} //}}}
 
 		/// Return first entity in m_Entities or null if there are none.
-		Entity GetEntity()
+		Entity* GetEntity()
 		{ //{{{
 			if( m_Entities.size() > 0 )
 			{
@@ -130,9 +130,9 @@ class Particle
 		{
 			m_Position.x = nXPosition;
 			m_nextPosition.x = nXPosition;
-			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
+			for( std::vector< Entity* >::iterator i = m_Entities.begin(); i != m_Entities.end(); ++i )
 			{
-				i->position.x = nXPosition;
+				(*i)->position.x = nXPosition;
 			}
 		} //}}}
 
@@ -145,9 +145,9 @@ class Particle
 		{
 			m_Position.y = nYPosition;
 			m_nextPosition.y = nYPosition;
-			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
+			for( std::vector< Entity* >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
 			{
-				i->position.y = nYPosition;
+				(*i)->position.y = nYPosition;
 			}
 		} //}}}
 
@@ -158,10 +158,10 @@ class Particle
 			m_Position.y = nYPosition;
 			m_nextPosition.x = nXPosition;
 			m_nextPosition.y = nYPosition;
-			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
+			for( std::vector< Entity* >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
 			{
-				i->position.x = nXPosition;
-				i->position.y = nYPosition;
+				(*i)->position.x = nXPosition;
+				(*i)->position.y = nYPosition;
 			}
 		} //}}}
 
@@ -356,7 +356,7 @@ class Particle
 
 		long double m_Speed;
 
-		std::vector< Entity > m_Entities;
+		std::vector< Entity* > m_Entities;
 		std::vector< Force > m_Forces;
 
 	private:
