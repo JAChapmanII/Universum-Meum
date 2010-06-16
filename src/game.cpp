@@ -33,17 +33,36 @@
 
 static char PROGRAM_NAME[ 15 ] = "Universum Meum";
 
-class Game : Entity
+class Game : public Entity
 {
+	static Game *m_Instance;
+
 	public:
+		static Game *Instance()
+		{
+			if( !m_Instance )
+			{
+				m_Instance = new Game;
+			}
+			return m_Instance;
+		}
+
 		static Game *Instance( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
 		{ //{{{
+			// TODO not well
+			if( !m_Instance )
+			{
+				m_Instance = new Game( iWidth, iHeight, iBPP );
+			}
+			return m_Instance;
+			/*
 			if( m_Instance == 0 )
 			{
 				// TODO Error handling C++ style
 					m_Instance = new Game( iWidth, iHeight, iBPP );
 			}
 			return m_Instance;
+			*/
 		} //}}}
 
 		void InitSGL( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
@@ -481,9 +500,21 @@ class Game : Entity
 		} //}}}
 
 	private: //{{{
+		Game()
+		{
+		}
+
 		Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
 		{
 			InitSGL( iWidth, iHeight, iBPP );
+		}
+
+		Game( Game const& )
+		{
+		}
+
+		Game& operator=( Game const& )
+		{
 		}
 
 		// load modules needed to interface with C libs SDL, GL, IL
@@ -527,8 +558,6 @@ class Game : Entity
 			}
 		} //}}}
 
-		static Game* m_Instance;
-
 		unsigned int m_TickInterval;
 		unsigned int m_NextTime;
 
@@ -554,5 +583,7 @@ class Game : Entity
 
 		//}}}
 };
+
+Game *Game::m_Instance = 0;
 
 #endif // GAME_CPP

@@ -24,7 +24,7 @@
 
 #include "../entity.cpp"
 
-class Point : Entity
+class Point : public Entity
 {
 	public:
 		Point( long double iX, long double iY )

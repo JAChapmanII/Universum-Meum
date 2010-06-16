@@ -29,7 +29,7 @@
 const long double PI = 3.14159216535898;
 const long double PI_2 = 1.5707963267949;
 
-class Polygon : Entity
+class Polygon : public Entity
 {
 	public:
 		Polygon( long double iX, long double iY )
