@@ -29,6 +29,7 @@ import derelict.sdl.sdl;
 
 import entity;
 
+import vector;
 import keypress;
 import click;
 
@@ -120,7 +121,7 @@ public class Game : Entity
 		override void Draw( real magZoom = 1 )
 		{ //{{{
 			glPushMatrix();
-			glTranslatef( -XPosition, -YPosition, 0 );
+			glTranslatef( -this.position.x, -this.position.y, 0 );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			foreach( i; m_Entities )
 			{
@@ -145,7 +146,7 @@ public class Game : Entity
 			/// at the same time. /TODO
 			foreach( i; m_Clicks ) //{{{
 			{
-				if( ( i.Button == SDL_BUTTON_WHEELUP ) || ( i.Button == SDL_BUTTON_WHEELDOWN ) )
+				if( ( i.button == SDL_BUTTON_WHEELUP ) || ( i.button == SDL_BUTTON_WHEELDOWN ) )
 				{
 					m_Clicks.remove( i );
 					break;
@@ -204,8 +205,8 @@ public class Game : Entity
 
 					case SDL_MOUSEMOTION:
 					{ //{{{
-						m_Cursor[ 0 ] = m_Event.motion.x;
-						m_Cursor[ 1 ] = m_Event.motion.y;
+						m_Cursor.x = m_Event.motion.x;
+						m_Cursor.y = m_Event.motion.y;
 						break;
 					} //}}}
 
@@ -225,7 +226,7 @@ public class Game : Entity
 						}
 						foreach( i; m_Clicks )
 						{
-							if( i.Button == m_Event.button.button )
+							if( i.button == m_Event.button.button )
 							{
 								m_Clicks.remove( i );
 								break;
@@ -249,7 +250,7 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == toCheckFor )
+				if( i.button == toCheckFor )
 				{
 					return true;
 				}
@@ -261,9 +262,9 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == button )
+				if( i.button == button )
 				{
-					return i.XPosition;
+					return i.position.x;
 				}
 			}
 			throw new Exception( "Button is not pressed" );
@@ -273,9 +274,9 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == button )
+				if( i.button == button )
 				{
-					return i.YPosition;
+					return i.position.x;
 				}
 			}
 			throw new Exception( "Button is not pressed" );
@@ -285,9 +286,9 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == button )
+				if( i.button == button )
 				{
-					return i.CreateTime;
+					return i.createTime;
 				}
 			}
 			throw new Exception( "Button is not pressed" );
@@ -295,8 +296,8 @@ public class Game : Entity
 
 		void WarpMouse( uint nX, uint nY )
 		{ //{{{
-			m_Cursor[ 0 ] = nX;
-			m_Cursor[ 1 ] = nY;
+			m_Cursor.x = nX;
+			m_Cursor.y = nY;
 			SDL_WarpMouse( nX, nY);
 		} //}}}
 
@@ -445,48 +446,48 @@ public class Game : Entity
 		/// Setter for both X/Y centers
 		void Centers( real nXC, real nYC ) //{{{
 		{
-			XPosition = nXC - ViewWidth / 2;
-			YPosition = nYC - ViewHeight / 2;
+			this.position.x = nXC - ViewWidth / 2;
+			this.position.y = nYC - ViewHeight / 2;
 		} //}}}
 
 		/// {G,S}etter for the X center
 		real XCenter() //{{{
 		{
-			return ViewWidth / 2 + XPosition;
+			return ViewWidth / 2 + this.position.x;
 		}
 		void XCenter( real nXC )
 		{
-			XPosition = nXC - ViewWidth / 2;
+			this.position.x = nXC - ViewWidth / 2;
 		} //}}}
 
 		/// {G,S}etter for the Y center
 		real YCenter() //{{{
 		{
-			return ViewHeight / 2 + YPosition;
+			return ViewHeight / 2 + this.position.y;
 		}
 		void YCenter( real nYC )
 		{
-			YPosition = nYC - ViewHeight / 2;
+			this.position.y = nYC - ViewHeight / 2;
 		} //}}}
 
 		/// {G,S}etter for the Cursor X
 		uint CursorX() //{{{
 		{
-			return m_Cursor[ 0 ];
+			return m_Cursor.x;
 		}
 		void CursorX( uint nCX )
 		{
-			WarpMouse( nCX, m_Cursor[ 1 ] );
+			WarpMouse( nCX, m_Cursor.y );
 		} //}}}
 
 		/// {G,S}etter for the Cursor Y
 		uint CursorY() //{{{
 		{
-			return m_Cursor[ 1 ];
+			return m_Cursor.y;
 		}
 		void CursorY( uint nCY )
 		{
-			WarpMouse( m_Cursor[ 0 ], nCY );
+			WarpMouse( m_Cursor.x, nCY );
 		} //}}}
 
 		/// {G,S}etter for the Zoom
@@ -502,10 +503,12 @@ public class Game : Entity
 	protected : //{{{
 		this( uint iWidth, uint iHeight, uint iBPP )
 		{
+			super();
 			InitSGL( iWidth, iHeight, iBPP );
 			m_Keypresses = new LinkedList!( Keypress );
 			m_Clicks = new LinkedList!( Click );
 			m_Entities = new LinkedList!( Entity );
+			m_Cursor = new Vector!( uint );
 		}
 
 		// load modules needed to interface with C libs SDL, GL, IL
@@ -603,7 +606,7 @@ public class Game : Entity
 		SDL_Event m_Event;
 		LinkedList!( Keypress ) m_Keypresses;
 		LinkedList!( Click ) m_Clicks;
-		uint[ 2 ] m_Cursor;
+		Vector!( uint ) m_Cursor;
 
 		real m_Zoom;
 

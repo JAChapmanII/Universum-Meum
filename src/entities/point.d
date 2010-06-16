@@ -28,32 +28,36 @@ class Point : Entity
 	public:
 		this( real iX, real iY )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = 1;
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
 		this( real iX, real iY, real iRadius )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = iRadius;
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
 		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = iRadius;
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
 		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue, real iAlpha )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = iRadius;
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
@@ -64,7 +68,7 @@ class Point : Entity
 			glPointSize( Radius * 2 * m_Zoom );
 			glColor4f( Red, Green, Blue, Alpha );
 			glBegin( GL_POINTS );
-			glVertex2f( XPosition, YPosition );
+			glVertex2f( this.position.x, this.position.y );
 			glEnd();
 		} //}}}
 

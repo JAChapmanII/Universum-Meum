@@ -150,8 +150,8 @@ int main( char[][] args )
 	log.info( "Creating a Game" );
 	Stdout.formatln( "W: {}\tH: {}", gWidth, gHeight );
 	Game m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
-	m_Game.XPosition = 0;
-	m_Game.YPosition = 0;
+	m_Game.position.x = 0;
+	m_Game.position.y = 0;
 
 	log.info( "Setting framerate to 100" );
 	uint frameRate = 100;
@@ -283,6 +283,7 @@ int main( char[][] args )
 	m_Cursor.Radius( 0.0f );
 	m_Cursor.Mass( 0.0f );
 	m_Game.AddEntity( m_CursorPolygon );
+
 	//m_ParticleSystem.AddParticle( m_Cursor );
 
 	//m_Cursor.AddForce( m_Gravity );
@@ -321,19 +322,14 @@ int main( char[][] args )
 		xCenter = m_Game.XCenter();
 		yCenter = m_Game.YCenter();
 
-		m_Cursor.CurrentPositions(
-			cast(uint)(
-				cast(real)(m_Game.CursorX) / m_Game.Width*m_Game.ViewWidth + m_Game.XPosition ),
-			cast(uint)(
-				(1.0 - (cast(real)(m_Game.CursorY) / m_Game.Height))*m_Game.ViewHeight + m_Game.YPosition) );
-
 		if( m_Game.isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
 		{ //{{{
 			Stdout.formatln( "Screen: ( {}, {} ) [ {}/{}, {}/{} ] < {}, {} >",
-					m_Game.XPosition, m_Game.YPosition,
+					m_Game.position.x, m_Game.position.y,
 					m_Game.ViewWidth, m_Game.Width,
 					m_Game.ViewHeight, m_Game.Height,
 					m_Game.XCenter, m_Game.YCenter );
+			Stdout.formatln( "Cursor: ( {}, {} )", m_Cursor.XPosition, m_Cursor.YPosition );
 		} //}}}
 
 		/// Create new particles dynamically, or delete them if the mouse is on one
@@ -342,8 +338,8 @@ int main( char[][] args )
 			if( m_Game.ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
 			{
 				lastSpawn = m_Game.ClickCreateTime( SDL_BUTTON_RIGHT );
-				real xPos = m_CursorPolygon.XPosition;
-				real yPos = m_CursorPolygon.YPosition;
+				real xPos = m_CursorPolygon.position.x;
+				real yPos = m_CursorPolygon.position.y;
 
 				log.info( "Setting minDist to infinity" );
 				real minDist2 = real.infinity;
@@ -351,8 +347,8 @@ int main( char[][] args )
 				log.info( "Starting dist checking loop" );
 				foreach( Particle i; m_Particles ) /// Determine minDist squared
 				{ //{{{
-					real cXDist = m_CursorPolygon.XPosition - i.XPosition;
-					real cYDist = m_CursorPolygon.YPosition - i.YPosition;
+					real cXDist = m_CursorPolygon.position.x - i.XPosition;
+					real cYDist = m_CursorPolygon.position.y - i.YPosition;
 					real cDist2 = cXDist*cXDist + cYDist*cYDist;
 					if( cDist2 < minDist2 )
 					{
@@ -388,7 +384,8 @@ int main( char[][] args )
 						nParticle.AddEntity( nPolygon );
 						nParticle.Radius = 10.0;
 
-						nParticle.CurrentPositions( m_CursorPolygon.XPosition, m_CursorPolygon.YPosition );
+						nParticle.CurrentPositions( m_CursorPolygon.position.x,
+								m_CursorPolygon.position.y );
 
 						switch( initVel ) /// Determine appropriate init velocities
 						{ //{{{
@@ -451,17 +448,17 @@ int main( char[][] args )
 		{ //{{{
 			if( m_Game.isPressed( Key[ "Right" ] ) )
 			{
-				m_Game.XPosition = m_Game.XPosition + 5;
+				m_Game.position.x += 5;
 			} else if( m_Game.isPressed( Key[ "Left" ] ) )
 			{
-				m_Game.XPosition = m_Game.XPosition - 5;
+				m_Game.position.x -= 5;
 			}
 			if( m_Game.isPressed( Key[ "Up" ] ) )
 			{
-				m_Game.YPosition = m_Game.YPosition + 5;
+				m_Game.position.y += 5;
 			} else if( m_Game.isPressed( Key[ "Down" ] ) )
 			{
-				m_Game.YPosition = m_Game.YPosition - 5;
+				m_Game.position.y -= 5;
 			}
 		} //}}}
 
@@ -486,6 +483,11 @@ int main( char[][] args )
 			m_Game.TickInterval = 1000 / frameRate;
 		}
 
+		m_Cursor.CurrentPositions(
+			cast(uint)(
+				cast(real)(m_Game.CursorX) / m_Game.Width*m_Game.ViewWidth + m_Game.position.x ),
+			cast(uint)(
+				(1.0 - (cast(real)(m_Game.CursorY) / m_Game.Height))*m_Game.ViewHeight + m_Game.position.y) );
 
 		m_Game.Draw();
 		m_Game.WaitFor();

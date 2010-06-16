@@ -19,51 +19,26 @@
 */// }}}
 module entity;
 
+import vector;
+
 class Entity
 {
 	public:
 		void Draw( real m_Zoom = 1 )
 		{
-
 		}
-
 
 		void Update()
 		{
 		}
 
-		void Positions( real nX, real nY )
-		{ //{{{
-			m_Position[ 0 ] = nX;
-			m_Position[ 1 ] = nY;
-		} //}}}
-
-		/// {G,S}etter for m_Position[ 0 ]
-		real XPosition() //{{{
-		{
-			return m_Position[ 0 ];
-		}
-		void XPosition( real nX )
-		{
-			m_Position[ 0 ] = nX;
-		} //}}}
-
-		/// {G,S}etter for m_Position[ 1 ]
-		real YPosition() //{{{
-		{
-			return m_Position[ 1 ];
-		}
-		void YPosition( real nY )
-		{
-			m_Position[ 1 ] = nY;
-		} //}}}
+		Vector!( real ) position;
 
 	protected:
 		this()
 		{
+			position = new Vector!( real );
 		}
-
-		real[ 2 ] m_Position;
 
 	private:
 

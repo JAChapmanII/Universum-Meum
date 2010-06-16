@@ -30,32 +30,36 @@ class Polygon : Entity
 	public:
 		this( real iX, real iY )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = 1;
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
 		this( real iX, real iY, real iRadius )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = iRadius;
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
 		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = iRadius;
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
 		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue, real iAlpha )
 		{ //{{{
-			XPosition = iX;
-			YPosition = iY;
+			super();
+			this.position.x = iX;
+			this.position.y = iY;
 			Radius = iRadius;
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
@@ -70,8 +74,8 @@ class Polygon : Entity
 				for( uint segment = 0; segment < NumSegments; ++segment )
 				{
 					theta = segment * delTheta;
-					glVertex2f( Radius * cos( theta ) + XPosition,
-								Radius * sin( theta ) + YPosition );
+					glVertex2f( Radius * cos( theta ) + position.x,
+								Radius * sin( theta ) + position.y );
 				}
 			glEnd();
 		} //}}}

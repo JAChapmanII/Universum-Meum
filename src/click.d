@@ -19,40 +19,23 @@
 */// }}}
 module click;
 
+import vector;
+
 class Click
 {
 	public:
 		this( uint iX, uint iY, uint iButton, uint cTime )
 		{
-			m_Position[ 0 ] = iX;
-			m_Position[ 1 ] = iY;
-			m_CreateTime = cTime;
-			m_Button = iButton;
+			this.position = new Vector!( uint )( iX, iY, 0 );
+			this.createTime = cTime;
+			this.button = iButton;
 		}
 
-		uint XPosition()
-		{
-			return m_Position[ 0 ];
-		}
-		uint YPosition()
-		{
-			return m_Position[ 1 ];
-		}
-
-		uint CreateTime()
-		{
-			return m_CreateTime;
-		}
-
-		uint Button()
-		{
-			return m_Button;
-		}
+		Vector!( uint ) position;
+		uint createTime;
+		uint button;
 
 	protected:
-		uint[ 2 ] m_Position;
-		uint m_CreateTime;
-		uint m_Button;
 
 	private:
 
