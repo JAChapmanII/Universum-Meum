@@ -38,13 +38,38 @@ static this()
 /// Alters particle A by applying an force resulting from a elastic collision between A and B
 void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real deltaTime )
 { //{{{
-	real xDist = B.XPosition - A.XPosition;
-	real yDist = B.YPosition - A.YPosition;
-	real dist2 = (xDist * xDist) + (yDist * yDist);
-	real dist  = sqrt( dist2 );
 
-	if( dist == (A.Radius+B.Radius) )
+	int sgn( real input )
 	{
+		if (input >= 0)
+		{
+			return 1;
+		}
+		return -1;
+	}
+
+
+	real NextxDist = B.NextXPosition - A.NextXPosition;
+	real NextyDist = B.NextYPosition - A.NextYPosition;
+	real Nextdist2 = (NextxDist * NextxDist) + (NextyDist * NextyDist);
+	real Nextdist  = sqrt( Nextdist2 );
+
+	if( Nextdist < (A.Radius + B.Radius))
+	{
+		if( NextxDist  < (A.Radius + B.Radius))
+		{
+			A.XPosition = A.XPosition + ((0.5 * (sgn(A.NextXPosition - B.NextXPosition)))*((A.Radius + B.Radius) - (A.NextXPosition - B.NextXPosition)));
+		}
+		if( NextyDist  < (A.Radius + B.Radius))
+		{
+			A.YPosition = A.YPosition + ((0.5 * (sgn(A.NextYPosition - B.NextYPosition)))*((A.Radius + B.Radius) - (A.NextYPosition - B.NextYPosition)));
+		}
+	}
+		real xDist = B.XPosition - A.XPosition;
+		real yDist = B.YPosition - A.YPosition;
+		real dist2 = (xDist * xDist) + (yDist * yDist);
+		real dist  = sqrt( dist2 );
+
 		real theta = atan2( yDist, xDist );
 		real dir1 = atan2( A.YVelocity, A.XVelocity );
 		real dir2 = atan2( B.YVelocity, B.XVelocity );
@@ -55,7 +80,7 @@ void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real 
 		real nYV2 = B.Speed * sin( dir1 - theta );
 		A.XVelocity = cos(theta) * fXV1 + cos(theta+PI_2) * nYV1;
 		A.YVelocity = sin(theta) * fXV1 + sin(theta+PI_2) * nYV1;
-	}
-} //}}}
+
+		}//}}}
 
 Force DefaultElasticCollision = &ElasticCollision!( 0.0 );
