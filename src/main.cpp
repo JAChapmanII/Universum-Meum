@@ -120,21 +120,17 @@ int main( int argsc, const char* argsv[] )
 	//   TODO   auto rand = new Twister();
 	//   TODO   rand.seed();
 
-	unsigned int gWidth = 800, gHeight = 600;
-	/*  TODO   //Get input from user\\  char buf[];
-	while( ( gWidth = integer.parse( buf ) ) == 0 )
+	unsigned int gWidth = 0, gHeight = 0;
+	while( ( gWidth <= 0 ) || ( gWidth >= 2560 ) )
 	{
-		cout << "Please enter a width:";
-		buf = Cin.get();
+		cout << "\nPlease enter a (0<) width (<2560): ";
+			cin >> gWidth;
 	}
-	buf.length = 0;
-	while( ( gHeight = integer.parse( buf ) ) == 0 )
+	while( ( gHeight <= 0 ) || ( gHeight >= 1600 ) )
 	{
-		cout << "Please enter a height:";
-		buf = Cin.get();
+		cout << "\nPlease enter a (0<) height (<1600): ";
+			cin >> gHeight;
 	}
-	buf.length = 0;
-	*/
 
 	cout << "Creating a Game\n" ;
 	cout << "W: " << gWidth << "\tH: " << gHeight << "\n";
@@ -169,7 +165,7 @@ int main( int argsc, const char* argsv[] )
 	ParticleSystem *m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
 	/// Process arguments TODO fix
-	unsigned int numObjects = 1; //{{{
+	unsigned int numObjects = 3; //{{{
 	unsigned int initVel = 0;
 	/* TODO Parse arguments
 	if( args.length > 1 )
