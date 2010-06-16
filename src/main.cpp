@@ -22,6 +22,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <string>
+#include <map>
 
 #include "game.cpp"
 #include "particle.cpp"
@@ -37,10 +38,43 @@
 #include <GL/gl.h>
 
 using namespace std;
-// Set up the logger, and the Key associative array
-//{{{
-/*   TODO    unsigned int[ char[] ] Key;
+
+Vector< long double > detVelocity( unsigned int type = 0 )
 {
+	Vector< long double >* rVec = new Vector< long double >;
+	rVec->Zero();
+	switch( type ) /// Determine appropriate init velocities
+	{ // {{{
+		case 0: /// Nothing
+		{
+			break;
+		}
+		case 1: /// Random
+		{
+			// TODO get random number generation
+			long double ranX = 0;//rand.fraction() * 16.0 - 8.0;
+			long double ranY = 0;//rand.fraction() * 16.0 - 8.0;
+			rVec->x = ranX;
+			rVec->y = ranY;
+			break;
+		}
+		case 2: /// Clockwise spiral
+		{
+		}
+		case 3: /// Counter-clockwise spiral
+		{
+		}
+		default:
+		{
+			break;
+		}
+	} //}}}
+	return *rVec;
+}
+
+int main( int argc, const char* argv[] )
+{
+	map< string, int > Key;
 	// Sets up the Key unsigned int <-> char map
 	Key[ "None" ] = -1; Key[ "First" ] = 1; Key[ "Backspace" ] = 8; //{{{
 	Key[ "Tab" ] = 9; Key[ "	" ] = 9; Key[ "Clear" ] = 12; Key[ "Enter" ] = 13;
@@ -110,45 +144,8 @@ using namespace std;
 	Key[ "Compose" ] = 314; Key[ "Help" ] = 315; Key[ "Print" ] = 316;
 	Key[ "System Request" ] = 317; Key[ "Break" ] = 318; Key[ "Menu" ] = 319;
 	Key[ "Power" ] = 320; Key[ "Euro" ] = 321; Key[ "Undo" ] = 322;
-	Key[ "Last" ] = 323; Key.rehash; //}}}
-} //}}}
-*/
+	Key[ "Last" ] = 323;  //}}}
 
-Vector< long double > detVelocity( unsigned int type = 0 )
-{
-	Vector< long double >* rVec = new Vector< long double >;
-	rVec->Zero();
-	switch( type ) /// Determine appropriate init velocities
-	{ // {{{
-		case 0: /// Nothing
-		{
-			break;
-		}
-		case 1: /// Random
-		{
-			// TODO get random number generation
-			long double ranX = 0;//rand.fraction() * 16.0 - 8.0;
-			long double ranY = 0;//rand.fraction() * 16.0 - 8.0;
-			rVec->x = ranX;
-			rVec->y = ranY;
-			break;
-		}
-		case 2: /// Clockwise spiral
-		{
-		}
-		case 3: /// Counter-clockwise spiral
-		{
-		}
-		default:
-		{
-			break;
-		}
-	} //}}}
-	return *rVec;
-}
-
-int main( int argc, const char* argv[] )
-{
 	cout << "Welcome to Universum Meum.\n";
 
 	cout << "Creating random number generator\n" ;
@@ -300,18 +297,14 @@ int main( int argc, const char* argv[] )
 	cout << "Entering main game loop\n";
 	while( !m_Game->isDone() )
 	{ //{{{
-		//cout << "Proc input\n";
 		m_Game->ProcessInput();
 
-		//cout << "Proc esc\n";
-		// if( m_Game->isPressed( Key[ "Escape" ] ) ) TODO associative key array or something
-		if( m_Game->isPressed( 27 ) )
+		if( m_Game->isPressed( Key[ "Escape" ] ) )
 		{
 			m_Game->isDone( true );
 			continue;
 		}
 
-		//cout << "Proc mouse\n";
 		if( m_Game->isClicked() ) /// Print *cough* informortive messages
 		{ //{{{
 			cout << "There are " << m_Particles.size() << " particles and 1 sun currently...\n";
@@ -326,11 +319,9 @@ int main( int argc, const char* argv[] )
 				<< m_Sun->XAcceleration() << ", " << m_Sun->YAcceleration() << " ]\n";
 		} //}}}
 
-		//cout << "Get center\n";
 		xCenter = m_Game->XCenter();
 		yCenter = m_Game->YCenter();
 
-		//cout << "Proc MMB\n";
 		if( m_Game->isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
 		{ //{{{
 			cout << "Screen: ( " << m_Game->position.x << ", " << m_Game->position.y << ") " <<
@@ -340,7 +331,6 @@ int main( int argc, const char* argv[] )
 			cout << "Cursor: (" << m_Cursor->XPosition() << ", " << m_Cursor->YPosition() << " )\n";
 		} //}}}
 
-		//TODO I didn't bother with this yet because I bet it pisses away memory...
 		/// Create new particles dynamically, or delete them if the mouse is on one
 		if( m_Game->isClicked( SDL_BUTTON_RIGHT ) )
 		{ //{{{
@@ -419,7 +409,6 @@ int main( int argc, const char* argv[] )
 			}
 		} //}}}
 
-		//cout << "Proc wheel up\n";
 		if( m_Game->isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
 			if( m_Game->Zoom() < 24 )
@@ -436,7 +425,6 @@ int main( int argc, const char* argv[] )
 			m_Game->Centers( xCenter, yCenter );
 		} //}}}
 
-		//cout << "Work particle system\n";
 		m_ParticleSystem->Work( .02 );
 
 		if( doLock )
@@ -445,30 +433,23 @@ int main( int argc, const char* argv[] )
 		}
 		else /// Use arrows to move camera
 		{ //{{{
-			// if( m_Game->isPressed( Key[ "Right" ] ) ) TODO
-			//cout << "Proc arrow keys\n";
-			if( m_Game->isPressed( 275 ) )
+			if( m_Game->isPressed( Key[ "Right" ] ) )
 			{
 				m_Game->position.x += 5;
-			//} else if( m_Game->isPressed( Key[ "Left" ] ) ) TODO
-			} else if( m_Game->isPressed( 276 ) )
+			} else if( m_Game->isPressed( Key[ "Left" ] ) )
 			{
 				m_Game->position.x -= 5;
 			}
-			// if( m_Game->isPressed( Key[ "Up" ] ) ) TODO
-			if( m_Game->isPressed( 273 ) )
+			if( m_Game->isPressed( Key[ "Up" ] ) )
 			{
 				m_Game->position.y += 5;
-			//} else if( m_Game->isPressed( Key[ "Down" ] ) ) TODO
-			} else if( m_Game->isPressed( 274 ) )
+			} else if( m_Game->isPressed( Key[ "Down" ] ) )
 			{
 				m_Game->position.y -= 5;
 			}
 		} //}}}
 
-		//cout << "Proc +/- keys\n";
-		// if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) ) TODO
-		if( m_Game->isPressed( 270 ) )
+		if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) )
 		{
 			frameRate += 5;
 			if( frameRate > 1000 )
@@ -478,8 +459,7 @@ int main( int argc, const char* argv[] )
 			cout << "New framerate: " << frameRate << "\n";
 			m_Game->TickInterval( 1000 / frameRate );
 		}
-		// else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) ) TODO
-		else if( m_Game->isPressed( 269 ) )
+		else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) )
 		{
 			frameRate -= 5; frameRate %= 1000;
 			if( frameRate < 1 )
@@ -490,7 +470,6 @@ int main( int argc, const char* argv[] )
 			m_Game->TickInterval( 1000 / frameRate );
 		}
 
-		//cout << "Up mouse\n";
 		m_Cursor->CurrentPositions(
 			(unsigned int)(
 				(long double)(m_Game->CursorX()) / m_Game->Width()*m_Game->ViewWidth() + m_Game->position.x ),
