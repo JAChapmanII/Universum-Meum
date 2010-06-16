@@ -251,6 +251,13 @@ class Particle
 			XVelocity( nXVelocity );
 			YVelocity( nYVelocity );
 		} //}}}
+
+		// Setter for both next Velocitys
+		void Velocities( Vector< long double > nVelocity ) //{{{
+		{
+			XVelocity( nVelocity.x );
+			YVelocity( nVelocity.y );
+		} //}}}
 		//}}}
 
 		// Acceleration stuff
