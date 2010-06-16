@@ -170,7 +170,7 @@ int main( char[][] args )
 	Force m_Gravity = &Gravity!( rgConstant );
 
 	log.info( "Creating a elastic_collision force" );
-	Force m_Repel = &Repel!( rgConstant );
+	Force m_ElasticCollision = DefaultElasticCollision;
 
 	//}}}
 
@@ -249,7 +249,7 @@ int main( char[][] args )
 		} //}}}
 
 		nParticle.AddForce( m_Gravity );
-		nParticle.AddForce( m_Repel );
+		nParticle.AddForce( m_ElasticCollision );
 
 		m_ParticleSystem.AddParticle( nParticle );
 	} //}}}
@@ -266,7 +266,7 @@ int main( char[][] args )
 	m_ParticleSystem.AddParticle( m_Sun );
 
 	m_Sun.AddForce( m_Gravity );
-	m_Sun.AddForce( m_Repel );
+	m_Sun.AddForce( m_ElasticCollision );
 
 	//log.info( "Giving the Sun some velocity" );
 	//m_Sun.CurrentVelocities( -4, 0 );
@@ -417,7 +417,7 @@ int main( char[][] args )
 						} //}}}
 
 						nParticle.AddForce( m_Gravity );
-						nParticle.AddForce( m_Repel );
+						nParticle.AddForce( m_ElasticCollision );
 
 						m_ParticleSystem.AddParticle( nParticle );
 					} //}}}
