@@ -283,7 +283,7 @@ int main( char[][] args )
 	m_Cursor.Radius( 0.0f );
 	m_Cursor.Mass( 0.0f );
 	m_Game.AddEntity( m_CursorPolygon );
-	m_ParticleSystem.AddParticle( m_Cursor );
+	//m_ParticleSystem.AddParticle( m_Cursor );
 
 	//m_Cursor.AddForce( m_Gravity );
 	//m_Cursor.AddForce( m_Repel );
