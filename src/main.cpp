@@ -289,10 +289,10 @@ int main( int argsc, const char* argsv[] )
 	cout << "Entering main game loop\n";
 	while( !m_Game->isDone() )
 	{ //{{{
-		cout << "Proc input\n";
+		//cout << "Proc input\n";
 		m_Game->ProcessInput();
 
-		cout << "Proc esc\n";
+		//cout << "Proc esc\n";
 		// if( m_Game->isPressed( Key[ "Escape" ] ) ) TODO associative key array or something
 		if( m_Game->isPressed( 27 ) )
 		{
@@ -300,7 +300,7 @@ int main( int argsc, const char* argsv[] )
 			continue;
 		}
 
-		cout << "Proc mouse\n";
+		//cout << "Proc mouse\n";
 		if( m_Game->isClicked() ) /// Print *cough* informortive messages
 		{ //{{{
 			cout << "There are {} particles and 1 sun currently..." << m_Particles.size();
@@ -309,27 +309,27 @@ int main( int argsc, const char* argsv[] )
 				cout << "\t: ( {} << {} < {}, {} > [ {}, {} ]" <<
 					i->XPosition() << i->YPosition() <<
 					i->XVelocity() << i->YVelocity() <<
-					i->XAcceleration() << i->YAcceleration();
+					i->XAcceleration() << i->YAcceleration() << "\n";
 			}
 			cout << "\tSun: ( {} << {} < {}, {} > [ {}, {} ]" <<
 				m_Sun->XPosition() << m_Sun->YPosition() <<
 				m_Sun->XVelocity() << m_Sun->YVelocity() <<
-				m_Sun->XAcceleration() << m_Sun->YAcceleration() ;
+				m_Sun->XAcceleration() << m_Sun->YAcceleration() << "\n";
 		} //}}}
 
-		cout << "Get center\n";
+		//cout << "Get center\n";
 		xCenter = m_Game->XCenter();
 		yCenter = m_Game->YCenter();
 
-		cout << "Proc MMB\n";
+		//cout << "Proc MMB\n";
 		if( m_Game->isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
 		{ //{{{
 			cout << "Screen: ( {} << {} [ {}/{}, {}/{} ] < {}, {} >" <<
 					m_Game->position.x << m_Game->position.y <<
 					m_Game->ViewWidth() << m_Game->Width() <<
 					m_Game->ViewHeight() << m_Game->Height() <<
-					m_Game->XCenter() << m_Game->YCenter();
-			cout << "Cursor: ( {} << {}" << m_Cursor->XPosition() << m_Cursor->YPosition();
+					m_Game->XCenter() << m_Game->YCenter() << "\n";
+			cout << "Cursor: ( {} << {}" << m_Cursor->XPosition() << m_Cursor->YPosition() << "\n";
 		} //}}}
 
 		/* TODO I didn't bother with this yet because I bet it pisses away memory...
@@ -426,7 +426,7 @@ int main( int argsc, const char* argsv[] )
 		} //}}}
 		*/
 
-		cout << "Proc wheel up\n";
+		//cout << "Proc wheel up\n";
 		if( m_Game->isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
 			if( m_Game->Zoom() < 24 )
@@ -443,7 +443,7 @@ int main( int argsc, const char* argsv[] )
 			m_Game->Centers( xCenter, yCenter );
 		} //}}}
 
-		cout << "Work particle system\n";
+		//cout << "Work particle system\n";
 		m_ParticleSystem->Work( .02 );
 
 		/* TODO argument based thing again
@@ -454,7 +454,7 @@ int main( int argsc, const char* argsv[] )
 		else /// Use arrows to move camera
 		{ //{{{ */
 			// if( m_Game->isPressed( Key[ "Right" ] ) ) TODO
-			cout << "Proc arrow keys\n";
+			//cout << "Proc arrow keys\n";
 			if( m_Game->isPressed( 275 ) )
 			{
 				m_Game->position.x += 5;
@@ -474,7 +474,7 @@ int main( int argsc, const char* argsv[] )
 			}
 		//} //}}}
 
-		cout << "Proc +/- keys\n";
+		//cout << "Proc +/- keys\n";
 		// if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) ) TODO
 		if( m_Game->isPressed( 270 ) )
 		{
@@ -483,7 +483,7 @@ int main( int argsc, const char* argsv[] )
 			{
 				frameRate = 1000;
 			}
-			cout << "New framerate: {}" << frameRate;
+			cout << "New framerate: " << frameRate << "\n";
 			m_Game->TickInterval( 1000 / frameRate );
 		}
 		// else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) ) TODO
@@ -494,11 +494,11 @@ int main( int argsc, const char* argsv[] )
 			{
 				frameRate = 1;
 			}
-			cout << "New framerate: {}" << frameRate;
+			cout << "New framerate: " << frameRate << "\n";
 			m_Game->TickInterval( 1000 / frameRate );
 		}
 
-		cout << "Up mouse\n";
+		//cout << "Up mouse\n";
 		m_Cursor->CurrentPositions(
 			(unsigned int)(
 				(long double)(m_Game->CursorX()) / m_Game->Width()*m_Game->ViewWidth() + m_Game->position.x ),
@@ -509,6 +509,6 @@ int main( int argsc, const char* argsv[] )
 		m_Game->WaitFor();
 	} //}}}
 
-	cout << "Thanks for playing!";
+	cout << "\n---------------------------------\nThanks for playing!\n";
 	return 0;
 }
