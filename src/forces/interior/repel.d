@@ -45,7 +45,7 @@ void Repel( real repConst )( Particle A, Particle B, ref real deltaTime )
 
 	if( ( dist < (A.Radius + B.Radius) ) && ( dist2 > 0 ) )
 	{
-		real repMass = repConst * B.Mass * 1.2;
+		real repMass = repConst * B.Mass * 2.0;
 		real sectLength = (A.Radius+B.Radius) - dist;
 		real unitX = xDist / dist;
 		real unitY = yDist / dist;
