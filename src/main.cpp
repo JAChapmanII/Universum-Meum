@@ -169,8 +169,8 @@ int main( int argsc, const char* argsv[] )
 	cout << "Now a particle system\n";
 	ParticleSystem *m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
-	/// Process arguments
-	unsigned int numObjects = 0; //{{ {
+	/// Process arguments TODO fix
+	unsigned int numObjects = 3; //{{{
 	unsigned int initVel = 0;
 	/* TODO Parse arguments
 	if( args.length > 1 )
@@ -196,19 +196,19 @@ int main( int argsc, const char* argsv[] )
 	*/
 
 	cout <<  "Creating particles/points\n" ;
-	vector< Particle > m_Particles;
-	vector< Polygon > m_Polygons;
+	vector< Particle* > m_Particles;
+	vector< Polygon* > m_Polygons;
 
 	/// Create particles
 	for( unsigned int i = 0; i < numObjects; i++ ) //{{{
 	{
 		cout << "Number: " << i << "\n";
-		Polygon *nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
-		m_Polygons.push_back( *nPolygon );
+		Polygon* nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
+		m_Polygons.push_back( nPolygon );
 		m_Game->AddEntity( nPolygon );
 
 		Particle *nParticle = new Particle();
-		m_Particles.push_back( *nParticle );
+		m_Particles.push_back( nParticle );
 		nParticle->AddEntity( nPolygon );
 		nParticle->Radius( 10.0 );
 
@@ -249,8 +249,8 @@ int main( int argsc, const char* argsv[] )
 	} //}}}
 
 	cout << "Setting up the sun\n";
-	Polygon *m_SunPolygon = new Polygon( m_Game->Width() / 2, m_Game->Height() / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
-	Particle *m_Sun = new Particle();
+	Polygon* m_SunPolygon = new Polygon( m_Game->Width() / 2, m_Game->Height() / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
+	Particle* m_Sun = new Particle();
 
 	m_Sun->AddEntity( m_SunPolygon );
 	m_Sun->Positions( gWidth / 2, gHeight / 2 );
@@ -268,9 +268,9 @@ int main( int argsc, const char* argsv[] )
 	//}}}
 
 	cout << "Setting up the cursor\n" ;
-	Polygon *m_CursorPolygon = new Polygon( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
+	Polygon* m_CursorPolygon = new Polygon( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
 	m_Game->WarpMouse( 400, 300 );
-	Particle *m_Cursor = new Particle();
+	Particle* m_Cursor = new Particle();
 
 	m_Cursor->AddEntity( m_CursorPolygon );
 	m_Cursor->Positions( 400.0f, 300.0f );
@@ -303,18 +303,16 @@ int main( int argsc, const char* argsv[] )
 		//cout << "Proc mouse\n";
 		if( m_Game->isClicked() ) /// Print *cough* informortive messages
 		{ //{{{
-			cout << "There are {} particles and 1 sun currently..." << m_Particles.size();
-			for( vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+			cout << "There are " << m_Particles.size() << " particles and 1 sun currently...\n";
+			for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				cout << "\t: ( {} << {} < {}, {} > [ {}, {} ]" <<
-					i->XPosition() << i->YPosition() <<
-					i->XVelocity() << i->YVelocity() <<
-					i->XAcceleration() << i->YAcceleration() << "\n";
+				cout << "\t: ( " << (*i)->XPosition() << ", " << (*i)->YPosition() << " ) < "
+					<< (*i)->XVelocity() << ", " << (*i)->YVelocity() << " > [ "
+					<< (*i)->XAcceleration() << ", " << (*i)->YAcceleration() << " ]\n";
 			}
-			cout << "\tSun: ( {} << {} < {}, {} > [ {}, {} ]" <<
-				m_Sun->XPosition() << m_Sun->YPosition() <<
-				m_Sun->XVelocity() << m_Sun->YVelocity() <<
-				m_Sun->XAcceleration() << m_Sun->YAcceleration() << "\n";
+			cout << "\tSun: ( " << m_Sun->XPosition() << ", " << m_Sun->YPosition() << " ) < "
+				<< m_Sun->XVelocity() << ", " << m_Sun->YVelocity() << " > [ "
+				<< m_Sun->XAcceleration() << ", " << m_Sun->YAcceleration() << " ]\n";
 		} //}}}
 
 		//cout << "Get center\n";
@@ -324,12 +322,11 @@ int main( int argsc, const char* argsv[] )
 		//cout << "Proc MMB\n";
 		if( m_Game->isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
 		{ //{{{
-			cout << "Screen: ( {} << {} [ {}/{}, {}/{} ] < {}, {} >" <<
-					m_Game->position.x << m_Game->position.y <<
-					m_Game->ViewWidth() << m_Game->Width() <<
-					m_Game->ViewHeight() << m_Game->Height() <<
-					m_Game->XCenter() << m_Game->YCenter() << "\n";
-			cout << "Cursor: ( {} << {}" << m_Cursor->XPosition() << m_Cursor->YPosition() << "\n";
+			cout << "Screen: ( " << m_Game->position.x << ", " << m_Game->position.y << ") " <<
+							"< " << m_Game->ViewWidth() << "/ " << m_Game->Width() << ", " <<
+							m_Game->ViewHeight() << "/ " << m_Game->Height() << "> " <<
+							"[ " << m_Game->XCenter() << ", " << m_Game->YCenter() << " ]\n";
+			cout << "Cursor: (" << m_Cursor->XPosition() << ", " << m_Cursor->YPosition() << " )\n";
 		} //}}}
 
 		/* TODO I didn't bother with this yet because I bet it pisses away memory...
