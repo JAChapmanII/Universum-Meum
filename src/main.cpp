@@ -115,9 +115,9 @@ using namespace std;
 
 int main( int argsc, const char* argsv[] )
 {
-	cout << "Welcome to Universum Meum.";
+	cout << "Welcome to Universum Meum.\n";
 
-	cout << "Creating random number generator" ;
+	cout << "Creating random number generator\n" ;
 	//   TODO   auto rand = new Twister();
 	//   TODO   rand.seed();
 
@@ -137,13 +137,14 @@ int main( int argsc, const char* argsv[] )
 	buf.length = 0;
 	*/
 
-	cout << "Creating a Game" ;
-	cout << "W: {}\tH: {}" << gWidth << gHeight;
-	Game *m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
+	cout << "Creating a Game\n" ;
+	cout << "W: " << gWidth << "\tH: " << gHeight << "\n";
+	Game *m_Game;
+	m_Game = Game::Instance( gWidth, gHeight, 32 ); //{{{
 	m_Game->position.x = 0;
 	m_Game->position.y = 0;
 
-	cout << "Setting framerate to 100" ;
+	cout << "Setting framerate to 100\n";
 	unsigned int frameRate = 100;
 	m_Game->TickInterval( 1000 / frameRate );
 	//}}}
@@ -154,17 +155,18 @@ int main( int argsc, const char* argsv[] )
 
 	/// Create Gravity/Repel forces
 	const int rgConstant = 1024; //{{{
-	cout << "\trgConstant: " << rgConstant;
+	cout << "\trgConstant: " << rgConstant << "\n";
 
-	cout << "Creating a gravity force" ;
-	Force m_Gravity = &Gravity< rgConstant >;
+	cout << "Creating a gravity force\n";
+	Force m_GravityFunc = &( Gravity< rgConstant > );
+	Force *m_Gravity = &m_GravityFunc;
 
-	cout <<  "Creating a elastic_collision force" ;
-	Force m_ElasticCollision = DefaultElasticCollision;
+	cout <<  "Creating a elastic_collision force\n";
+	Force *m_ElasticCollision = &DefaultElasticCollision;
 
 	//}}}
 
-	cout << "Now a particle system" ;
+	cout << "Now a particle system\n";
 	ParticleSystem *m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
 	/// Process arguments
@@ -193,37 +195,39 @@ int main( int argsc, const char* argsv[] )
 	} //}}}
 	*/
 
-	cout <<  "Creating particles/points" ;
+	cout <<  "Creating particles/points\n" ;
 	vector< Particle > m_Particles;
 	vector< Polygon > m_Polygons;
 
 	/// Create particles
 	for( unsigned int i = 0; i < numObjects; i++ ) //{{{
 	{
+		cout << "Number: " << i << "\n";
 		Polygon *nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
 		m_Polygons.push_back( *nPolygon );
 		m_Game->AddEntity( nPolygon );
 
-		Particle nParticle = new Particle();
-		m_Particles.add( nParticle );
-		nParticle.AddEntity( nPolygon );
-		nParticle.Radius = 10.0;
+		Particle *nParticle = new Particle();
+		m_Particles.push_back( *nParticle );
+		nParticle->AddEntity( nPolygon );
+		nParticle->Radius( 10.0 );
 
-		nParticle.CurrentPositions( m_Game.Width / 2 + 100*cos( i * 2 * PI / numObjects ),
-									m_Game.Height / 2 + 100*sin( i * 2 * PI / numObjects ) );
+		nParticle->CurrentPositions( m_Game->Width() / 2 + 100*cos( i * 2 * PI / numObjects ),
+									 m_Game->Height() / 2 + 100*sin( i * 2 * PI / numObjects ) );
 
 		switch( initVel ) /// Determine appropriate init velocities
-		{ / /{{{
+		{ // {{{
 			case 0: /// Nothing
 			{
 				break;
 			}
 			case 1: /// Random
 			{
-				long double ranX = rand.fraction() * 16.0 - 8.0;
-				long double ranY = rand.fraction() * 16.0 - 8.0;
+				// TODO get random number generation
+				long double ranX = 0;//rand.fraction() * 16.0 - 8.0;
+				long double ranY = 0;//rand.fraction() * 16.0 - 8.0;
 				cout <<  "Seeded particle " << i << " with < " << ranX << "," << ranY << ">" ;
-				nParticle.Velocities( ranX, ranY  );
+				nParticle->Velocities( ranX, ranY  );
 				break;
 			}
 			case 2: /// Clockwise spiral
@@ -238,41 +242,41 @@ int main( int argsc, const char* argsv[] )
 			}
 		} //}}}
 
-		nParticle.AddForce( m_Gravity );
-		nParticle.AddForce( m_ElasticCollision );
+		nParticle->AddForce( m_Gravity );
+		nParticle->AddForce( m_ElasticCollision );
 
-		m_ParticleSystem.AddParticle( nParticle );
+		m_ParticleSystem->AddParticle( nParticle );
 	} //}}}
 
-	cout << "Setting up the sun" ;
-	Polygon m_SunPolygon = new Polygon( m_Game.Width / 2, m_Game.Height / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
-	Particle m_Sun = new Particle();
+	cout << "Setting up the sun\n";
+	Polygon *m_SunPolygon = new Polygon( m_Game->Width() / 2, m_Game->Height() / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
+	Particle *m_Sun = new Particle();
 
-	m_Sun.AddEntity( m_SunPolygon );
-	m_Sun.Positions( gWidth / 2, gHeight / 2 );
-	m_Sun.Radius( 25.0f );
-	m_Sun.Mass( 62.5f );
-	m_Game.AddEntity( m_SunPolygon );
-	m_ParticleSystem.AddParticle( m_Sun );
+	m_Sun->AddEntity( m_SunPolygon );
+	m_Sun->Positions( gWidth / 2, gHeight / 2 );
+	m_Sun->Radius( 25.0f );
+	m_Sun->Mass( 62.5f );
+	m_Game->AddEntity( m_SunPolygon );
+	m_ParticleSystem->AddParticle( m_Sun );
 
-	m_Sun.AddForce( m_Gravity );
-	m_Sun.AddForce( m_ElasticCollision );
+	m_Sun->AddForce( m_Gravity );
+	m_Sun->AddForce( m_ElasticCollision );
 
 	//log.info( "Giving the Sun some velocity" );
 	//m_Sun.CurrentVelocities( -4, 0 );
 	//m_Sun.Velocities( -4, 0 );
 	//}}}
 
-	cout << "Setting up the cursor" ;
-	Polygon m_CursorPolygon = new Polygon( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
-	m_Game.WarpMouse( 400, 300 );
-	Particle m_Cursor = new Particle();
+	cout << "Setting up the cursor\n" ;
+	Polygon *m_CursorPolygon = new Polygon( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
+	m_Game->WarpMouse( 400, 300 );
+	Particle *m_Cursor = new Particle();
 
-	m_Cursor.AddEntity( m_CursorPolygon );
-	m_Cursor.Positions( 400.0f, 300.0f );
-	m_Cursor.Radius( 0.0f );
-	m_Cursor.Mass( 0.0f );
-	m_Game.AddEntity( m_CursorPolygon );
+	m_Cursor->AddEntity( m_CursorPolygon );
+	m_Cursor->Positions( 400.0f, 300.0f );
+	m_Cursor->Radius( 0.0f );
+	m_Cursor->Mass( 0.0f );
+	m_Game->AddEntity( m_CursorPolygon );
 
 	//m_ParticleSystem.AddParticle( m_Cursor );
 
@@ -282,60 +286,69 @@ int main( int argsc, const char* argsv[] )
 
 	unsigned int lastSpawn = 0;
 	long double xCenter, yCenter;
-	cout << "Entering main game loop" ;
-	while( !m_Game.isDone )
+	cout << "Entering main game loop\n";
+	while( !m_Game->isDone() )
 	{ //{{{
-		m_Game.ProcessInput();
+		cout << "Proc input\n";
+		m_Game->ProcessInput();
 
-		if( m_Game.isPressed( Key[ "Escape" ] ) )
+		cout << "Proc esc\n";
+		// if( m_Game->isPressed( Key[ "Escape" ] ) ) TODO associative key array or something
+		if( m_Game->isPressed( 27 ) )
 		{
-			m_Game.isDone = true;
+			m_Game->isDone( true );
 			continue;
 		}
 
-		if( m_Game.isClicked ) /// Print *cough* informortive messages
+		cout << "Proc mouse\n";
+		if( m_Game->isClicked() ) /// Print *cough* informortive messages
 		{ //{{{
-			cout << "There are {} particles and 1 sun currently..." << m_Particles.size;
-			foreach( Particle i; m_Particles )
+			cout << "There are {} particles and 1 sun currently..." << m_Particles.size();
+			for( vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				cout << "\t: ( {} << {} < {}, {} > [ {}, {} ]",
-					i.XPosition, i.YPosition,
-					i.XVelocity, i.YVelocity,
-					i.XAcceleration, i.YAcceleration );
+				cout << "\t: ( {} << {} < {}, {} > [ {}, {} ]" <<
+					i->XPosition() << i->YPosition() <<
+					i->XVelocity() << i->YVelocity() <<
+					i->XAcceleration() << i->YAcceleration();
 			}
-			cout << "\tSun: ( {} << {} < {}, {} > [ {}, {} ]",
-				m_Sun.XPosition, m_Sun.YPosition,
-				m_Sun.XVelocity, m_Sun.YVelocity,
-				m_Sun.XAcceleration, m_Sun.YAcceleration );
+			cout << "\tSun: ( {} << {} < {}, {} > [ {}, {} ]" <<
+				m_Sun->XPosition() << m_Sun->YPosition() <<
+				m_Sun->XVelocity() << m_Sun->YVelocity() <<
+				m_Sun->XAcceleration() << m_Sun->YAcceleration() ;
 		} //}}}
 
-		xCenter = m_Game.XCenter();
-		yCenter = m_Game.YCenter();
+		cout << "Get center\n";
+		xCenter = m_Game->XCenter();
+		yCenter = m_Game->YCenter();
 
-		if( m_Game.isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
+		cout << "Proc MMB\n";
+		if( m_Game->isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
 		{ //{{{
-			cout << "Screen: ( {} << {} [ {}/{}, {}/{} ] < {}, {} >",
-					m_Game.position.x, m_Game.position.y,
-					m_Game.ViewWidth, m_Game.Width,
-					m_Game.ViewHeight, m_Game.Height,
-					m_Game.XCenter, m_Game.YCenter );
-			cout << "Cursor: ( {} << {}", m_Cursor.XPosition, m_Cursor.YPosition );
+			cout << "Screen: ( {} << {} [ {}/{}, {}/{} ] < {}, {} >" <<
+					m_Game->position.x << m_Game->position.y <<
+					m_Game->ViewWidth() << m_Game->Width() <<
+					m_Game->ViewHeight() << m_Game->Height() <<
+					m_Game->XCenter() << m_Game->YCenter();
+			cout << "Cursor: ( {} << {}" << m_Cursor->XPosition() << m_Cursor->YPosition();
 		} //}}}
 
+		/* TODO I didn't bother with this yet because I bet it pisses away memory...
 		/// Create new particles dynamically, or delete them if the mouse is on one
-		if( m_Game.isClicked( SDL_BUTTON_RIGHT ) )
+		if( m_Game->isClicked( SDL_BUTTON_RIGHT ) )
 		{ //{{{
-			if( m_Game.ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
+			if( m_Game->ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
 			{
-				lastSpawn = m_Game.ClickCreateTime( SDL_BUTTON_RIGHT );
-				long double xPos = m_CursorPolygon.position.x;
-				long double yPos = m_CursorPolygon.position.y;
+				lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_RIGHT );
+				long double xPos = m_CursorPolygon->position.x;
+				long double yPos = m_CursorPolygon->position.y;
 
-				log.info( "Setting minDist to infinity" );
-				long double minDist2 = long double.infinity;
+				// TODO used to log
+				cout << "Setting minDist to infinity";
+				long double minDist2 = 1000000000;
 				Particle pMin;
-				log.info( "Starting dist checking loop" );
-				foreach( Particle i; m_Particles ) /// Determine minDist squared
+				// TODO used to log
+				cout << "Starting dist checking loop";
+				for( vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
 				{ //{{{
 					long double cXDist = m_CursorPolygon.position.x - i.XPosition;
 					long double cYDist = m_CursorPolygon.position.y - i.YPosition;
@@ -411,48 +424,59 @@ int main( int argsc, const char* argsv[] )
 				}
 			}
 		} //}}}
+		*/
 
-		if( m_Game.isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
+		cout << "Proc wheel up\n";
+		if( m_Game->isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
 		{ //{{{
-			if( m_Game.Zoom <= 24 )
+			if( m_Game->Zoom() < 24 )
 			{
-				m_Game.ResizeViewport( m_Game.ViewWidth - cast( long double )( m_Game.Width ) / 24.0f,
-									   m_Game.ViewHeight - cast( long double )( m_Game.Height ) / 24.0f );
-				m_Game.Centers( xCenter, yCenter );
+				m_Game->ResizeViewport( m_Game->ViewWidth() - (long double)( m_Game->Width() ) / 24.0f,
+										m_Game->ViewHeight() - (long double)( m_Game->Height() ) / 24.0f );
+				m_Game->Centers( xCenter, yCenter );
 			}
 		} //}}}
-		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
+		else if( m_Game->isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
 		{ //{{{
-			m_Game.ResizeViewport( m_Game.ViewWidth + cast( long double )( m_Game.Width ) / 24.0f,
-								   m_Game.ViewHeight + cast( long double )( m_Game.Height ) / 24.0f );
-			m_Game.Centers( xCenter, yCenter );
+			m_Game->ResizeViewport( m_Game->ViewWidth() + (long double)( m_Game->Width() ) / 24.0f,
+									m_Game->ViewHeight() + (long double)( m_Game->Height() ) / 24.0f );
+			m_Game->Centers( xCenter, yCenter );
 		} //}}}
 
-		m_ParticleSystem.Work( .02 );
+		cout << "Work particle system\n";
+		m_ParticleSystem->Work( .02 );
 
+		/* TODO argument based thing again
 		if( args[ $-1 ] == "lock" )
 		{
-			m_Game.Centers( m_Sun.XPosition, m_Sun.YPosition );
+			m_Game->Centers( m_Sun->XPosition, m_Sun->YPosition );
 		}
 		else /// Use arrows to move camera
-		{ //{{{
-			if( m_Game.isPressed( Key[ "Right" ] ) )
+		{ //{{{ */
+			// if( m_Game->isPressed( Key[ "Right" ] ) ) TODO
+			cout << "Proc arrow keys\n";
+			if( m_Game->isPressed( 275 ) )
 			{
-				m_Game.position.x += 5;
-			} else if( m_Game.isPressed( Key[ "Left" ] ) )
+				m_Game->position.x += 5;
+			// } else if( m_Game->isPressed( Key[ "Left" ] ) ) TODO
+			} else if( m_Game->isPressed( 276 ) )
 			{
-				m_Game.position.x -= 5;
+				m_Game->position.x -= 5;
 			}
-			if( m_Game.isPressed( Key[ "Up" ] ) )
+			// if( m_Game->isPressed( Key[ "Up" ] ) ) TODO
+			if( m_Game->isPressed( 273 ) )
 			{
-				m_Game.position.y += 5;
-			} else if( m_Game.isPressed( Key[ "Down" ] ) )
+				m_Game->position.y += 5;
+			//} else if( m_Game->isPressed( Key[ "Down" ] ) ) TODO
+			} else if( m_Game->isPressed( 274 ) )
 			{
-				m_Game.position.y -= 5;
+				m_Game->position.y -= 5;
 			}
-		} //}}}
+		//} //}}}
 
-		if( m_Game.isPressed( Key[ "Key Pad Plus" ] ) )
+		cout << "Proc +/- keys\n";
+		// if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) ) TODO
+		if( m_Game->isPressed( 270 ) )
 		{
 			frameRate += 5;
 			if( frameRate > 1000 )
@@ -460,9 +484,10 @@ int main( int argsc, const char* argsv[] )
 				frameRate = 1000;
 			}
 			cout << "New framerate: {}" << frameRate;
-			m_Game.TickInterval = 1000 / frameRate;
+			m_Game->TickInterval( 1000 / frameRate );
 		}
-		else if( m_Game.isPressed( Key[ "Key Pad Minus" ] ) )
+		// else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) ) TODO
+		else if( m_Game->isPressed( 269 ) )
 		{
 			frameRate -= 5; frameRate %= 1000;
 			if( frameRate < 1 )
@@ -470,17 +495,18 @@ int main( int argsc, const char* argsv[] )
 				frameRate = 1;
 			}
 			cout << "New framerate: {}" << frameRate;
-			m_Game.TickInterval = 1000 / frameRate;
+			m_Game->TickInterval( 1000 / frameRate );
 		}
 
-		m_Cursor.CurrentPositions(
-			cast(unsigned int)(
-				cast(long double)(m_Game.CursorX) / m_Game.Width*m_Game.ViewWidth + m_Game.position.x ),
-			cast(unsigned int)(
-				(1.0 - (cast(long double)(m_Game.CursorY) / m_Game.Height))*m_Game.ViewHeight + m_Game.position.y) );
+		cout << "Up mouse\n";
+		m_Cursor->CurrentPositions(
+			(unsigned int)(
+				(long double)(m_Game->CursorX()) / m_Game->Width()*m_Game->ViewWidth() + m_Game->position.x ),
+			(unsigned int)(
+				(1.0 - ((long double)(m_Game->CursorY()) / m_Game->Height()))*m_Game->ViewHeight() + m_Game->position.y) );
 
-		m_Game.Draw();
-		m_Game.WaitFor();
+		m_Game->Draw();
+		m_Game->WaitFor();
 	} //}}}
 
 	cout << "Thanks for playing!";

@@ -35,12 +35,12 @@ class Entity
 
 		Vector< long double > position;
 
-	protected:
 		Entity()
 		{
 		}
 
 	private:
+
 
 };
 
