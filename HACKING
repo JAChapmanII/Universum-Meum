@@ -26,6 +26,9 @@ class UppercaseForEachWord
 		uint ProtectedVariable();
 		void ProtectedVariable( uint nProtectedVariable );
 
+		uint memberVariableThatsPublic;
+		uint x;
+
 	protected:
 		// Camel case for variables, prepend m_ for those belonging to classes
 		uint m_ProtectedVariable;
