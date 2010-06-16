@@ -18,34 +18,32 @@
 
 */// }}}
 
+#include <math.h>
+
 #include "../../force.cpp"
 #include "../../particle.cpp"
 
-Logger log;
-static this()
-{
-	log = Log.lookup( "forces.gravity" );
-	log.add( new AppendConsole() );
-}
+typedef void( *Force )( Particle, Particle, long double );
 
 /// Alters particle A by applying an acceleration equal to that of a force like gravity over deltaTime
-void Gravity( long double gravConst )( Particle A, Particle B, ref long double deltaTime )
+template< int gravConst >
+void Gravity( Particle A, Particle B, long double deltaTime )
 { //{{{
-	long double xDist = B.XPosition - A.XPosition;
-	long double yDist = B.YPosition - A.YPosition;
+	long double xDist = B.XPosition() - A.XPosition();
+	long double yDist = B.YPosition() - A.YPosition();
 	long double dist2 = (xDist * xDist) + (yDist * yDist);
 
 	if( dist2 > 0 )
 	{
-		long double gravMass = gravConst * B.Mass;
+		long double gravMass = gravConst * B.Mass();
 		long double dist  = sqrt( dist2 );
 
-		A.XAcceleration = A.NextXAcceleration +
-			( gravMass )*(xDist/dist) / ( dist2 );
+		A.XAcceleration( A.NextXAcceleration() +
+			( gravMass )*(xDist/dist) / ( dist2 ) );
 
-		A.YAcceleration = A.NextYAcceleration +
-			( gravMass )*(yDist/dist) / ( dist2 );
+		A.YAcceleration( A.NextYAcceleration() +
+			( gravMass )*(yDist/dist) / ( dist2 ) );
 	}
 } //}}}
 
-Force DefaultGravity = &Gravity!( 0.0 );
+Force DefaultGravity = &Gravity< 0 >;

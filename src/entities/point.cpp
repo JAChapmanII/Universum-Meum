@@ -17,6 +17,8 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
+#ifndef POINT_CPP
+#define POINT_CPP
 
 #include <GL/gl.h>
 
@@ -138,4 +140,6 @@ class Point : Entity
 
 	private:
 
-}
+};
+
+#endif // POINT_CPP
