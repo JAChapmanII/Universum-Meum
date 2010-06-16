@@ -27,7 +27,6 @@
 #include "entity.cpp"
 #include "entities/polygon.cpp"
 #include "entities/point.cpp"
-#include "force.cpp"
 #include "forces/exterior/gravity.cpp"
 #include "forces/interior/repel.cpp"
 #include "forces/colliding/elastic_collision.cpp"
@@ -158,11 +157,11 @@ int main( int argsc, const char* argsv[] )
 	cout << "\trgConstant: " << rgConstant << "\n";
 
 	cout << "Creating a gravity force\n";
-	Force m_GravityFunc = &( Gravity< rgConstant > );
-	Force *m_Gravity = &m_GravityFunc;
+	Particle::Force m_GravityFunc = &( Gravity< rgConstant > );
+	Particle::Force* m_Gravity = &m_GravityFunc;
 
 	cout <<  "Creating a elastic_collision force\n";
-	Force *m_ElasticCollision = &DefaultElasticCollision;
+	Particle::Force* m_ElasticCollision = &DefaultElasticCollision;
 
 	//}}}
 
@@ -170,7 +169,7 @@ int main( int argsc, const char* argsv[] )
 	ParticleSystem *m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
 	/// Process arguments TODO fix
-	unsigned int numObjects = 3; //{{{
+	unsigned int numObjects = 1; //{{{
 	unsigned int initVel = 0;
 	/* TODO Parse arguments
 	if( args.length > 1 )

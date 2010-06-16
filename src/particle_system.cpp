@@ -22,14 +22,11 @@
 
 #include <vector>
 
-#include "force.cpp"
 #include "particle.cpp"
 
 class ParticleSystem
 {
 	public:
-		typedef void( *Force )( Particle, Particle, long double );
-
 		ParticleSystem( long double iStep = 1.0f, long double iMaxSteps = 500.0f )
 		{
 			Step( iStep );
@@ -72,7 +69,7 @@ class ParticleSystem
 			{
 				for( std::vector< Particle* >::iterator j = m_Particles.begin(); j != m_Particles.end(); ++j )
 				{
-					(*i)->Work( *(*j), deltaTime );
+					(*i)->Work( *j, deltaTime );
 				}
 			}
 		} //}}}
@@ -139,7 +136,7 @@ class ParticleSystem
 			return m_MaxSteps;
 		} //}}}
 
-		void AddForce( Force nForce )
+		void AddForce( Particle::Force nForce )
 		{ //{{{
 			if( nForce != 0 )
 			{
@@ -188,7 +185,7 @@ class ParticleSystem
 		long double m_MaxSteps;
 
 		std::vector< Particle* > m_Particles;
-		std::vector< Force > m_Forces;
+		std::vector< Particle::Force > m_Forces;
 
 };
 

@@ -23,13 +23,12 @@
 #include <vector>
 #include <math.h>
 
-#include "force.cpp"
 #include "entity.cpp"
 
 class Particle
 {
 	public:
-		typedef void( *Force )( Particle, Particle, long double );
+		typedef void( *Force )( Particle*, Particle*, long double );
 
 		Particle()
 		{ //{{{
@@ -78,7 +77,7 @@ class Particle
 		{ //{{{
 			if( nForce != 0 )
 			{
-				m_Forces.push_back( *nForce );
+				m_Forces.push_back( nForce );
 			}
 			else
 			{
@@ -108,13 +107,13 @@ class Particle
 			// TODO Error
 		} //}}}
 
-		void Work( Particle B, long double deltaTime )
+		void Work( Particle* B, long double deltaTime )
 		{ //{{{
-			for( std::vector< Force >::iterator i = m_Forces.begin(); i != m_Forces.end(); i++ )
+			for( std::vector< Force* >::iterator i = m_Forces.begin(); i != m_Forces.end(); i++ )
 			{
-				if( *i != 0 )
+				if( (*i) != 0 )
 				{
-					(*i)( *this, B, deltaTime );
+					(*(*i))( this, B, deltaTime );
 				}
 			}
 		} //}}}
@@ -357,7 +356,7 @@ class Particle
 		long double m_Speed;
 
 		std::vector< Entity* > m_Entities;
-		std::vector< Force > m_Forces;
+		std::vector< Force* > m_Forces;
 
 	private:
 
