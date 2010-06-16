@@ -17,6 +17,10 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
+#ifndef PARTICLE_SYSTEM_CPP
+#define PARTICLE_SYSTEM_CPP
+
+#include <vector>
 
 #include "force.cpp"
 #include "particle.cpp"
@@ -24,11 +28,12 @@
 class ParticleSystem
 {
 	public:
-		this( long double iStep = 1.0f, long double iMaxSteps = 500.0f )
+		typedef void( *Force )( Particle, Particle, long double );
+
+		ParticleSystem( long double iStep = 1.0f, long double iMaxSteps = 500.0f )
 		{
-			Step = iStep;
-			MaxSteps = iMaxSteps;
-			m_Particles = new LinkedList!( Particle );
+			Step( iStep );
+			MaxSteps( iMaxSteps );
 		}
 
 		void Work( long double deltaTime = 1.0f )
@@ -36,13 +41,13 @@ class ParticleSystem
 			long double timeLeft = deltaTime;
 			while( timeLeft > 0.0f )
 			{
-				long double currentMax = maxSpeed;
-				if( ( currentMax * timeLeft ) > Step )
+				long double currentMax = maxSpeed();
+				if( ( currentMax * timeLeft ) > Step() )
 				{
-					long double currentDelta = (Step / currentMax);
-					if (currentDelta < (deltaTime / MaxSteps))
+					long double currentDelta = (Step() / currentMax);
+					if (currentDelta < (deltaTime / MaxSteps()))
 					{
-						currentDelta = (deltaTime / MaxSteps);
+						currentDelta = (deltaTime / MaxSteps());
 					}
 					if( currentDelta > timeLeft )
 					{
@@ -61,22 +66,22 @@ class ParticleSystem
 			}
 		}
 
-		void WorkAll( ref long double deltaTime )
+		void WorkAll( long double deltaTime )
 		{ //{{{
-			foreach( i; m_Particles )
+			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				foreach( j; m_Particles )
+				for( std::vector< Particle >::iterator j = m_Particles.begin(); i != m_Particles.end(); ++i )
 				{
-					i.Work( j, deltaTime );
+					i->Work( *j, deltaTime );
 				}
 			}
 		} //}}}
 
-		void UpdateAll( ref long double deltaTime )
+		void UpdateAll( long double deltaTime )
 		{ //{{{
-			foreach( i; m_Particles )
+			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				i.Update( deltaTime );
+				i->Update( deltaTime );
 			}
 		} //}}}
 
@@ -84,9 +89,9 @@ class ParticleSystem
 		{ //{{{
 			long double max = 0.0f;
 			long double current = 0.0f;
-			foreach( i; m_Particles )
+			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				current = i.Speed;
+				current = i->Speed();
 				if( current >= max )
 				{
 					max = current;
@@ -99,9 +104,9 @@ class ParticleSystem
 		{ //{{{
 			long double max = 0.0f;
 			long double current = 0.0f;
-			foreach( i; m_Particles )
+			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				current = sqrt( i.XAcceleration*i.XAcceleration + i.YAcceleration*i.YAcceleration );
+				current = sqrt( i->XAcceleration()*i->XAcceleration() + i->YAcceleration()*i->YAcceleration() );
 				if( current >= max )
 				{
 					max = current;
@@ -123,7 +128,7 @@ class ParticleSystem
 		// {G,S}etter for m_MaxSteps
 		void MaxSteps( long double nMax ) //{{{
 		{
-			if( (1.0f / Step) > (1.0 / nMax) )
+			if( (1.0f / Step()) > (1.0 / nMax) )
 			{
 				m_MaxSteps = nMax;
 			}
@@ -135,38 +140,43 @@ class ParticleSystem
 
 		void AddForce( Force nForce )
 		{ //{{{
-			if( !( nForce is null ) )
+			if( nForce != 0 )
 			{
-				m_Forces.length = m_Forces.length + 1;
-				m_Forces[ $-1 ] = nForce;
+				m_Forces.push_back( nForce );
 			}
 			else
 			{
-				log.warn( "Tried to add a null force" );
+				// TODO error
 			}
 		} //}}}
 
-		void AddParticle( Particle nParticle )
+		void AddParticle( Particle *nParticle )
 		{ //{{{
-			if( !( nParticle is null ) )
+			if( nParticle != 0 )
 			{
-				m_Particles.add( nParticle );
+				m_Particles.push_back( *nParticle );
 			}
 			else
 			{
-				log.warn( "Tried to add a null particle" );
+				// TODO error
 			}
 		} //}}}
 
-		void RemoveParticle( Particle toRemove )
+		void RemoveParticle( Particle *toRemove )
 		{ //{{{
-			if( m_Particles.contains( toRemove ) )
+			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				m_Particles.remove( toRemove, true );
+				// TODO WTF?
+				/*
+				if( (*i) == (*toRemove) )
+				{
+					m_Particles.erase( i );
+				}
+				*/
 			}
 		} //}}}
 
-	protected:
+	private:
 		long double abs( long double a )
 		{
 			if( a < 0 )
@@ -179,9 +189,9 @@ class ParticleSystem
 		long double m_Step;
 		long double m_MaxSteps;
 
-		LinkedList!( Particle ) m_Particles;
-		Force[] m_Forces;
+		std::vector< Particle > m_Particles;
+		std::vector< Force > m_Forces;
 
-	private:
+};
 
-}
+#endif // PARTICLE_SYSTEM_CPP
