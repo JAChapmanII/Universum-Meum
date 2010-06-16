@@ -38,6 +38,20 @@ class Vector
 			this.z = iZ;
 		} //}}}
 
+		Vector Set( T nX, T nY, T nZ )
+		{
+			x = nX;
+			y = nY;
+			z = nZ;
+		}
+
+		Vector Zero()
+		{
+			x = 0;
+			y = 0;
+			z = 0;
+		}
+
 		/// Overloaded + operator
 		Vector opAdd( Vector r )
 		{ //{{{
