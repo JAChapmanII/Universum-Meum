@@ -367,12 +367,20 @@ int main( int argc, const char* argv[] )
 				{ //{{{
 					cout << "Removing..." ;
 					Polygon* eMin = ( Polygon* )( pMin->GetEntity() );
+					if( ( pMin == NULL ) || ( eMin == NULL ) )
+					{
+						cout << "Tried to free null stuff...\n";
+					}
+					else
+					{
+
 					m_ParticleSystem->RemoveParticle( pMin );
 					for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 					{
 						if( (*i) == pMin )
 						{
 							m_Particles.erase( i );
+							break;
 						}
 					}
 					for( std::vector< Polygon* >::iterator i = m_Polygons.begin(); i != m_Polygons.end(); ++i )
@@ -380,11 +388,13 @@ int main( int argc, const char* argv[] )
 						if( (*i) == eMin )
 						{
 							m_Polygons.erase( i );
+							break;
 						}
 					}
 					m_Game->RemoveEntity( eMin );
 					delete pMin;
 					delete eMin;
+					}
 				} //}}}
 				else
 				{

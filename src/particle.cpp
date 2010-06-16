@@ -44,6 +44,10 @@ class Particle
 			m_Speed = 0.0f;
 		} //}}}
 
+		~Particle()
+		{
+		}
+
 		void Update( long double deltaTime )
 		{ //{{{
 			m_nextVelocity.x += m_nextAcceleration.x * deltaTime;
