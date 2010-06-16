@@ -21,7 +21,7 @@
 #define VECTOR_CPP
 
 // 3 Dimensional vector class template, T is the type of component
-template <class T>
+template< class T >
 class Vector
 {
 	public:
