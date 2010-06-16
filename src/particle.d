@@ -73,8 +73,8 @@ class Particle
 
 			foreach( i; m_Entities )
 			{
-				i.XPosition = XPosition;
-				i.YPosition = YPosition;
+				i.position.x = XPosition;
+				i.position.y = YPosition;
 			}
 
 			Speed = sqrt( XVelocity*XVelocity + YVelocity*YVelocity );
@@ -140,7 +140,7 @@ class Particle
 			m_nextPosition[ 0 ] = nXPosition;
 			foreach( i; m_Entities )
 			{
-				i.XPosition = nXPosition;
+				i.position.x = nXPosition;
 			}
 		} //}}}
 
@@ -155,7 +155,7 @@ class Particle
 			m_nextPosition[ 1 ] = nYPosition;
 			foreach( i; m_Entities )
 			{
-				i.YPosition = nYPosition;
+				i.position.y = nYPosition;
 			}
 		} //}}}
 
@@ -168,8 +168,8 @@ class Particle
 			m_nextPosition[ 1 ] = nYPosition;
 			foreach( i; m_Entities )
 			{
-				i.XPosition = nXPosition;
-				i.YPosition = nYPosition;
+				i.position.x = nXPosition;
+				i.position.y = nYPosition;
 			}
 		} //}}}
 

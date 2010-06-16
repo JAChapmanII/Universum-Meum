@@ -19,31 +19,31 @@
 */// }}}
 module vector;
 
-/// 2 Dimensional vector class
-class Vector
+/// 3 Dimensional vector class template, T is the type of component
+class Vector( T )
 {
 	public:
-		/// Default constructor, X and Y components default to real.nan
+		/// Default constructor, X and Y components default to T's default
 		this()
 		{ //{{{
 		} //}}}
 
 		/// Constructs a Vector with initial X and Y values
-		this( real iX, real iY, real iZ )
+		this( T iX, T iY, T iZ )
 		{ //{{{
-			x = iX;
-			y = iY;
-			z = iZ;
+			this.x = iX;
+			this.y = iY;
+			this.z = iZ;
 		} //}}}
 
 		/// Overloaded + operator
-		Vector opAdd( const ref Vector r )
+		Vector opAdd( Vector r )
 		{ //{{{
-			return Vector( x + r.x, y + r.y, z + r.z );
+			return new Vector( x + r.x, y + r.y, z + r.z );
 		} //}}}
 
 		/// Overloaded += operator
-		Vector opAddAssign( const ref Vector r )
+		Vector opAddAssign( Vector r )
 		{ //{{{
 			x += r.x;
 			y += r.y;
@@ -52,13 +52,13 @@ class Vector
 		} //}}}
 
 		/// Overloaded - operator
-		Vector opSub( const ref Vector r )
+		Vector opSub( Vector r )
 		{ //{{{
-			return Vector( x - r.x, y - r.y, z - r.z );
+			return new Vector( x - r.x, y - r.y, z - r.z );
 		} //}}}
 
 		/// Overloaded -= operator
-		Vector opSubAssign( const ref Vector )
+		Vector opSubAssign( Vector r )
 		{ //{{{
 			x -= r.x;
 			y -= r.y;
@@ -67,23 +67,25 @@ class Vector
 		} //}}}
 
 		/// Dot product of this and r
-		real Dot( const ref Vector r )
+		T Dot( Vector r )
 		{ //{{{
 			return ( x * r.x ) + ( y * r.y ) + ( z * r.z );
 		} //}}}
 
 		/// Cross product of this and r
-		Vector Cross( const ref Vector r )
+		Vector Cross( Vector r )
 		{ //{{{
-			return Vector( y * r.z - z * r.y,
-						   z * r.x - x * r.z,
-						   x * r.y - y * r.x );
+			return new Vector( y * r.z - z * r.y,
+							   z * r.x - x * r.z,
+							   x * r.y - y * r.x );
 		} //}}}
 
 		/// X component
-		real x;
+		T x;
 		/// Y component
-		real y;
+		T y;
+		/// Z component
+		T z;
 
 	protected:
 
