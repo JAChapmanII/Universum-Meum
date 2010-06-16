@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 
 #include "game.cpp"
 #include "particle.cpp"
@@ -112,7 +113,7 @@ using namespace std;
 } //}}}
 */
 
-int main( int argsc, const char* argsv[] )
+int main( int argc, const char* argv[] )
 {
 	cout << "Welcome to Universum Meum.\n";
 
@@ -164,22 +165,20 @@ int main( int argsc, const char* argsv[] )
 	cout << "Now a particle system\n";
 	ParticleSystem *m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
-	/// Process arguments TODO fix
 	unsigned int numObjects = 3; //{{{
 	unsigned int initVel = 0;
-	/* TODO Parse arguments
-	if( args.length > 1 )
+	if( argc > 1 )
 	{
-		numObjects = integer.parse( args[ 1 ] );
+		numObjects = atoi( argv[ 1 ] );
 		numObjects %= 1000;
 		if( numObjects < 1 )
 		{
 			numObjects = 1;
 		}
 		cout << "Creating {} point(s)" << numObjects;
-		if( args.length > 2 )
+		if( argc > 2 )
 		{
-			initVel = integer.parse( args[ 2 ] );
+			initVel = atoi( argv[ 2 ] );
 			if( initVel < 0 )
 			{
 				initVel = 0;
@@ -188,7 +187,6 @@ int main( int argsc, const char* argsv[] )
 			cout << "initVel method set to {}" << initVel;
 		}
 	} //}}}
-	*/
 
 	cout <<  "Creating particles/points\n" ;
 	vector< Particle* > m_Particles;
