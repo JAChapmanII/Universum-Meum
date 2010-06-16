@@ -36,7 +36,7 @@ static char PROGRAM_NAME[ 15 ] = "Universum Meum";
 class Game : Entity
 {
 	public:
-		static Game* Instance( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
+		static Game *Instance( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
 		{ //{{{
 			if( m_Instance == 0 )
 			{
@@ -317,23 +317,29 @@ class Game : Entity
 			return m_BPP;
 		} //}}}
 
-		void AddEntity( Entity nEntity )
+		void AddEntity( Entity *nEntity )
 		{ //{{{
 			if( nEntity != 0 )
 			{
-				m_Entities.add( nEntity );
+				m_Entities.push_back( *nEntity );
 			}
 			else
 			{
-				log.warn( "Tried to add a null entity" );
+				// TODO Error
 			}
 		} //}}}
 
-		void RemoveEntity( Entity toRemove )
+		void RemoveEntity( Entity *toRemove )
 		{ //{{{
-			if( m_Entities.contains( toRemove ) )
+			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); ++i )
 			{
-				m_Entities.remove( toRemove, true );
+				// TODO WTF?
+				/*
+				if( (*i) == (*toRemove) )
+				{
+					m_Entities.erase( i );
+				}
+				*/
 			}
 		} //}}}
 
@@ -420,28 +426,28 @@ class Game : Entity
 		/// Setter for both X/Y centers
 		void Centers( long double nXC, long double nYC ) //{{{
 		{
-			this.position.x = nXC - ViewWidth / 2;
-			this.position.y = nYC - ViewHeight / 2;
+			this->position.x = nXC - ViewWidth() / 2;
+			this->position.y = nYC - ViewHeight() / 2;
 		} //}}}
 
 		/// {G,S}etter for the X center
 		long double XCenter() //{{{
 		{
-			return ViewWidth / 2 + this.position.x;
+			return ViewWidth() / 2 + this->position.x;
 		}
 		void XCenter( long double nXC )
 		{
-			this.position.x = nXC - ViewWidth / 2;
+			this->position.x = nXC - ViewWidth() / 2;
 		} //}}}
 
 		/// {G,S}etter for the Y center
 		long double YCenter() //{{{
 		{
-			return ViewHeight / 2 + this.position.y;
+			return ViewHeight() / 2 + this->position.y;
 		}
 		void YCenter( long double nYC )
 		{
-			this.position.y = nYC - ViewHeight / 2;
+			this->position.y = nYC - ViewHeight() / 2;
 		} //}}}
 
 		/// {G,S}etter for the Cursor X
@@ -485,33 +491,12 @@ class Game : Entity
 		{ //{{{
 			if( ! m_ModulesLoaded )
 			{
-				// Try to load SDL module
-				try //{{{
-				{
-					DerelictSDL.load();
-				}
-				catch( Exception e )
-				{
-					log.fatal( "Could not load SDL module" );
-					throw e;
-				} //}}}
-
-				// Try to load OpenGL module
-				try //{{{
-				{
-					DerelictGL.load();
-				}
-				catch( Exception e )
-				{
-					log.fatal( "Could not load OpenGL module" );
-					throw e;
-				} //}}}
-
+				// TODO Uhh......
 				m_ModulesLoaded = true;
 			}
 			else
 			{
-				log.warn( "Attempted to re-load modules" );
+				// TODO Error
 			}
 		} //}}}
 
@@ -520,24 +505,12 @@ class Game : Entity
 		{ //{{{
 			if( m_ModulesLoaded )
 			{
-				// Try to unload all modules
-				// since this is less important, one try block
-				try //{{{
-				{
-					DerelictSDL.unload();
-					DerelictGL.unload();
-				}
-				catch( Exception e )
-				{
-					log.error( "One or more modules could not be unloaded" );
-					throw e;
-				} //}}}
-
+				// TODO Uhm???
 				m_ModulesLoaded = false;
 			}
 			else
 			{
-				log.warn( "Attempted to re-unload modules" );
+				// TODO something...
 			}
 		} //}}}
 
