@@ -441,7 +441,7 @@ int main( char[][] args )
 			m_Game.Centers( xCenter, yCenter );
 		} //}}}
 
-		m_ParticleSystem.Work( .005 );
+		m_ParticleSystem.Work( .02 );
 
 		if( args[ $-1 ] == "lock" )
 		{
