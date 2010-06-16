@@ -21,6 +21,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <string>
 
 #include "game.cpp"
 #include "particle.cpp"
@@ -167,6 +168,7 @@ int main( int argc, const char* argv[] )
 
 	unsigned int numObjects = 3; //{{{
 	unsigned int initVel = 0;
+	bool doLock = false;
 	if( argc > 1 )
 	{
 		numObjects = atoi( argv[ 1 ] );
@@ -175,7 +177,7 @@ int main( int argc, const char* argv[] )
 		{
 			numObjects = 1;
 		}
-		cout << "Creating {} point(s)" << numObjects;
+		cout << "Creating " << numObjects << " point(s)\n";
 		if( argc > 2 )
 		{
 			initVel = atoi( argv[ 2 ] );
@@ -184,7 +186,16 @@ int main( int argc, const char* argv[] )
 				initVel = 0;
 			}
 			initVel %= 4;
-			cout << "initVel method set to {}" << initVel;
+			cout << "initVel method set to " << initVel << "\n";
+		}
+		string lastArgument = argv[ argc - 1 ];
+		if( lastArgument == "lock" )
+		{
+			doLock = true;
+		}
+		else
+		{
+			cout << "last arg: " << lastArgument << "\n";
 		}
 	} //}}}
 
@@ -436,19 +447,18 @@ int main( int argc, const char* argv[] )
 		//cout << "Work particle system\n";
 		m_ParticleSystem->Work( .02 );
 
-		/* TODO argument based thing again
-		if( args[ $-1 ] == "lock" )
+		if( doLock )
 		{
-			m_Game->Centers( m_Sun->XPosition, m_Sun->YPosition );
+			m_Game->Centers( m_Sun->XPosition(), m_Sun->YPosition() );
 		}
 		else /// Use arrows to move camera
-		{ //{{{ */
+		{ //{{{
 			// if( m_Game->isPressed( Key[ "Right" ] ) ) TODO
 			//cout << "Proc arrow keys\n";
 			if( m_Game->isPressed( 275 ) )
 			{
 				m_Game->position.x += 5;
-			// } else if( m_Game->isPressed( Key[ "Left" ] ) ) TODO
+			//} else if( m_Game->isPressed( Key[ "Left" ] ) ) TODO
 			} else if( m_Game->isPressed( 276 ) )
 			{
 				m_Game->position.x -= 5;
@@ -462,7 +472,7 @@ int main( int argc, const char* argv[] )
 			{
 				m_Game->position.y -= 5;
 			}
-		//} //}}}
+		} //}}}
 
 		//cout << "Proc +/- keys\n";
 		// if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) ) TODO
