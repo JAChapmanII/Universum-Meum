@@ -19,6 +19,7 @@
 */// }}}
 
 #include <iostream>
+#include <vector>
 
 #include "game.cpp"
 #include "particle.cpp"
@@ -111,6 +112,7 @@ using namespace std;
 	Key[ "Last" ] = 323; Key.rehash; //}}}
 } //}}}
 */
+
 int main( int argsc, const char* argsv[] )
 {
 	cout << "Welcome to Universum Meum.";
@@ -119,7 +121,7 @@ int main( int argsc, const char* argsv[] )
 	//   TODO   auto rand = new Twister();
 	//   TODO   rand.seed();
 
-	unsigned int gWidth, gHeight;
+	unsigned int gWidth = 800, gHeight = 600;
 	/*  TODO   //Get input from user\\  char buf[];
 	while( ( gWidth = integer.parse( buf ) ) == 0 )
 	{
@@ -134,27 +136,28 @@ int main( int argsc, const char* argsv[] )
 	}
 	buf.length = 0;
 	*/
+
 	cout << "Creating a Game" ;
 	cout << "W: {}\tH: {}" << gWidth << gHeight;
-	Game m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
-	m_Game.position.x = 0;
-	m_Game.position.y = 0;
+	Game *m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
+	m_Game->position.x = 0;
+	m_Game->position.y = 0;
 
 	cout << "Setting framerate to 100" ;
 	unsigned int frameRate = 100;
-	m_Game.TickInterval = 1000 / frameRate;
+	m_Game->TickInterval( 1000 / frameRate );
 	//}}}
 
-	float floatArray[2];
-	glGetFloatv( GL_SMOOTH_POINT_SIZE_RANGE, cast( float* )( floatArray ) );
+	float floatArray[ 2 ];
+	glGetFloatv( GL_SMOOTH_POINT_SIZE_RANGE, floatArray );
 	cout << floatArray[0] << " | "  << floatArray[1];
 
 	/// Create Gravity/Repel forces
-	const long double rgConstant = 1024.0; //{{{
-	cout << "\trgConstant: {} [so:{}]" << rgConstant << long double.sizeof;
+	const int rgConstant = 1024; //{{{
+	cout << "\trgConstant: " << rgConstant;
 
 	cout << "Creating a gravity force" ;
-	Force m_Gravity = &Gravity!( rgConstant );
+	Force m_Gravity = &Gravity< rgConstant >;
 
 	cout <<  "Creating a elastic_collision force" ;
 	Force m_ElasticCollision = DefaultElasticCollision;
@@ -162,11 +165,12 @@ int main( int argsc, const char* argsv[] )
 	//}}}
 
 	cout << "Now a particle system" ;
-	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
+	ParticleSystem *m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
 	/// Process arguments
 	unsigned int numObjects = 0; //{{ {
 	unsigned int initVel = 0;
+	/* TODO Parse arguments
 	if( args.length > 1 )
 	{
 		numObjects = integer.parse( args[ 1 ] );
@@ -187,19 +191,18 @@ int main( int argsc, const char* argsv[] )
 			cout << "initVel method set to {}" << initVel;
 		}
 	} //}}}
+	*/
 
 	cout <<  "Creating particles/points" ;
-	LinkedList!( Particle ) m_Particles = new LinkedList!( Particle );
-	LinkedList!( Polygon ) m_Polygons = new LinkedList!( Polygon );
-	//m_Particles.length = numObjects;
-	//m_Polygons.length = numObjects;
+	vector< Particle > m_Particles;
+	vector< Polygon > m_Polygons;
 
 	/// Create particles
 	for( unsigned int i = 0; i < numObjects; i++ ) //{{{
 	{
-		Polygon nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
-		m_Polygons.add( nPolygon );
-		m_Game.AddEntity( nPolygon );
+		Polygon *nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
+		m_Polygons.push_back( *nPolygon );
+		m_Game->AddEntity( nPolygon );
 
 		Particle nParticle = new Particle();
 		m_Particles.add( nParticle );
