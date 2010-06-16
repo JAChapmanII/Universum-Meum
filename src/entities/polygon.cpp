@@ -17,62 +17,69 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
+#ifndef POLYGON_CPP
+#define POLYGON_CPP
+
+#include <math.h>
 
 #include <GL/gl.h>
 
 #include "../entity.cpp"
 
+const long double PI = 3.14159216535898;
+const long double PI_2 = 1.5707963267949;
+
 class Polygon : Entity
 {
 	public:
-		this( long double iX, long double iY )
+		Polygon( long double iX, long double iY )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = 1;
+			m_NumSegments = 36;;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( 1 );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( long double iX, long double iY, long double iRadius )
+		Polygon( long double iX, long double iY, long double iRadius )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = iRadius;
+			m_NumSegments = 36;;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( iRadius );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue )
+		Polygon( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = iRadius;
+			m_NumSegments = 36;;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		this( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha )
+		Polygon( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha )
 		{ //{{{
-			super();
-			this.position.x = iX;
-			this.position.y = iY;
-			Radius = iRadius;
+			m_NumSegments = 36;;
+			this->position.x = iX;
+			this->position.y = iY;
+			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
 
-		override void Draw( long double m_Zoom = 1 )
+		void Draw( long double m_Zoom = 1 )
 		{ //{{{
-			glColor4f( Red, Green, Blue, Alpha );
+			glColor4f( Red(), Green(), Blue(), Alpha() );
 			glPolygonMode( GL_FRONT, GL_FILL );
 			glBegin( GL_POLYGON );
-				long double delTheta = 2 * PI / cast( long double )( NumSegments );
+				long double delTheta = 2 * PI / (long double)( NumSegments() );
 				long double theta = 0;
-				for( unsigned int segment = 0; segment < NumSegments; ++segment )
+				for( unsigned int segment = 0; segment < NumSegments(); ++segment )
 				{
 					theta = segment * delTheta;
-					glVertex2f( Radius * cos( theta ) + position.x,
-								Radius * sin( theta ) + position.y );
+					glVertex2f( Radius() * cos( theta ) + position.x,
+								Radius() * sin( theta ) + position.y );
 				}
 			glEnd();
 		} //}}}
@@ -152,11 +159,11 @@ class Polygon : Entity
 			m_Color[ 3 ] = nAlpha;
 		} //}}}
 
-	protected:
-		long double m_Radius;
-		long double[ 4 ] m_Color;
-		unsigned int m_NumSegments = 36;
-
 	private:
+		long double m_Radius;
+		long double m_Color[ 4 ];
+		unsigned int m_NumSegments;
 
-}
+};
+
+#endif // POLYGON_CPP
