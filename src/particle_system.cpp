@@ -68,20 +68,20 @@ class ParticleSystem
 
 		void WorkAll( long double deltaTime )
 		{ //{{{
-			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+			for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				for( std::vector< Particle >::iterator j = m_Particles.begin(); j != m_Particles.end(); ++j )
+				for( std::vector< Particle* >::iterator j = m_Particles.begin(); j != m_Particles.end(); ++j )
 				{
-					i->Work( *j, deltaTime );
+					(*i)->Work( *(*j), deltaTime );
 				}
 			}
 		} //}}}
 
 		void UpdateAll( long double deltaTime )
 		{ //{{{
-			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+			for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				i->Update( deltaTime );
+				(*i)->Update( deltaTime );
 			}
 		} //}}}
 
@@ -89,9 +89,9 @@ class ParticleSystem
 		{ //{{{
 			long double max = 0.0f;
 			long double current = 0.0f;
-			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+			for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				current = i->Speed();
+				current = (*i)->Speed();
 				if( current >= max )
 				{
 					max = current;
@@ -104,9 +104,10 @@ class ParticleSystem
 		{ //{{{
 			long double max = 0.0f;
 			long double current = 0.0f;
-			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+			for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				current = sqrt( i->XAcceleration()*i->XAcceleration() + i->YAcceleration()*i->YAcceleration() );
+				current = sqrt( (*i)->XAcceleration()*(*i)->XAcceleration() +
+								(*i)->YAcceleration()*(*i)->YAcceleration() );
 				if( current >= max )
 				{
 					max = current;
@@ -154,7 +155,7 @@ class ParticleSystem
 		{ //{{{
 			if( nParticle != 0 )
 			{
-				m_Particles.push_back( *nParticle );
+				m_Particles.push_back( nParticle );
 			}
 			else
 			{
@@ -164,15 +165,12 @@ class ParticleSystem
 
 		void RemoveParticle( Particle *toRemove )
 		{ //{{{
-			for( std::vector< Particle >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+			for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				// TODO WTF?
-				/*
-				if( (*i) == (*toRemove) )
+				if( (*i) == toRemove )
 				{
 					m_Particles.erase( i );
 				}
-				*/
 			}
 		} //}}}
 
@@ -189,7 +187,7 @@ class ParticleSystem
 		long double m_Step;
 		long double m_MaxSteps;
 
-		std::vector< Particle > m_Particles;
+		std::vector< Particle* > m_Particles;
 		std::vector< Force > m_Forces;
 
 };
