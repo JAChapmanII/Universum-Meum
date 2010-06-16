@@ -3,11 +3,11 @@ SRCDIR=src
 DOCDIR=doc
 OBJDIR=obj
 BINDIR=bin
-SRC=main.d
+SRC=main.cpp
 PROG=Universum-Meum
 
-DD=rebuild
-DFLAGS=-no-export-dynamic -lldl
+CC=g++
+CFLAGS=-lSDL -lGL -pipe
 
 all: ${PROG}
 
@@ -16,19 +16,16 @@ ${PROG}: debug
 full: dirs clean release documentation
 
 release:
-	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG} -I${SRCDIR}/\
-		${DFLAGS} -O -release ${SRCDIR}/${SRC}
+	${CC} -o ${BINDIR}/${PROG} ${CFLAGS} -O ${SRCDIR}/${SRC}
 
 debug: dirs clean
-	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG}-debug -I${SRCDIR}/\
-		${DFLAGS} -g -debug ${SRCDIR}/${SRC}
+	${CC} -o ${BINDIR}/${PROG}-debug ${CFLAGS} -g ${SRCDIR}/${SRC}
 
 profile:
-	${DD} -oq${OBJDIR} -of${BINDIR}/${PROG}-profile -I${SRCDIR}/\
-		${DFLAGS} -g -debug -profile ${SRCDIR}/${SRC}
+	${CC} -o ${BINDIR}/${PROG}-profile ${CFLAGS} -g ${SRCDIR}/${SRC}
 
 documentation:
-	${DD} -p -D -Dq${DOCDIR} -I${SRCDIR} ${SRCDIR}/${SRC}
+	${CC} -p -D -Dq${DOCDIR} -I${SRCDIR} ${SRCDIR}/${SRC}
 
 dirs:
 	mkdir -p ${SRCDIR}
