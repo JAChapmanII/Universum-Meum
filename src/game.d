@@ -146,7 +146,7 @@ public class Game : Entity
 			/// at the same time. /TODO
 			foreach( i; m_Clicks ) //{{{
 			{
-				if( ( i.Button == SDL_BUTTON_WHEELUP ) || ( i.Button == SDL_BUTTON_WHEELDOWN ) )
+				if( ( i.button == SDL_BUTTON_WHEELUP ) || ( i.button == SDL_BUTTON_WHEELDOWN ) )
 				{
 					m_Clicks.remove( i );
 					break;
@@ -226,7 +226,7 @@ public class Game : Entity
 						}
 						foreach( i; m_Clicks )
 						{
-							if( i.Button == m_Event.button.button )
+							if( i.button == m_Event.button.button )
 							{
 								m_Clicks.remove( i );
 								break;
@@ -250,7 +250,7 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == toCheckFor )
+				if( i.button == toCheckFor )
 				{
 					return true;
 				}
@@ -262,9 +262,9 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == button )
+				if( i.button == button )
 				{
-					return i.XPosition;
+					return i.position.x;
 				}
 			}
 			throw new Exception( "Button is not pressed" );
@@ -274,9 +274,9 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == button )
+				if( i.button == button )
 				{
-					return i.YPosition;
+					return i.position.x;
 				}
 			}
 			throw new Exception( "Button is not pressed" );
@@ -286,9 +286,9 @@ public class Game : Entity
 		{ //{{{
 			foreach( i; m_Clicks )
 			{
-				if( i.Button == button )
+				if( i.button == button )
 				{
-					return i.CreateTime;
+					return i.createTime;
 				}
 			}
 			throw new Exception( "Button is not pressed" );
