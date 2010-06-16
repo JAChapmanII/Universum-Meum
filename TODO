@@ -1,3 +1,6 @@
+Complete:
+	- Move to public vector based stuff
+
 Design Problems:
 	- Current example "repel" looks bad. Get an example that will look realistic.
 		- Finish the forceType enumeration implementation to allow different forces to be applied
