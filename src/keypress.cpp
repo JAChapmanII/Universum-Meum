@@ -17,26 +17,32 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module click;
+#ifndef KEYPRESS_CPP
+#define KEYPRESS_CPP
 
-import vector;
-
-class Click
+class Keypress
 {
 	public:
-		this( uint iX, uint iY, uint iButton, uint cTime )
+		Keypress( unsigned int iSymCode, unsigned int iCreateTime )
 		{
-			this.position = new Vector!( uint )( iX, iY, 0 );
-			this.createTime = cTime;
-			this.button = iButton;
+			m_SymCode = iSymCode;
+			m_CreateTime = iCreateTime;
 		}
 
-		Vector!( uint ) position;
-		uint createTime;
-		uint button;
+		unsigned int SymCode()
+		{
+			return m_SymCode;
+		}
 
-	protected:
+		unsigned int CreateTime()
+		{
+			return m_CreateTime;
+		}
 
 	private:
+		unsigned int m_SymCode;
+		unsigned int m_CreateTime;
 
-}
+};
+
+#endif // KEYPRESS_CPP

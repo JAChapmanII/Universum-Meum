@@ -17,74 +17,52 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module game;
+#ifndef GAME_CPP
+#define GAME_CPP
 
-import tango.util.container.LinkedList;
-import tango.util.log.Log;
-import tango.util.log.AppendConsole;
-import Integer = tango.text.convert.Integer;
+#include <vector>
 
-import derelict.opengl.gl;
-import derelict.sdl.sdl;
+#include <GL/gl.h>
+#include <SDL/SDL.h>
 
-import entity;
+#include "entity.cpp"
 
-import vector;
-import keypress;
-import click;
+#include "vector.cpp"
+#include "keypress.cpp"
+#include "click.cpp"
 
-// Set up logging
-Logger log; //{{{
-static this()
-{
-	log = Log.lookup( "game" );
-	log.add( new AppendConsole() );
-}
-// }}}
+static char PROGRAM_NAME[ 15 ] = "Universum Meum";
 
-static char[] PROGRAM_NAME = "Universum Meum";
-
-public class Game : Entity
+class Game : Entity
 {
 	public:
-		static Game Instance( uint iWidth, uint iHeight, uint iBPP )
+		static Game* Instance( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
 		{ //{{{
-			if( m_Instance is null )
+			if( m_Instance == 0 )
 			{
-				try
-				{
+				// TODO Error handling C++ style
 					m_Instance = new Game( iWidth, iHeight, iBPP );
-				}
-				catch( Exception e )
-				{
-					log.fatal( "Game could not be instantiated." );
-					throw e;
-				}
 			}
 			return m_Instance;
 		} //}}}
 
-		alias Instance opCall;
-
-		void InitSGL( uint iWidth, uint iHeight, uint iBPP )
+		void InitSGL( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
 		{ //{{{
 			loadModules();
 
 			if( SDL_Init( SDL_INIT_VIDEO ) != 0 )
 			{
-				log.fatal( "SDL could not initialize." );
-				throw new Exception( "SDL failed to initialize." );
+				// TODO used to throw exception
 			}
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			SDL_SetVideoMode( iWidth, iHeight, iBPP, SDL_OPENGL );
 
-			Width = iWidth;
-			Height = iHeight;
-			BPP = iBPP;
+			Width( iWidth );
+			Height( iHeight );
+			BPP( iBPP );
 			ResizeViewport( iWidth, iHeight );
 
-			SDL_WM_SetCaption( cast( char* )PROGRAM_NAME, null );
-
+			SDL_WM_SetCaption( PROGRAM_NAME, 0 );
 
 			glEnable( GL_TEXTURE_2D );
 			glEnable( GL_BLEND );
@@ -101,7 +79,7 @@ public class Game : Entity
 			unloadModules();
 		} //}}}
 
-		void ResizeViewport( real nWidth, real nHeight )
+		void ResizeViewport( long double nWidth, long double nHeight )
 		{ //{{{
 			m_ViewWidth = nWidth;
 			m_ViewHeight = nHeight;
@@ -112,27 +90,21 @@ public class Game : Entity
 		{ //{{{
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
-			glOrtho( 0, ViewWidth, 0, ViewHeight, -10, 10 );
+			glOrtho( 0, ViewWidth(), 0, ViewHeight(), -10, 10 );
 			glMatrixMode( GL_MODELVIEW );
-			Zoom = Width() / ViewWidth();
+			Zoom( Width() / ViewWidth() );
 		} //}}}
 
 		/// Iterates through each actor that has been registered and calls its Draw function
-		override void Draw( real magZoom = 1 )
+		void Draw( long double magZoom = 1 )
 		{ //{{{
 			glPushMatrix();
-			glTranslatef( -this.position.x, -this.position.y, 0 );
+			glTranslatef( -this->position.x, -this->position.y, 0 );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			foreach( i; m_Entities )
+			for( std::vector< Entity >::iterator i = m_Entities.begin(); i != m_Entities.end(); i++ )
 			{
-				if( i is null )
-				{
-					log.warn( "Tried to Draw null object" );
-				}
-				else
-				{
-					i.Draw( Zoom * magZoom );
-				}
+				// TODO null i?
+					i->Draw( Zoom() * magZoom );
 			}
 			glPopMatrix();
 			SDL_GL_SwapBuffers();
@@ -143,12 +115,12 @@ public class Game : Entity
 			/// Ditch old mousewheel events
 			/// TODO look into a better way to do this, as currently we're throwing away potentially
 			/// valid data. This is because each mouse wheel "click" is actually a press and release
-			/// at the same time. /TODO
-			foreach( i; m_Clicks ) //{{{
+			/// at the same time.
+			for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ ) //{{{
 			{
-				if( ( i.button == SDL_BUTTON_WHEELUP ) || ( i.button == SDL_BUTTON_WHEELDOWN ) )
+				if( ( i->button == SDL_BUTTON_WHEELUP ) || ( i->button == SDL_BUTTON_WHEELDOWN ) )
 				{
-					m_Clicks.remove( i );
+					m_Clicks.erase( i );
 					break;
 				}
 			} //}}}
@@ -162,7 +134,7 @@ public class Game : Entity
 					case SDL_QUIT:
 					{ //{{{
 						// set the done flag
-						isDone = true;
+						isDone( true );
 						return;
 					} //}}}
 
@@ -172,12 +144,12 @@ public class Game : Entity
 						if( m_Event.active.gain == 0 )
 						{
 							// lost focus
-							isActive = false;
+							isActive( false );
 						}
 						else
 						{
 							// gained focus
-							isActive = true;
+							isActive( true );
 						}
 						break;
 					} //}}}
@@ -185,18 +157,19 @@ public class Game : Entity
 					// A key was pressed
 					case SDL_KEYDOWN:
 					{ //{{{
-						m_Keypresses.add( new Keypress( m_Event.key.keysym.sym, GetTicks ) );
+						m_Keypresses.push_back( Keypress( m_Event.key.keysym.sym, GetTicks() ) );
 						break;
 					} //}}}
 
 					// A key was released
 					case SDL_KEYUP:
 					{ //{{{
-						foreach( i; m_Keypresses )
+						for( std::vector< Keypress >::iterator i = m_Keypresses.begin();
+								i != m_Keypresses.end(); ++i )
 						{
-							if( i.SymCode == m_Event.key.keysym.sym )
+							if( i->SymCode() == m_Event.key.keysym.sym )
 							{
-								m_Keypresses.remove( i );
+								m_Keypresses.erase( i );
 								break;
 							}
 						}
@@ -212,8 +185,8 @@ public class Game : Entity
 
 					case SDL_MOUSEBUTTONDOWN:
 					{ //{{{
-						m_Clicks.add( new Click( m_Event.button.x, m_Event.button.y,
-									m_Event.button.button, GetTicks ) );
+						m_Clicks.push_back( Click( m_Event.button.x, m_Event.button.y,
+											m_Event.button.button, GetTicks() ) );
 						break;
 					} //}}}
 
@@ -224,11 +197,12 @@ public class Game : Entity
 						{
 							break;
 						}
-						foreach( i; m_Clicks )
+						for( std::vector< Click >::iterator i = m_Clicks.begin();
+								i != m_Clicks.end(); i++ )
 						{
-							if( i.button == m_Event.button.button )
+							if( i->button == m_Event.button.button )
 							{
-								m_Clicks.remove( i );
+								m_Clicks.erase( i );
 								break;
 							}
 						}
@@ -248,9 +222,9 @@ public class Game : Entity
 
 		bool isClicked( int toCheckFor = SDL_BUTTON_LEFT )
 		{ //{{{
-			foreach( i; m_Clicks )
+			for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 			{
-				if( i.button == toCheckFor )
+				if( i->button == toCheckFor )
 				{
 					return true;
 				}
@@ -258,43 +232,43 @@ public class Game : Entity
 			return false;
 		} //}}}
 
-		uint ClickX( int button )
+		unsigned int ClickX( int button )
 		{ //{{{
-			foreach( i; m_Clicks )
+			for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 			{
-				if( i.button == button )
+				if( i->button == button )
 				{
-					return i.position.x;
+					return i->position.x;
 				}
 			}
-			throw new Exception( "Button is not pressed" );
+			// TODO throw something
 		} //}}}
 
-		uint ClickY( int button )
+		unsigned int ClickY( int button )
 		{ //{{{
-			foreach( i; m_Clicks )
+			for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 			{
-				if( i.button == button )
+				if( i->button == button )
 				{
-					return i.position.x;
+					return i->position.x;
 				}
 			}
-			throw new Exception( "Button is not pressed" );
+			// TODO throw something
 		} //}}}
 
-		uint ClickCreateTime( int button )
+		unsigned int ClickCreateTime( int button )
 		{ //{{{
-			foreach( i; m_Clicks )
+			for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 			{
-				if( i.button == button )
+				if( i->button == button )
 				{
-					return i.createTime;
+					return i->createTime;
 				}
 			}
-			throw new Exception( "Button is not pressed" );
+			// TODO throw something
 		} //}}}
 
-		void WarpMouse( uint nX, uint nY )
+		void WarpMouse( unsigned int nX, unsigned int nY )
 		{ //{{{
 			m_Cursor.x = nX;
 			m_Cursor.y = nY;
@@ -303,9 +277,9 @@ public class Game : Entity
 
 		bool isPressed( int toCheckFor = 27 )
 		{ //{{{
-			foreach( i; m_Keypresses )
+			for( std::vector< Keypress >::iterator i = m_Keypresses.begin(); i != m_Keypresses.end(); i++ )
 			{
-				if( i.SymCode == toCheckFor )
+				if( i->SymCode() == toCheckFor )
 				{
 					return true;
 				}
@@ -314,38 +288,38 @@ public class Game : Entity
 		} //}}}
 
 		/// {G,S}etter for m_Width
-		void Width( uint nWidth ) //{{{
+		void Width( unsigned int nWidth ) //{{{
 		{
 			m_Width = nWidth;
 		}
-		uint Width()
+		unsigned int Width()
 		{
 			return m_Width;
 		} //}}}
 
 		/// {G,S}etter for m_Height
-		void Height( uint nHeight ) //{{{
+		void Height( unsigned int nHeight ) //{{{
 		{
 			m_Height = nHeight;
 		}
-		uint Height()
+		unsigned int Height()
 		{
 			return m_Height;
 		} //}}}
 
 		/// {G,S}etter for m_BPP
-		void BPP( uint nBPP ) //{{{
+		void BPP( unsigned int nBPP ) //{{{
 		{
 			m_BPP = nBPP;
 		}
-		uint BPP()
+		unsigned int BPP()
 		{
 			return m_BPP;
 		} //}}}
 
 		void AddEntity( Entity nEntity )
 		{ //{{{
-			if( !( nEntity is null ) )
+			if( nEntity != 0 )
 			{
 				m_Entities.add( nEntity );
 			}
@@ -363,14 +337,14 @@ public class Game : Entity
 			}
 		} //}}}
 
-		uint GetTicks()
+		unsigned int GetTicks()
 		{ //{{{
 			return SDL_GetTicks();
 		} //}}}
 
 		void WaitFor()
 		{ //{{{
-			static uint now;
+			static unsigned int now;
 			now = GetTicks();
 
 			if( m_NextTime > now )
@@ -388,17 +362,17 @@ public class Game : Entity
 			m_NextTime += m_TickInterval;
 		} //}}}
 
-		void sleep( uint microSeconds = 1000 )
+		void sleep( unsigned int microSeconds = 1000 )
 		{ //{{{
 			SDL_Delay( microSeconds );
 		} //}}}
 
 		/// {G,S}etter for m_TickInterval
-		void TickInterval( uint nTickInterval ) //{{{
+		void TickInterval( unsigned int nTickInterval ) //{{{
 		{
 			m_TickInterval = nTickInterval;
 		}
-		uint TickInterval()
+		unsigned int TickInterval()
 		{
 			return m_TickInterval;
 		} //}}}
@@ -424,91 +398,86 @@ public class Game : Entity
 		} //}}}
 
 		/// Getter for m_ViewWidth
-		/*void ViewWidth( real nViewWidth ) //{{{
+		/*void ViewWidth( long double nViewWidth ) //{{{
 		{
 			m_ViewWidth = nViewWidth;
 		}*/
-		real ViewWidth()
+		long double ViewWidth()
 		{
 			return m_ViewWidth;
 		} //}}}
 
 		/// Getter for m_ViewHeight
-		/*void ViewHeight( real nViewHeight ) //{{{
+		/*void ViewHeight( long double nViewHeight ) //{{{
 		{
 			m_ViewHeight = nViewHeight;
 		}*/
-		real ViewHeight()
+		long double ViewHeight()
 		{
 			return m_ViewHeight;
 		} //}}}
 
 		/// Setter for both X/Y centers
-		void Centers( real nXC, real nYC ) //{{{
+		void Centers( long double nXC, long double nYC ) //{{{
 		{
 			this.position.x = nXC - ViewWidth / 2;
 			this.position.y = nYC - ViewHeight / 2;
 		} //}}}
 
 		/// {G,S}etter for the X center
-		real XCenter() //{{{
+		long double XCenter() //{{{
 		{
 			return ViewWidth / 2 + this.position.x;
 		}
-		void XCenter( real nXC )
+		void XCenter( long double nXC )
 		{
 			this.position.x = nXC - ViewWidth / 2;
 		} //}}}
 
 		/// {G,S}etter for the Y center
-		real YCenter() //{{{
+		long double YCenter() //{{{
 		{
 			return ViewHeight / 2 + this.position.y;
 		}
-		void YCenter( real nYC )
+		void YCenter( long double nYC )
 		{
 			this.position.y = nYC - ViewHeight / 2;
 		} //}}}
 
 		/// {G,S}etter for the Cursor X
-		uint CursorX() //{{{
+		unsigned int CursorX() //{{{
 		{
 			return m_Cursor.x;
 		}
-		void CursorX( uint nCX )
+		void CursorX( unsigned int nCX )
 		{
 			WarpMouse( nCX, m_Cursor.y );
 		} //}}}
 
 		/// {G,S}etter for the Cursor Y
-		uint CursorY() //{{{
+		unsigned int CursorY() //{{{
 		{
 			return m_Cursor.y;
 		}
-		void CursorY( uint nCY )
+		void CursorY( unsigned int nCY )
 		{
 			WarpMouse( m_Cursor.x, nCY );
 		} //}}}
 
 		/// {G,S}etter for the Zoom
-		void Zoom( real nZoom ) //{{{
+		void Zoom( long double nZoom ) //{{{
 		{
 			m_Zoom = nZoom;
 		}
-		real Zoom()
+		long double Zoom()
 		{
 			return m_Zoom;
 		} //}}}
 
-	protected : //{{{
-		this( uint iWidth, uint iHeight, uint iBPP )
+	private: //{{{
+		Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
 		{
-			super();
 			InitSGL( iWidth, iHeight, iBPP );
-			m_Keypresses = new LinkedList!( Keypress );
-			m_Clicks = new LinkedList!( Click );
-			m_Entities = new LinkedList!( Entity );
-			m_Cursor = new Vector!( uint );
 		}
 
 		// load modules needed to interface with C libs SDL, GL, IL
@@ -585,32 +554,32 @@ public class Game : Entity
 			}
 		} //}}}
 
-		static Game m_Instance;
+		static Game* m_Instance;
 
-		uint m_TickInterval;
-		uint m_NextTime;
+		unsigned int m_TickInterval;
+		unsigned int m_NextTime;
 
 		bool m_isDone;
 		bool m_isActive;
 		bool m_ModulesLoaded;
 
-		uint m_Width;
-		uint m_Height;
-		uint m_BPP;
+		unsigned int m_Width;
+		unsigned int m_Height;
+		unsigned int m_BPP;
 
-		real m_ViewWidth;
-		real m_ViewHeight;
+		long double m_ViewWidth;
+		long double m_ViewHeight;
 
-		LinkedList!( Entity ) m_Entities;
+		std::vector< Entity > m_Entities;
 
 		SDL_Event m_Event;
-		LinkedList!( Keypress ) m_Keypresses;
-		LinkedList!( Click ) m_Clicks;
-		Vector!( uint ) m_Cursor;
+		std::vector< Keypress > m_Keypresses;
+		std::vector< Click > m_Clicks;
+		Vector< unsigned int > m_Cursor;
 
-		real m_Zoom;
+		long double m_Zoom;
 
 		//}}}
+};
 
-	private:
-}
+#endif // GAME_CPP

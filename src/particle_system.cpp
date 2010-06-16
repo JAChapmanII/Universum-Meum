@@ -17,35 +17,29 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module particle_system;
 
-import tango.io.Stdout;
-import tango.util.container.LinkedList;
-
-import tango.math.Math : sqrt;
-
-import force;
-import particle;
+#include "force.cpp"
+#include "particle.cpp"
 
 class ParticleSystem
 {
 	public:
-		this( real iStep = 1.0f, real iMaxSteps = 500.0f )
+		this( long double iStep = 1.0f, long double iMaxSteps = 500.0f )
 		{
 			Step = iStep;
 			MaxSteps = iMaxSteps;
 			m_Particles = new LinkedList!( Particle );
 		}
 
-		void Work( real deltaTime = 1.0f )
+		void Work( long double deltaTime = 1.0f )
 		{
-			real timeLeft = deltaTime;
+			long double timeLeft = deltaTime;
 			while( timeLeft > 0.0f )
 			{
-				real currentMax = maxSpeed;
+				long double currentMax = maxSpeed;
 				if( ( currentMax * timeLeft ) > Step )
 				{
-					real currentDelta = (Step / currentMax);
+					long double currentDelta = (Step / currentMax);
 					if (currentDelta < (deltaTime / MaxSteps))
 					{
 						currentDelta = (deltaTime / MaxSteps);
@@ -67,7 +61,7 @@ class ParticleSystem
 			}
 		}
 
-		void WorkAll( ref real deltaTime )
+		void WorkAll( ref long double deltaTime )
 		{ //{{{
 			foreach( i; m_Particles )
 			{
@@ -78,7 +72,7 @@ class ParticleSystem
 			}
 		} //}}}
 
-		void UpdateAll( ref real deltaTime )
+		void UpdateAll( ref long double deltaTime )
 		{ //{{{
 			foreach( i; m_Particles )
 			{
@@ -86,10 +80,10 @@ class ParticleSystem
 			}
 		} //}}}
 
-		real maxSpeed()
+		long double maxSpeed()
 		{ //{{{
-			real max = 0.0f;
-			real current = 0.0f;
+			long double max = 0.0f;
+			long double current = 0.0f;
 			foreach( i; m_Particles )
 			{
 				current = i.Speed;
@@ -101,10 +95,10 @@ class ParticleSystem
 			return max;
 		} //}}}
 
-		real maxAcceleration()
+		long double maxAcceleration()
 		{ //{{{
-			real max = 0.0f;
-			real current = 0.0f;
+			long double max = 0.0f;
+			long double current = 0.0f;
 			foreach( i; m_Particles )
 			{
 				current = sqrt( i.XAcceleration*i.XAcceleration + i.YAcceleration*i.YAcceleration );
@@ -117,24 +111,24 @@ class ParticleSystem
 		} //}}}
 
 		// {G,S}etter for m_Step
-		void Step( real nStep ) //{{{
+		void Step( long double nStep ) //{{{
 		{
 			m_Step = nStep;
 		}
-		real Step()
+		long double Step()
 		{
 			return m_Step;
 		} //}}}
 
 		// {G,S}etter for m_MaxSteps
-		void MaxSteps( real nMax ) //{{{
+		void MaxSteps( long double nMax ) //{{{
 		{
 			if( (1.0f / Step) > (1.0 / nMax) )
 			{
 				m_MaxSteps = nMax;
 			}
 		}
-		real MaxSteps()
+		long double MaxSteps()
 		{
 			return m_MaxSteps;
 		} //}}}
@@ -173,7 +167,7 @@ class ParticleSystem
 		} //}}}
 
 	protected:
-		real abs( real a )
+		long double abs( long double a )
 		{
 			if( a < 0 )
 			{
@@ -182,8 +176,8 @@ class ParticleSystem
 			return a;
 		}
 
-		real m_Step;
-		real m_MaxSteps;
+		long double m_Step;
+		long double m_MaxSteps;
 
 		LinkedList!( Particle ) m_Particles;
 		Force[] m_Forces;

@@ -17,14 +17,15 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module entity;
+#ifndef ENTITY_CPP
+#define ENTITY_CPP
 
-import vector;
+#include "vector.cpp"
 
 class Entity
 {
 	public:
-		void Draw( real m_Zoom = 1 )
+		void Draw( long double m_Zoom = 1 )
 		{
 		}
 
@@ -32,14 +33,15 @@ class Entity
 		{
 		}
 
-		Vector!( real ) position;
+		Vector< long double > position;
 
 	protected:
-		this()
+		Entity()
 		{
-			position = new Vector!( real );
 		}
 
 	private:
 
-}
+};
+
+#endif // ENTITY_CPP

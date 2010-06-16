@@ -17,16 +17,9 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module gravity;
 
-import tango.io.Stdout;
-
-import tango.util.log.Log;
-import tango.util.log.AppendConsole;
-import tango.math.Math;
-
-import force;
-import particle;
+#include "../../force.cpp"
+#include "../../particle.cpp"
 
 Logger log;
 static this()
@@ -36,16 +29,16 @@ static this()
 }
 
 /// Alters particle A by applying an acceleration equal to that of a force like gravity over deltaTime
-void Gravity( real gravConst )( Particle A, Particle B, ref real deltaTime )
+void Gravity( long double gravConst )( Particle A, Particle B, ref long double deltaTime )
 { //{{{
-	real xDist = B.XPosition - A.XPosition;
-	real yDist = B.YPosition - A.YPosition;
-	real dist2 = (xDist * xDist) + (yDist * yDist);
+	long double xDist = B.XPosition - A.XPosition;
+	long double yDist = B.YPosition - A.YPosition;
+	long double dist2 = (xDist * xDist) + (yDist * yDist);
 
 	if( dist2 > 0 )
 	{
-		real gravMass = gravConst * B.Mass;
-		real dist  = sqrt( dist2 );
+		long double gravMass = gravConst * B.Mass;
+		long double dist  = sqrt( dist2 );
 
 		A.XAcceleration = A.NextXAcceleration +
 			( gravMass )*(xDist/dist) / ( dist2 );

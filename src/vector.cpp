@@ -17,19 +17,21 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module vector;
+#ifndef VECTOR_CPP
+#define VECTOR_CPP
 
-/// 3 Dimensional vector class template, T is the type of component
-class Vector( T )
+// 3 Dimensional vector class template, T is the type of component
+template <class T>
+class Vector
 {
 	public:
 		/// Default constructor, X and Y components default to T's default
-		this()
+		Vector()
 		{ //{{{
 		} //}}}
 
 		/// Constructs a Vector with initial X and Y values
-		this( T iX, T iY, T iZ )
+		Vector( T iX, T iY, T iZ )
 		{ //{{{
 			this.x = iX;
 			this.y = iY;
@@ -87,8 +89,8 @@ class Vector( T )
 		/// Z component
 		T z;
 
-	protected:
-
 	private:
 
-}
+};
+
+#endif // VECTOR_CPP

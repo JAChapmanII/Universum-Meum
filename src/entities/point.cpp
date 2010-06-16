@@ -17,18 +17,15 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module polygon;
 
-import derelict.opengl.gl;
+#include <GL/gl.h>
 
-import entity;
+#include "../entity.cpp"
 
-import tango.math.Math;
-
-class Polygon : Entity
+class Point : Entity
 {
 	public:
-		this( real iX, real iY )
+		this( long double iX, long double iY )
 		{ //{{{
 			super();
 			this.position.x = iX;
@@ -37,7 +34,7 @@ class Polygon : Entity
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( real iX, real iY, real iRadius )
+		this( long double iX, long double iY, long double iRadius )
 		{ //{{{
 			super();
 			this.position.x = iX;
@@ -46,7 +43,7 @@ class Polygon : Entity
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue )
+		this( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue )
 		{ //{{{
 			super();
 			this.position.x = iX;
@@ -55,7 +52,7 @@ class Polygon : Entity
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		this( real iX, real iY, real iRadius, real iRed, real iGreen, real iBlue, real iAlpha )
+		this( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha )
 		{ //{{{
 			super();
 			this.position.x = iX;
@@ -64,43 +61,27 @@ class Polygon : Entity
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
 
-		override void Draw( real m_Zoom = 1 )
+		override void Draw( long double m_Zoom = 1 )
 		{ //{{{
+			// glPointSize takes a diameter
+			glPointSize( Radius * 2 * m_Zoom );
 			glColor4f( Red, Green, Blue, Alpha );
-			glPolygonMode( GL_FRONT, GL_FILL );
-			glBegin( GL_POLYGON );
-				real delTheta = 2 * PI / cast( real )( NumSegments );
-				real theta = 0;
-				for( uint segment = 0; segment < NumSegments; ++segment )
-				{
-					theta = segment * delTheta;
-					glVertex2f( Radius * cos( theta ) + position.x,
-								Radius * sin( theta ) + position.y );
-				}
+			glBegin( GL_POINTS );
+			glVertex2f( this.position.x, this.position.y );
 			glEnd();
 		} //}}}
 
-		/// {G,S}etter for m_NumSegments
-		uint NumSegments() //{{{
-		{
-			return m_NumSegments;
-		}
-		void NumSegments( uint nNumSegments )
-		{
-			m_NumSegments = nNumSegments;
-		} //}}}
-
-		/// {G,S}etter for m_Radius
-		real Radius() //{{{
+		// {G,S}etter for m_Radius
+		long double Radius() //{{{
 		{
 			return m_Radius;
 		}
-		void Radius( real nRadius )
+		void Radius( long double nRadius )
 		{
 			m_Radius = nRadius;
 		} //}}}
 
-		void Color( real nRed, real nGreen, real nBlue, real nAlpha )
+		void Color( long double nRed, long double nGreen, long double nBlue, long double nAlpha )
 		{ //{{{
 			m_Color[ 0 ] = nRed;
 			m_Color[ 1 ] = nGreen;
@@ -108,7 +89,7 @@ class Polygon : Entity
 			m_Color[ 3 ] = nAlpha;
 		} //}}}
 
-		void Color( real nRed, real nGreen, real nBlue )
+		void Color( long double nRed, long double nGreen, long double nBlue )
 		{ //{{{
 			m_Color[ 0 ] = nRed;
 			m_Color[ 1 ] = nGreen;
@@ -116,49 +97,48 @@ class Polygon : Entity
 		} //}}}
 
 		// {G,S} for m_Color[ 0 ]
-		real Red() //{{{
+		long double Red() //{{{
 		{
 			return m_Color[ 0 ];
 		}
-		void Red( real nRed )
+		void Red( long double nRed )
 		{
 			m_Color[ 0 ] = nRed;
 		} //}}}
 
 		// {G,S} for m_Color[ 1 ]
-		real Green() //{{{
+		long double Green() //{{{
 		{
 			return m_Color[ 1 ];
 		}
-		void Green( real nGreen )
+		void Green( long double nGreen )
 		{
 			m_Color[ 1 ] = nGreen;
 		} //}}}
 
 		// {G,S} for m_Color[ 2 ]
-		real Blue() //{{{
+		long double Blue() //{{{
 		{
 			return m_Color[ 2 ];
 		}
-		void Blue( real nBlue )
+		void Blue( long double nBlue )
 		{
 			m_Color[ 2 ] = nBlue;
 		} //}}}
 
 		// {G,S} for m_Color[ 3 ]
-		real Alpha() //{{{
+		long double Alpha() //{{{
 		{
 			return m_Color[ 3 ];
 		}
-		void Alpha( real nAlpha )
+		void Alpha( long double nAlpha )
 		{
 			m_Color[ 3 ] = nAlpha;
 		} //}}}
 
 	protected:
-		real m_Radius;
-		real[ 4 ] m_Color;
-		uint m_NumSegments = 36;
+		long double m_Radius;
+		long double[ 4 ] m_Color;
 
 	private:
 

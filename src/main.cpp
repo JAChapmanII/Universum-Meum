@@ -17,42 +17,31 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module main;
 
-import tango.util.container.LinkedList;
-import tango.util.log.Log;
-import tango.util.log.AppendConsole;
-import tango.math.Math;
-import tango.math.random.Twister;
+#include <iostream>
 
-import integer = tango.text.convert.Integer;
+#include "game.cpp"
+#include "particle.cpp"
+#include "particle_system.cpp"
+#include "entity.cpp"
+#include "entities/polygon.cpp"
+#include "entities/point.cpp"
+#include "force.cpp"
+#include "forces/exterior/gravity.cpp"
+#include "forces/interior/repel.cpp"
+#include "forces/colliding/elastic_collision.cpp"
 
-import tango.io.Stdout;
-import tango.io.Console;
-
-import game;
-import particle;
-import particle_system;
-import entity;
-import entities.polygon;
-import entities.point;
-import force;
-import forces.exterior.gravity;
-import forces.interior.repel;
-import forces.colliding.elastic_collision;
-
-import derelict.sdl.sdl;
-
-import derelict.opengl.gl;
+#include <SDL/SDL.h>
+#include <GL/gl.h>
 
 // Set up the logger, and the Key associative array
 Logger log; //{{{
-uint[ char[] ] Key;
+unsigned int[ char[] ] Key;
 static this()
 {
 	log = Log.lookup( "main" );
 	log.add( new AppendConsole() );
-	// Sets up the Key uint <-> char map
+	// Sets up the Key unsigned int <-> char map
 	Key[ "None" ] = -1; Key[ "First" ] = 1; Key[ "Backspace" ] = 8; //{{{
 	Key[ "Tab" ] = 9; Key[ "	" ] = 9; Key[ "Clear" ] = 12; Key[ "Enter" ] = 13;
 	Key[ "Return" ] = 13; Key[ "Pause" ] = 19; Key[ "Escape" ] = 27;
@@ -126,35 +115,35 @@ static this()
 
 int main( char[][] args )
 {
-	Stdout.formatln( "Welcome to Universum Meum." );
+	cout << "Welcome to Universum Meum.";
 
 	log.info( "Creating random number generator" );
 	auto rand = new Twister();
 	rand.seed();
 
-	uint gWidth, gHeight;
+	unsigned int gWidth, gHeight;
 	char[] buf;
 	while( ( gWidth = integer.parse( buf ) ) == 0 )
 	{
-		Stdout.formatln( "Please enter a width:" );
+		cout << "Please enter a width:";
 		buf = Cin.get();
 	}
 	buf.length = 0;
 	while( ( gHeight = integer.parse( buf ) ) == 0 )
 	{
-		Stdout.formatln( "Please enter a height:" );
+		cout << "Please enter a height:";
 		buf = Cin.get();
 	}
 	buf.length = 0;
 
 	log.info( "Creating a Game" );
-	Stdout.formatln( "W: {}\tH: {}", gWidth, gHeight );
+	cout << "W: {}\tH: {}" << gWidth << gHeight;
 	Game m_Game = Game.Instance( gWidth, gHeight, 32 ); //{{{
 	m_Game.position.x = 0;
 	m_Game.position.y = 0;
 
 	log.info( "Setting framerate to 100" );
-	uint frameRate = 100;
+	unsigned int frameRate = 100;
 	m_Game.TickInterval = 1000 / frameRate;
 	//}}}
 
@@ -163,8 +152,8 @@ int main( char[][] args )
 	Stdout.formatln( "{} | {}", floatArray[0], floatArray[1]);
 
 	/// Create Gravity/Repel forces
-	const real rgConstant = 1024.0; //{{{
-	Stdout.formatln( "\trgConstant: {} [so:{}]", rgConstant, real.sizeof );
+	const long double rgConstant = 1024.0; //{{{
+	cout << "\trgConstant: {} [so:{}]" << rgConstant << long double.sizeof;
 
 	log.info( "Creating a gravity force" );
 	Force m_Gravity = &Gravity!( rgConstant );
@@ -178,8 +167,8 @@ int main( char[][] args )
 	ParticleSystem m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
 
 	/// Process arguments
-	uint numObjects = 0; //{{ {
-	uint initVel = 0;
+	unsigned int numObjects = 0; //{{ {
+	unsigned int initVel = 0;
 	if( args.length > 1 )
 	{
 		numObjects = integer.parse( args[ 1 ] );
@@ -188,7 +177,7 @@ int main( char[][] args )
 		{
 			numObjects = 1;
 		}
-		Stdout.formatln( "Creating {} point(s)", numObjects );
+		cout << "Creating {} point(s)" << numObjects;
 		if( args.length > 2 )
 		{
 			initVel = integer.parse( args[ 2 ] );
@@ -197,7 +186,7 @@ int main( char[][] args )
 				initVel = 0;
 			}
 			initVel %= 4;
-			Stdout.formatln( "initVel method set to {}", initVel );
+			cout << "initVel method set to {}" << initVel;
 		}
 	} //}}}
 
@@ -208,7 +197,7 @@ int main( char[][] args )
 	//m_Polygons.length = numObjects;
 
 	/// Create particles
-	for( uint i = 0; i < numObjects; i++ ) //{{{
+	for( unsigned int i = 0; i < numObjects; i++ ) //{{{
 	{
 		Polygon nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
 		m_Polygons.add( nPolygon );
@@ -230,8 +219,8 @@ int main( char[][] args )
 			}
 			case 1: /// Random
 			{
-				real ranX = rand.fraction() * 16.0 - 8.0;
-				real ranY = rand.fraction() * 16.0 - 8.0;
+				long double ranX = rand.fraction() * 16.0 - 8.0;
+				long double ranY = rand.fraction() * 16.0 - 8.0;
 				Stdout.formatln( "Seeded particle {} with < {}, {} >", i, ranX, ranY );
 				nParticle.Velocities( ranX, ranY  );
 				break;
@@ -290,8 +279,8 @@ int main( char[][] args )
 	//m_Cursor.AddForce( m_Repel );
 	//}}}
 
-	uint lastSpawn = 0;
-	real xCenter, yCenter;
+	unsigned int lastSpawn = 0;
+	long double xCenter, yCenter;
 	log.info( "Entering main game loop" );
 	while( !m_Game.isDone )
 	{ //{{{
@@ -305,15 +294,15 @@ int main( char[][] args )
 
 		if( m_Game.isClicked ) /// Print *cough* informortive messages
 		{ //{{{
-			Stdout.formatln( "There are {} particles and 1 sun currently...", m_Particles.size );
+			cout << "There are {} particles and 1 sun currently..." << m_Particles.size;
 			foreach( Particle i; m_Particles )
 			{
-				Stdout.formatln( "\t: ( {}, {} ) < {}, {} > [ {}, {} ]",
+				cout << "\t: ( {} << {} < {}, {} > [ {}, {} ]",
 					i.XPosition, i.YPosition,
 					i.XVelocity, i.YVelocity,
 					i.XAcceleration, i.YAcceleration );
 			}
-			Stdout.formatln( "\tSun: ( {}, {} ) < {}, {} > [ {}, {} ]",
+			cout << "\tSun: ( {} << {} < {}, {} > [ {}, {} ]",
 				m_Sun.XPosition, m_Sun.YPosition,
 				m_Sun.XVelocity, m_Sun.YVelocity,
 				m_Sun.XAcceleration, m_Sun.YAcceleration );
@@ -324,12 +313,12 @@ int main( char[][] args )
 
 		if( m_Game.isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
 		{ //{{{
-			Stdout.formatln( "Screen: ( {}, {} ) [ {}/{}, {}/{} ] < {}, {} >",
+			cout << "Screen: ( {} << {} [ {}/{}, {}/{} ] < {}, {} >",
 					m_Game.position.x, m_Game.position.y,
 					m_Game.ViewWidth, m_Game.Width,
 					m_Game.ViewHeight, m_Game.Height,
 					m_Game.XCenter, m_Game.YCenter );
-			Stdout.formatln( "Cursor: ( {}, {} )", m_Cursor.XPosition, m_Cursor.YPosition );
+			cout << "Cursor: ( {} << {}", m_Cursor.XPosition, m_Cursor.YPosition );
 		} //}}}
 
 		/// Create new particles dynamically, or delete them if the mouse is on one
@@ -338,21 +327,21 @@ int main( char[][] args )
 			if( m_Game.ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
 			{
 				lastSpawn = m_Game.ClickCreateTime( SDL_BUTTON_RIGHT );
-				real xPos = m_CursorPolygon.position.x;
-				real yPos = m_CursorPolygon.position.y;
+				long double xPos = m_CursorPolygon.position.x;
+				long double yPos = m_CursorPolygon.position.y;
 
 				log.info( "Setting minDist to infinity" );
-				real minDist2 = real.infinity;
+				long double minDist2 = long double.infinity;
 				Particle pMin;
 				log.info( "Starting dist checking loop" );
 				foreach( Particle i; m_Particles ) /// Determine minDist squared
 				{ //{{{
-					real cXDist = m_CursorPolygon.position.x - i.XPosition;
-					real cYDist = m_CursorPolygon.position.y - i.YPosition;
-					real cDist2 = cXDist*cXDist + cYDist*cYDist;
+					long double cXDist = m_CursorPolygon.position.x - i.XPosition;
+					long double cYDist = m_CursorPolygon.position.y - i.YPosition;
+					long double cDist2 = cXDist*cXDist + cYDist*cYDist;
 					if( cDist2 < minDist2 )
 					{
-						Stdout.formatln( "New minDist = {}", cDist2 );
+						cout << "New minDist = {}" << cDist2;
 						minDist2 = cDist2;
 						pMin = i;
 					}
@@ -373,8 +362,8 @@ int main( char[][] args )
 					if( ( m_Particles.size < 1000 ) ) /// Make a new particle
 					{ //{{{
 						log.info( "Created new particle based on RMB press" );
-						uint pNum = m_Polygons.size + 1;
-						Stdout.formatln( "Number {}!", pNum );
+						unsigned int pNum = m_Polygons.size + 1;
+						cout << "Number {}!" << pNum;
 						Polygon nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
 						m_Polygons.add( nPolygon );
 						m_Game.AddEntity( nPolygon );
@@ -395,8 +384,8 @@ int main( char[][] args )
 							}
 							case 1: /// Random
 							{
-								real ranX = rand.fraction() * 16.0 - 8.0;
-								real ranY = rand.fraction() * 16.0 - 8.0;
+								long double ranX = rand.fraction() * 16.0 - 8.0;
+								long double ranY = rand.fraction() * 16.0 - 8.0;
 								Stdout.formatln( "Seeded particle {} with < {}, {} >", pNum, ranX, ranY );
 								nParticle.Velocities( ranX, ranY  );
 								break;
@@ -426,15 +415,15 @@ int main( char[][] args )
 		{ //{{{
 			if( m_Game.Zoom <= 24 )
 			{
-				m_Game.ResizeViewport( m_Game.ViewWidth - cast( real )( m_Game.Width ) / 24.0f,
-									   m_Game.ViewHeight - cast( real )( m_Game.Height ) / 24.0f );
+				m_Game.ResizeViewport( m_Game.ViewWidth - cast( long double )( m_Game.Width ) / 24.0f,
+									   m_Game.ViewHeight - cast( long double )( m_Game.Height ) / 24.0f );
 				m_Game.Centers( xCenter, yCenter );
 			}
 		} //}}}
 		else if( m_Game.isClicked( SDL_BUTTON_WHEELDOWN ) ) /// Zoomout
 		{ //{{{
-			m_Game.ResizeViewport( m_Game.ViewWidth + cast( real )( m_Game.Width ) / 24.0f,
-								   m_Game.ViewHeight + cast( real )( m_Game.Height ) / 24.0f );
+			m_Game.ResizeViewport( m_Game.ViewWidth + cast( long double )( m_Game.Width ) / 24.0f,
+								   m_Game.ViewHeight + cast( long double )( m_Game.Height ) / 24.0f );
 			m_Game.Centers( xCenter, yCenter );
 		} //}}}
 
@@ -469,7 +458,7 @@ int main( char[][] args )
 			{
 				frameRate = 1000;
 			}
-			Stdout.formatln( "New framerate: {}", frameRate );
+			cout << "New framerate: {}" << frameRate;
 			m_Game.TickInterval = 1000 / frameRate;
 		}
 		else if( m_Game.isPressed( Key[ "Key Pad Minus" ] ) )
@@ -479,20 +468,20 @@ int main( char[][] args )
 			{
 				frameRate = 1;
 			}
-			Stdout.formatln( "New framerate: {}", frameRate );
+			cout << "New framerate: {}" << frameRate;
 			m_Game.TickInterval = 1000 / frameRate;
 		}
 
 		m_Cursor.CurrentPositions(
-			cast(uint)(
-				cast(real)(m_Game.CursorX) / m_Game.Width*m_Game.ViewWidth + m_Game.position.x ),
-			cast(uint)(
-				(1.0 - (cast(real)(m_Game.CursorY) / m_Game.Height))*m_Game.ViewHeight + m_Game.position.y) );
+			cast(unsigned int)(
+				cast(long double)(m_Game.CursorX) / m_Game.Width*m_Game.ViewWidth + m_Game.position.x ),
+			cast(unsigned int)(
+				(1.0 - (cast(long double)(m_Game.CursorY) / m_Game.Height))*m_Game.ViewHeight + m_Game.position.y) );
 
 		m_Game.Draw();
 		m_Game.WaitFor();
 	} //}}}
 
-	Stdout.formatln( "Thanks for playing!" );
+	cout << "Thanks for playing!";
 	return 0;
 }

@@ -17,18 +17,11 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module elastic_collision;
 
-import tango.util.log.Log;
-import tango.util.log.AppendConsole;
-import Integer = tango.text.convert.Integer;
+#include <SDL/SDL.h>
 
-import tango.math.Math;
-
-import tango.io.Stdout;
-import derelict.sdl.sdl;
-import force;
-import particle;
+#include "../../force.cpp"
+#include "../../particle.cpp"
 
 Logger log;
 static this()
@@ -38,10 +31,10 @@ static this()
 }
 
 /// Alters particle A by applying an force resulting from a elastic collision between A and B
-void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real deltaTime )
+void ElasticCollision( long double elasticityConst )( Particle A, Particle B, ref long double deltaTime )
 { //{{{
 
-	int sgn( real input )
+	int sgn( long double input )
 	{
 		if (input >= 0)
 		{
@@ -52,10 +45,10 @@ void ElasticCollision( real elasticityConst )( Particle A, Particle B, ref real 
 
 if( A != B)
 {
-	real xDist = A.XPosition - B.XPosition;
-	real yDist = A.YPosition - B.YPosition;
-	real dist2 = (xDist * xDist) + (yDist * yDist);
-	real dist  = sqrt( dist2 );
+	long double xDist = A.XPosition - B.XPosition;
+	long double yDist = A.YPosition - B.YPosition;
+	long double dist2 = (xDist * xDist) + (yDist * yDist);
+	long double dist  = sqrt( dist2 );
 
 	if( dist < (A.Radius + B.Radius))
 	{
@@ -78,19 +71,19 @@ if( A != B)
 
 
 
-		/*real xDist = B.XPosition - A.XPosition;
-		real yDist = B.YPosition - A.YPosition;
-		real dist2 = (xDist * xDist) + (yDist * yDist);
-		real dist  = sqrt( dist2 );*/
+		/*long double xDist = B.XPosition - A.XPosition;
+		long double yDist = B.YPosition - A.YPosition;
+		long double dist2 = (xDist * xDist) + (yDist * yDist);
+		long double dist  = sqrt( dist2 );*/
 
-		real theta = atan2( yDist, xDist );
-		real dir1 = atan2( A.YVelocity, A.XVelocity );
-		real dir2 = atan2( B.YVelocity, B.XVelocity );
-		real nYV1 = A.Speed * sin( dir1 - theta );
-		real fXV1 = ( ( A.Mass - B.Mass ) * ( A.Speed * cos( dir1 - theta ) ) + 2 *
+		long double theta = atan2( yDist, xDist );
+		long double dir1 = atan2( A.YVelocity, A.XVelocity );
+		long double dir2 = atan2( B.YVelocity, B.XVelocity );
+		long double nYV1 = A.Speed * sin( dir1 - theta );
+		long double fXV1 = ( ( A.Mass - B.Mass ) * ( A.Speed * cos( dir1 - theta ) ) + 2 *
 					B.Mass * ( B.Speed * cos( dir2 - theta ) ) ) / ( A.Mass + B.Mass );
 
-		real nYV2 = B.Speed * sin( dir1 - theta );
+		long double nYV2 = B.Speed * sin( dir1 - theta );
 		A.XVelocity = (cos(theta) * fXV1 + cos(theta+PI_2) * nYV1) * 0.5 ;
 		A.YVelocity = (sin(theta) * fXV1 + sin(theta+PI_2) * nYV1) * 0.5 ;
 		}

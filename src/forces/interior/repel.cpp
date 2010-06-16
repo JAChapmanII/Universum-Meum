@@ -17,16 +17,9 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module repel;
 
-import tango.util.log.Log;
-import tango.util.log.AppendConsole;
-import Integer = tango.text.convert.Integer;
-
-import tango.math.Math;
-
-import force;
-import particle;
+#include "../../force.cpp"
+#include "../../particle.cpp"
 
 Logger log;
 static this()
@@ -36,19 +29,19 @@ static this()
 }
 
 /// Alters particle A by applying an acceleration equal to that of a force like antigravity over deltaTime
-void Repel( real repConst )( Particle A, Particle B, ref real deltaTime )
+void Repel( long double repConst )( Particle A, Particle B, ref long double deltaTime )
 { //{{{
-	real xDist = B.XPosition - A.XPosition;
-	real yDist = B.YPosition - A.YPosition;
-	real dist2 = (xDist * xDist) + (yDist * yDist);
-	real dist  = sqrt( dist2 );
+	long double xDist = B.XPosition - A.XPosition;
+	long double yDist = B.YPosition - A.YPosition;
+	long double dist2 = (xDist * xDist) + (yDist * yDist);
+	long double dist  = sqrt( dist2 );
 
 	if( ( dist < (A.Radius + B.Radius) ) && ( dist2 > 0 ) )
 	{
-		real repMass = repConst * B.Mass * 2.0;
-		real sectLength = (A.Radius+B.Radius) - dist;
-		real unitX = xDist / dist;
-		real unitY = yDist / dist;
+		long double repMass = repConst * B.Mass * 2.0;
+		long double sectLength = (A.Radius+B.Radius) - dist;
+		long double unitX = xDist / dist;
+		long double unitY = yDist / dist;
 
 		A.XAcceleration = A.NextXAcceleration -
 			( repMass ) * ( unitX ) / ( dist2 );

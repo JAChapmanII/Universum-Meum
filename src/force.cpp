@@ -17,11 +17,10 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module force;
 
-import particle;
+#include "particle.cpp"
 
 /// Force tyedef: A pointer to a function that returns void, and takes two Particles and a
-/// reference to a real variable.
-typedef void( *Force )( Particle, Particle, ref real );
+/// reference to a long double variable.
+typedef void( *Force )( Particle, Particle, ref long double );
 

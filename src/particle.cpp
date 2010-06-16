@@ -17,15 +17,11 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module particle;
+#ifndef PARTICLE_CPP
+#define PARTICLE_CPP
 
-import tango.io.Stdout;
-import tango.util.log.Log;
-import tango.util.log.AppendConsole;
-import tango.math.Math;
-
-import force;
-import entity;
+#include "force.cpp"
+#include "entity.cpp"
 
 Logger log;
 static this()
@@ -51,7 +47,7 @@ class Particle
 			m_Speed = 0.0f;
 		} //}}}
 
-		void Update( real deltaTime )
+		void Update( long double deltaTime )
 		{ //{{{
 			m_nextVelocity[ 0 ] += m_nextAcceleration[ 0 ] * deltaTime;
 			m_nextVelocity[ 1 ] += m_nextAcceleration[ 1 ] * deltaTime;
@@ -116,7 +112,7 @@ class Particle
 			return null;
 		} //}}}
 
-		void Work( Particle B, real deltaTime )
+		void Work( Particle B, long double deltaTime )
 		{ //{{{
 			foreach( i; m_Forces )
 			{
@@ -130,11 +126,11 @@ class Particle
 		// Position stuff
 		//{{{
 		// {G,S}etter for current XPosition
-		real XPosition() //{{{
+		long double XPosition() //{{{
 		{
 			return m_Position[ 0 ];
 		}
-		void CurrentXPosition( real nXPosition )
+		void CurrentXPosition( long double nXPosition )
 		{
 			m_Position[ 0 ] = nXPosition;
 			m_nextPosition[ 0 ] = nXPosition;
@@ -145,11 +141,11 @@ class Particle
 		} //}}}
 
 		// {G,S}etter for current YPosition
-		real YPosition() //{{{
+		long double YPosition() //{{{
 		{
 			return m_Position[ 1 ];
 		}
-		void CurrentYPosition( real nYPosition )
+		void CurrentYPosition( long double nYPosition )
 		{
 			m_Position[ 1 ] = nYPosition;
 			m_nextPosition[ 1 ] = nYPosition;
@@ -160,7 +156,7 @@ class Particle
 		} //}}}
 
 		// Setter for both current Positions
-		void CurrentPositions( real nXPosition, real nYPosition) //{{{
+		void CurrentPositions( long double nXPosition, long double nYPosition) //{{{
 		{
 			m_Position[ 0 ] = nXPosition;
 			m_Position[ 1 ] = nYPosition;
@@ -175,27 +171,27 @@ class Particle
 
 
 		// {G,S}etter for next XPosition
-		real NextXPosition() //{{{
+		long double NextXPosition() //{{{
 		{
 			return m_nextPosition[ 0 ];
 		}
-		void XPosition( real nXPosition )
+		void XPosition( long double nXPosition )
 		{
 			m_nextPosition[ 0 ] = nXPosition;
 		} //}}}
 
 		// {G,S}etter for next YPosition
-		real NextYPosition() //{{{
+		long double NextYPosition() //{{{
 		{
 			return m_nextPosition[ 1 ];
 		}
-		void YPosition( real nYPosition )
+		void YPosition( long double nYPosition )
 		{
 			m_nextPosition[ 1 ] = nYPosition;
 		} //}}}
 
 		// Setter for both next Positions
-		void Positions( real nXPosition, real nYPosition ) //{{{
+		void Positions( long double nXPosition, long double nYPosition ) //{{{
 		{
 			XPosition = nXPosition;
 			YPosition = nYPosition;
@@ -205,29 +201,29 @@ class Particle
 		// Velocity stuff
 		//{{{
 		// {G,S}etter for current XVelocity
-		real XVelocity() //{{{
+		long double XVelocity() //{{{
 		{
 			return m_Velocity[ 0 ];
 		}
-		void CurrentXVelocity( real nXVelocity )
+		void CurrentXVelocity( long double nXVelocity )
 		{
 			m_Velocity[ 0 ] = nXVelocity;
 			Speed = sqrt( nXVelocity*nXVelocity + YVelocity*YVelocity );
 		} //}}}
 
 		// {G,S}etter for current YVelocity
-		real YVelocity() //{{{
+		long double YVelocity() //{{{
 		{
 			return m_Velocity[ 1 ];
 		}
-		void CurrentYVelocity( real nYVelocity )
+		void CurrentYVelocity( long double nYVelocity )
 		{
 			m_Velocity[ 1 ] = nYVelocity;
 			Speed = sqrt( XVelocity*XVelocity + nYVelocity*nYVelocity );
 		} //}}}
 
 		// Setter for both current Velocitys
-		void CurrentVelocities( real nXVelocity, real nYVelocity) //{{{
+		void CurrentVelocities( long double nXVelocity, long double nYVelocity) //{{{
 		{
 			m_Velocity[ 0 ] = nXVelocity;
 			m_Velocity[ 1 ] = nYVelocity;
@@ -235,27 +231,27 @@ class Particle
 		} //}}}
 
 		// {G,S}etter for next XVelocity
-		real NextXVelocity() //{{{
+		long double NextXVelocity() //{{{
 		{
 			return m_nextVelocity[ 0 ];
 		}
-		void XVelocity( real nXVelocity )
+		void XVelocity( long double nXVelocity )
 		{
 			m_nextVelocity[ 0 ] = nXVelocity;
 		} //}}}
 
 		// {G,S}etter for next YVelocity
-		real NextYVelocity() //{{{
+		long double NextYVelocity() //{{{
 		{
 			return m_nextVelocity[ 1 ];
 		}
-		void YVelocity( real nYVelocity )
+		void YVelocity( long double nYVelocity )
 		{
 			m_nextVelocity[ 1 ] = nYVelocity;
 		} //}}}
 
 		// Setter for both next Velocitys
-		void Velocities( real nXVelocity, real nYVelocity ) //{{{
+		void Velocities( long double nXVelocity, long double nYVelocity ) //{{{
 		{
 			XVelocity = nXVelocity;
 			YVelocity = nYVelocity;
@@ -265,27 +261,27 @@ class Particle
 		// Acceleration stuff
 		//{{{
 		// {G,S}etter for current XAcceleration
-		real XAcceleration() //{{{
+		long double XAcceleration() //{{{
 		{
 			return m_Acceleration[ 0 ];
 		}
-		void CurrentXAcceleration( real nXAcceleration )
+		void CurrentXAcceleration( long double nXAcceleration )
 		{
 			m_Acceleration[ 0 ] = nXAcceleration;
 		} //}}}
 
 		// {G,S}etter for current YAcceleration
-		real YAcceleration() //{{{
+		long double YAcceleration() //{{{
 		{
 			return m_Acceleration[ 1 ];
 		}
-		void CurrentYAcceleration( real nYAcceleration )
+		void CurrentYAcceleration( long double nYAcceleration )
 		{
 			m_Acceleration[ 1 ] = nYAcceleration;
 		} //}}}
 
 		// Setter for both current Accelerations
-		void CurrentAccelerations( real nXAcceleration, real nYAcceleration) //{{{
+		void CurrentAccelerations( long double nXAcceleration, long double nYAcceleration) //{{{
 		{
 			m_Acceleration[ 0 ] = nXAcceleration;
 			m_Acceleration[ 1 ] = nYAcceleration;
@@ -293,27 +289,27 @@ class Particle
 
 
 		// {G,S}etter for next XAcceleration
-		real NextXAcceleration() //{{{
+		long double NextXAcceleration() //{{{
 		{
 			return m_nextAcceleration[ 0 ];
 		}
-		void XAcceleration( real nXAcceleration )
+		void XAcceleration( long double nXAcceleration )
 		{
 			m_nextAcceleration[ 0 ] = nXAcceleration;
 		} //}}}
 
 		// {G,S}etter for next YAcceleration
-		real NextYAcceleration() //{{{
+		long double NextYAcceleration() //{{{
 		{
 			return m_nextAcceleration[ 1 ];
 		}
-		void YAcceleration( real nYAcceleration )
+		void YAcceleration( long double nYAcceleration )
 		{
 			m_nextAcceleration[ 1 ] = nYAcceleration;
 		} //}}}
 
 		// Setter for both next Accelerations
-		void Accelerations( real nXAcceleration, real nYAcceleration ) //{{{
+		void Accelerations( long double nXAcceleration, long double nYAcceleration ) //{{{
 		{
 			XAcceleration = nXAcceleration;
 			YAcceleration = nYAcceleration;
@@ -321,48 +317,48 @@ class Particle
 		//}}}
 
 		// {G,S}eetter for m_Mass
-		real Mass() //{{{
+		long double Mass() //{{{
 		{
 			return m_Mass;
 		}
-		void Mass( real nMass )
+		void Mass( long double nMass )
 		{
 			m_Mass = nMass;
 		} //}}}
 
 		// {G,S}eetter for m_Radius
-		real Radius() //{{{
+		long double Radius() //{{{
 		{
 			return m_Radius;
 		}
-		void Radius( real nRadius )
+		void Radius( long double nRadius )
 		{
 			m_Radius = nRadius;
 		} //}}}
 
 		// {G,S}eetter for m_Radius
-		real Speed() //{{{
+		long double Speed() //{{{
 		{
 			return m_Speed;
 		}
-		void Speed( real nSpeed )
+		void Speed( long double nSpeed )
 		{
 			m_Speed = nSpeed;
 		} //}}}
 
 	protected:
-		real m_Mass;
-		real m_Radius;
+		long double m_Mass;
+		long double m_Radius;
 
-		real[ 2 ] m_Position;
-		real[ 2 ] m_Velocity;
-		real[ 2 ] m_Acceleration;
+		long double[ 2 ] m_Position;
+		long double[ 2 ] m_Velocity;
+		long double[ 2 ] m_Acceleration;
 
-		real[ 2 ] m_nextPosition;
-		real[ 2 ] m_nextVelocity;
-		real[ 2 ] m_nextAcceleration;
+		long double[ 2 ] m_nextPosition;
+		long double[ 2 ] m_nextVelocity;
+		long double[ 2 ] m_nextAcceleration;
 
-		real m_Speed;
+		long double m_Speed;
 
 		Entity[] m_Entities;
 		Force[] m_Forces;
@@ -370,3 +366,5 @@ class Particle
 	private:
 
 }
+
+#endif // "PARTICLE_CPP"
