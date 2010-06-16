@@ -340,6 +340,7 @@ void Game::RemoveEntity( Entity *toRemove )
 		if( (*i) == toRemove )
 		{
 			m_Entities.erase( i );
+			break;
 		}
 	}
 } //}}}

@@ -167,6 +167,7 @@ class ParticleSystem
 				if( (*i) == toRemove )
 				{
 					m_Particles.erase( i );
+					break;
 				}
 			}
 		} //}}}

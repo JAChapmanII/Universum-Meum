@@ -365,14 +365,8 @@ int main( int argc, const char* argv[] )
 				} //}}}
 				if( minDist2 < 100 ) /// If we intersect with a particle, remove it
 				{ //{{{
-					cout << "Removing..." ;
+					cout << "Removing... " << m_Particles.size() << ", " << m_Polygons.size() << "\n";
 					Polygon* eMin = ( Polygon* )( pMin->GetEntity() );
-					if( ( pMin == NULL ) || ( eMin == NULL ) )
-					{
-						cout << "Tried to free null stuff...\n";
-					}
-					else
-					{
 
 					m_ParticleSystem->RemoveParticle( pMin );
 					for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
@@ -394,17 +388,15 @@ int main( int argc, const char* argv[] )
 					m_Game->RemoveEntity( eMin );
 					delete pMin;
 					delete eMin;
-					}
 				} //}}}
 				else
 				{
-					cout << "No intersecting particle" ;
+					cout << "No intersecting particle\n";
 
 					if( ( m_Particles.size() < 1000 ) ) /// Make a new particle
 					{ //{{{
-						cout << "Created new particle based on RMB press" ;
 						unsigned int pNum = m_Polygons.size() + 1;
-						cout << "Number " << pNum << "\n";
+						cout << "\nCreated new particle based on RMB press: " << pNum << "\n";
 						Polygon* nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
 						m_Polygons.push_back( nPolygon );
 						m_Game->AddEntity( nPolygon );
