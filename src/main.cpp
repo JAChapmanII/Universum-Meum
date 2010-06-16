@@ -153,14 +153,14 @@ int main( int argc, const char* argv[] )
 	//   TODO   rand.seed();
 
 	unsigned int gWidth = 0, gHeight = 0;
-	while( ( gWidth <= 0 ) || ( gWidth >= 2560 ) )
+	while( ( gWidth <= 0 ) || ( gWidth > 2560 ) )
 	{
-		cout << "\nPlease enter a (0<) width (<2560): ";
+		cout << "\nPlease enter a (0<) width (<=2560): ";
 			cin >> gWidth;
 	}
-	while( ( gHeight <= 0 ) || ( gHeight >= 1600 ) )
+	while( ( gHeight <= 0 ) || ( gHeight > 1600 ) )
 	{
-		cout << "\nPlease enter a (0<) height (<1600): ";
+		cout << "\nPlease enter a (0<) height (<=1600): ";
 			cin >> gHeight;
 	}
 
@@ -449,31 +449,29 @@ int main( int argc, const char* argv[] )
 			}
 		} //}}}
 
-		if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) )
-		{
-			frameRate += 5;
-			if( frameRate > 1000 )
+		if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) ) /// Increase framerate
+		{ //{{{
+			if( frameRate <= 995 )
 			{
-				frameRate = 1000;
+				frameRate += 5;
+				cout << "New framerate: " << frameRate << "\n";
+				m_Game->TickInterval( 1000 / frameRate );
 			}
-			cout << "New framerate: " << frameRate << "\n";
-			m_Game->TickInterval( 1000 / frameRate );
-		}
-		else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) )
-		{
-			frameRate -= 5; frameRate %= 1000;
-			if( frameRate < 1 )
+		} //}}}
+		else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) ) /// Decrease framerate
+		{ //{{{
+			if( frameRate >= 10 )
 			{
-				frameRate = 1;
+				frameRate -= 5;
+				cout << "New framerate: " << frameRate << "\n";
+				m_Game->TickInterval( 1000 / frameRate );
 			}
-			cout << "New framerate: " << frameRate << "\n";
-			m_Game->TickInterval( 1000 / frameRate );
-		}
+		} //}}}
 
 		m_Cursor->CurrentPositions(
-			(unsigned int)(
+			(int)(
 				(long double)(m_Game->CursorX()) / m_Game->Width()*m_Game->ViewWidth() + m_Game->position.x ),
-			(unsigned int)(
+			(int)(
 				(1.0 - ((long double)(m_Game->CursorY()) / m_Game->Height()))*m_Game->ViewHeight() + m_Game->position.y) );
 
 		m_Game->Draw();
