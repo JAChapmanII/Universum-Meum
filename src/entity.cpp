@@ -25,11 +25,11 @@
 class Entity
 {
 	public:
-		void Draw( long double m_Zoom = 1 )
+		virtual void Draw( long double m_Zoom = 1 )
 		{
 		}
 
-		void Update()
+		virtual void Update()
 		{
 		}
 
