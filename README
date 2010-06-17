@@ -15,11 +15,9 @@ to clone the repository locally.
 
 Building:
 
-Currently use gdc to compile Universum Meum through rebuild. Unfortunately, this part of the process
-is a little bit of a mess since the gdc/tango we're using is outdated. This is because tango no
-longer works with gdc. We're trying to move to a newer (ldc-based) bulid system, but for now send
-Jeff an email and he'll try to help you build it. We also have an Arch Linux package with the exact
-development suite we use that we can offer. Once you have the build software, execute
+Recently the project has been ported to C++, so the build system is a little rough (though better
+than before). To compile it, you will need g++, SDL headers/libs, and OpenGL headers/libs.
+Once you have the build software, execute
 	make
 from the Universum Meum directory.
 
@@ -27,11 +25,11 @@ There are several targets you can use, the default being "debug"
 	- full cleans everything and makes a release build and the documentatition
 	- release strips debug information and optimizes fully
 	- debug builds in debug information and does no optimization
+	- wall builds with the -Wall parameter
 	- profile builds the same as debug, but also enables profiling (gprof information)
 	- documentation uses ddoc to make the documentation in docs/ (src code, not user manual)
 
-If anybody has created a worknig makefile for ldc, we'd love to see it and see if you can help us
-get ldc to work on our computers :)
+If anybody knows how we can improve our Makefile, please let us know (we're complely wingin it now)
 
 
 Running:

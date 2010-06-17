@@ -22,7 +22,7 @@ debug: dirs clean
 	${CC} -o ${BINDIR}/${PROG}-debug ${CFLAGS} -g ${SRCDIR}/${SRC}
 
 wall: dirs clean
-	${CC} -o ${BINDIR}/${PROG}-debug ${CFLAGS} -g -Wall ${SRCDIR}/${SRC}
+	${CC} -o ${BINDIR}/${PROG}-wall ${CFLAGS} -g -Wall ${SRCDIR}/${SRC}
 
 profile: dirs clean
 	${CC} -o ${BINDIR}/${PROG}-profile ${CFLAGS} -g ${SRCDIR}/${SRC}
