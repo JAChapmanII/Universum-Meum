@@ -40,6 +40,11 @@ class Entity
 		{
 		}
 
+		Entity( long double iX, long double iY, long double iZ ) :
+			position( iX, iY, iZ )
+		{
+		}
+
 		virtual ~Entity()
 		{
 		}
