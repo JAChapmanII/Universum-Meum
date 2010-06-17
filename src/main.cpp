@@ -327,34 +327,6 @@ int main( int argc, const char* argv[] )
 			}
 		} //}}}
 
-		/// Maybe create new particle
-		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist2 > 100 )
-				&& ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
-				&& ( m_Particles.size() < MAX_PARTICLES ) )
-		{ //{{{
-			lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_LEFT );
-
-			unsigned int pNum = m_Polygons.size() + 1;
-			cout << "\nCreated new particle based on RMB press: " << pNum << "\n";
-			Polygon* nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
-			m_Polygons.push_back( nPolygon );
-			m_Game->AddEntity( nPolygon );
-
-			Particle* nParticle = new Particle();
-			m_Particles.push_back( nParticle );
-			nParticle->AddEntity( nPolygon );
-			nParticle->radius = 10.0;
-
-			nParticle->CurrentPositions( m_CursorPolygon->position.x,
-										 m_CursorPolygon->position.y );
-
-			nParticle->Velocities( detVelocity( initVel ) );
-			nParticle->AddForce( m_Gravity );
-			nParticle->AddForce( m_ElasticCollision );
-
-			m_ParticleSystem->AddParticle( nParticle );
-		} //}}}
-
 		// Maybe delete a particle based on 'd' or RMB
 		if( ( ( m_Game->isClicked( SDL_BUTTON_RIGHT ) ) || ( m_Game->isPressed( Key[ "d" ] ) ) )
 				&& ( m_Particles.size() > 0 ) && ( m_Game->GetTicks() > lastKill + 10 ) )
@@ -393,6 +365,34 @@ int main( int argc, const char* argv[] )
 				delete pMin;
 				delete eMin;
 			}
+		} //}}}
+
+		/// Maybe create new particle
+		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist2 > 100 )
+				&& ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
+				&& ( m_Particles.size() < MAX_PARTICLES ) )
+		{ //{{{
+			lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_LEFT );
+
+			unsigned int pNum = m_Polygons.size() + 1;
+			cout << "\nCreated new particle based on RMB press: " << pNum << "\n";
+			Polygon* nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+			m_Polygons.push_back( nPolygon );
+			m_Game->AddEntity( nPolygon );
+
+			Particle* nParticle = new Particle();
+			m_Particles.push_back( nParticle );
+			nParticle->AddEntity( nPolygon );
+			nParticle->radius = 10.0;
+
+			nParticle->CurrentPositions( m_CursorPolygon->position.x,
+										 m_CursorPolygon->position.y );
+
+			nParticle->Velocities( detVelocity( initVel ) );
+			nParticle->AddForce( m_Gravity );
+			nParticle->AddForce( m_ElasticCollision );
+
+			m_ParticleSystem->AddParticle( nParticle );
 		} //}}}
 
 		if( m_Game->isClicked( SDL_BUTTON_WHEELUP ) ) /// Zoomin
