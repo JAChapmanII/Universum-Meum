@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string>
 #include <map>
+#include <limits>
 
 #include "game.cpp"
 #include "particle.cpp"
@@ -38,6 +39,8 @@
 #include <GL/gl.h>
 
 using namespace std;
+
+const unsigned int MAX_PARTICLES = 1000;
 
 Vector< long double > detVelocity( unsigned int type = 0 )
 {
@@ -293,7 +296,9 @@ int main( int argc, const char* argv[] )
 	//}}}
 
 	unsigned int lastSpawn = 0;
+	unsigned int lastKill = 0;
 	long double xCenter, yCenter;
+	Particle* pMin;
 	cout << "Entering main game loop\n";
 	while( !m_Game->isDone() )
 	{ //{{{
@@ -305,105 +310,94 @@ int main( int argc, const char* argv[] )
 			continue;
 		}
 
-		if( m_Game->isClicked() ) /// Print *cough* informortive messages
-		{ //{{{
-			cout << "There are " << m_Particles.size() << " particles and 1 sun currently...\n";
-			for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
-			{
-				cout << "\t: ( " << (*i)->XPosition() << ", " << (*i)->YPosition() << " ) < "
-					<< (*i)->XVelocity() << ", " << (*i)->YVelocity() << " > [ "
-					<< (*i)->XAcceleration() << ", " << (*i)->YAcceleration() << " ]\n";
-			}
-			cout << "\tSun: ( " << m_Sun->XPosition() << ", " << m_Sun->YPosition() << " ) < "
-				<< m_Sun->XVelocity() << ", " << m_Sun->YVelocity() << " > [ "
-				<< m_Sun->XAcceleration() << ", " << m_Sun->YAcceleration() << " ]\n";
-		} //}}}
-
 		xCenter = m_Game->XCenter();
 		yCenter = m_Game->YCenter();
 
-		if( m_Game->isClicked( SDL_BUTTON_MIDDLE ) ) /// Print craptons of screen info
+		// Find particle nearest to cursor
+		long double minDist2 = numeric_limits< long double >::max(); pMin = NULL;
+		for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
 		{ //{{{
-			cout << "Screen: ( " << m_Game->position.x << ", " << m_Game->position.y << ") " <<
-							"< " << m_Game->ViewWidth() << "/ " << m_Game->Width() << ", " <<
-							m_Game->ViewHeight() << "/ " << m_Game->Height() << "> " <<
-							"[ " << m_Game->XCenter() << ", " << m_Game->YCenter() << " ]\n";
-			cout << "Cursor: (" << m_Cursor->XPosition() << ", " << m_Cursor->YPosition() << " )\n";
+			long double cXDist = m_CursorPolygon->position.x - (*i)->XPosition();
+			long double cYDist = m_CursorPolygon->position.y - (*i)->YPosition();
+			long double cDist2 = cXDist*cXDist + cYDist*cYDist;
+			if( cDist2 < minDist2 )
+			{
+				minDist2 = cDist2;
+				pMin = (*i);
+			}
 		} //}}}
 
-		/// Create new particles dynamically, or delete them if the mouse is on one
-		if( m_Game->isClicked( SDL_BUTTON_RIGHT ) )
+		// Maybe delete a particle based on 'd' or RMB
+		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist2 > 100 )
+				&& ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
+				&& ( m_Particles.size() < MAX_PARTICLES ) )
 		{ //{{{
-			if( m_Game->ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
+			lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_LEFT );
+
+			unsigned int pNum = m_Polygons.size() + 1;
+			cout << "\nCreated new particle based on RMB press: " << pNum << "\n";
+			Polygon* nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
+			m_Polygons.push_back( nPolygon );
+			m_Game->AddEntity( nPolygon );
+
+			Particle* nParticle = new Particle();
+			m_Particles.push_back( nParticle );
+			nParticle->AddEntity( nPolygon );
+			nParticle->radius = 10.0;
+
+			nParticle->CurrentPositions( m_CursorPolygon->position.x,
+										 m_CursorPolygon->position.y );
+
+			nParticle->Velocities( detVelocity( initVel ) );
+			nParticle->AddForce( m_Gravity );
+			nParticle->AddForce( m_ElasticCollision );
+
+			m_ParticleSystem->AddParticle( nParticle );
+		} //}}}
+
+		/// Maybe create new particle
+		if( ( ( m_Game->isClicked( SDL_BUTTON_RIGHT ) ) || ( m_Game->isPressed( Key[ "d" ] ) ) )
+				&& ( m_Particles.size() > 0 ) )
+		{ //{{{
+			unsigned int tTime = 0;
+			bool kill = true;
+			if( m_Game->isClicked( SDL_BUTTON_RIGHT ) )
 			{
-				lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_RIGHT );
+				tTime = m_Game->ClickCreateTime( SDL_BUTTON_RIGHT );
+				kill = ( minDist2 <= 100 );
+			}
+			else
+			{
+				tTime = m_Game->PressCreateTime( Key[ "d" ] );
+			}
 
-				long double minDist2 = 1000000000;
-				Particle* pMin;
-				for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
-				{ //{{{
-					long double cXDist = m_CursorPolygon->position.x - (*i)->XPosition();
-					long double cYDist = m_CursorPolygon->position.y - (*i)->YPosition();
-					long double cDist2 = cXDist*cXDist + cYDist*cYDist;
-					if( cDist2 < minDist2 )
-					{
-						minDist2 = cDist2;
-						pMin = (*i);
-					}
-				} //}}}
-				if( minDist2 < 100 ) /// If we intersect with a particle, remove it
-				{ //{{{
-					cout << "Removing... " << m_Particles.size() << ", " << m_Polygons.size() << "\n";
-					Polygon* eMin = ( Polygon* )( pMin->GetEntity() );
+			if( ( tTime > lastKill ) && kill )
+			{
+				lastKill = tTime;
 
-					m_ParticleSystem->RemoveParticle( pMin );
-					for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
-					{
-						if( (*i) == pMin )
-						{
-							m_Particles.erase( i );
-							break;
-						}
-					}
-					for( std::vector< Polygon* >::iterator i = m_Polygons.begin(); i != m_Polygons.end(); ++i )
-					{
-						if( (*i) == eMin )
-						{
-							m_Polygons.erase( i );
-							break;
-						}
-					}
-					m_Game->RemoveEntity( eMin );
-					delete pMin;
-					delete eMin;
-				} //}}}
-				else
+				cout << "Removing... " << m_Particles.size() << ", " << m_Polygons.size() << "\n";
+				Polygon* eMin = ( Polygon* )( pMin->GetEntity() );
+
+				m_ParticleSystem->RemoveParticle( pMin );
+				for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 				{
-					cout << "No intersecting particle\n";
-
-					if( ( m_Particles.size() < 1000 ) ) /// Make a new particle
-					{ //{{{
-						unsigned int pNum = m_Polygons.size() + 1;
-						cout << "\nCreated new particle based on RMB press: " << pNum << "\n";
-						Polygon* nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
-						m_Polygons.push_back( nPolygon );
-						m_Game->AddEntity( nPolygon );
-
-						Particle* nParticle = new Particle();
-						m_Particles.push_back( nParticle );
-						nParticle->AddEntity( nPolygon );
-						nParticle->radius = 10.0;
-
-						nParticle->CurrentPositions( m_CursorPolygon->position.x,
-													 m_CursorPolygon->position.y );
-
-						nParticle->Velocities( detVelocity( initVel ) );
-						nParticle->AddForce( m_Gravity );
-						nParticle->AddForce( m_ElasticCollision );
-
-						m_ParticleSystem->AddParticle( nParticle );
-					} //}}}
+					if( (*i) == pMin )
+					{
+						m_Particles.erase( i );
+						break;
+					}
 				}
+				for( std::vector< Polygon* >::iterator i = m_Polygons.begin(); i != m_Polygons.end(); ++i )
+				{
+					if( (*i) == eMin )
+					{
+						m_Polygons.erase( i );
+						break;
+					}
+				}
+				m_Game->RemoveEntity( eMin );
+				delete pMin;
+				delete eMin;
 			}
 		} //}}}
 
@@ -486,6 +480,8 @@ int main( int argc, const char* argv[] )
 		m_Game->Draw();
 		m_Game->WaitFor();
 	} //}}}
+
+	m_Game->DeinitSGL();
 
 	cout << "\n---------------------------------\nThanks for playing!\n";
 	return 0;

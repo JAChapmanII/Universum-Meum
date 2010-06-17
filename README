@@ -56,8 +56,9 @@ information.
 Controls:
 
 Particle manipulation:
-	Right click in an empty place to create a new particle.
-	To delete a particle, right click when the cursor is on one.
+	Left click in empty space to make a particle
+	To delete a particle, right click when the cursor is on one
+		or, press d to delete the nearest one
 
 Panning/zooming:
 	If "lock" is not passed as an argument, you can use the arrow keys to pan the view.
@@ -77,6 +78,5 @@ Quiting:
 		the way.
 
 Printing a bunch of useless information:
-	Left mouse button for particles
 	Middle mouse button for the screen
 
