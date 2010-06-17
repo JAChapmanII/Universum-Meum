@@ -276,7 +276,7 @@ int main( int argc, const char* argv[] )
 	//}}}
 
 	cout << "Setting up the cursor\n" ;
-	Polygon* m_CursorPolygon = new Polygon( 400.0f, 300.0f, 7.0f, 0.0f, 0.0f, 0.0f ); //{{{
+	Polygon* m_CursorPolygon = new Polygon( 400.0f, 300.0f, 3.0f, 0.0f, 0.0f, 0.0f ); //{{{
 	m_Game->WarpMouse( 400, 300 );
 	Particle* m_Cursor = new Particle();
 
@@ -425,7 +425,18 @@ int main( int argc, const char* argv[] )
 			m_Game->Centers( xCenter, yCenter );
 		} //}}}
 
+		/*
+		m_ParticleSystem->WorkAll( .02 );
+		m_ParticleSystem->UpdateAll( .02 );
+		*/
 		m_ParticleSystem->Work( .02 );
+
+		for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
+		{
+			long double logmom = (*i)->speed / m_ParticleSystem->maxSpeed();
+			Entity* cEnt = (*i)->GetEntity();
+			(*static_cast< Polygon* >( cEnt )).Color( logmom, 0, 1.0 - logmom, 1.0 );
+		}
 
 		if( doLock )
 		{
