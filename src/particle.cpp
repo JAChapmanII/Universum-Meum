@@ -115,6 +115,7 @@ Entity* Particle::GetEntity()
 	{
 		return m_Entities.front();
 	}
+	return NULL;
 	// TODO Error
 } //}}}
 

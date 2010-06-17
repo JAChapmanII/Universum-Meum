@@ -224,7 +224,7 @@ void Game::ProcessInput()
 	return;
 } //}}}
 
-bool Game::isClicked( int toCheckFor )
+bool Game::isClicked( unsigned int toCheckFor )
 { //{{{
 	for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 	{
@@ -236,7 +236,7 @@ bool Game::isClicked( int toCheckFor )
 	return false;
 } //}}}
 
-unsigned int Game::ClickX( int button )
+unsigned int Game::ClickX( unsigned int button )
 { //{{{
 	for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 	{
@@ -245,10 +245,11 @@ unsigned int Game::ClickX( int button )
 			return i->position.x;
 		}
 	}
+	return -1;
 	// TODO throw something
 } //}}}
 
-unsigned int Game::ClickY( int button )
+unsigned int Game::ClickY( unsigned int button )
 { //{{{
 	for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 	{
@@ -257,10 +258,11 @@ unsigned int Game::ClickY( int button )
 			return i->position.x;
 		}
 	}
+	return -1;
 	// TODO throw something
 } //}}}
 
-unsigned int Game::ClickCreateTime( int button )
+unsigned int Game::ClickCreateTime( unsigned int button )
 { //{{{
 	for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ )
 	{
@@ -269,6 +271,7 @@ unsigned int Game::ClickCreateTime( int button )
 			return i->createTime;
 		}
 	}
+	return -1;
 	// TODO throw something
 } //}}}
 
@@ -279,7 +282,7 @@ void Game::WarpMouse( unsigned int nX, unsigned int nY )
 	SDL_WarpMouse( nX, nY);
 } //}}}
 
-bool Game::isPressed( int toCheckFor )
+bool Game::isPressed( unsigned int toCheckFor )
 { //{{{
 	for( std::vector< Keypress >::iterator i = m_Keypresses.begin(); i != m_Keypresses.end(); i++ )
 	{
@@ -497,6 +500,7 @@ Game::Game( Game const& )
 
 Game& Game::operator=( Game const& )
 {
+	return *this;
 }
 
 // load modules needed to interface with C libs SDL, GL, IL
