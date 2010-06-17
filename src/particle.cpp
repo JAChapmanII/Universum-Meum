@@ -24,18 +24,20 @@
 
 typedef void( *Force )( Particle*, Particle*, long double );
 
-Particle::Particle()
-{ //{{{
-	mass = 20.0f;
-	radius = 0.0f;
-	m_Acceleration.Zero();
-	m_Velocity.Zero();
-	m_Position.Zero();
-
-	m_nextAcceleration.Zero();
-	m_nextVelocity.Zero();
-	m_nextPosition.Zero();
-	speed = 0.0f;
+Particle::Particle() :
+	mass( 20.0 ), //{{{
+	radius( 0.0 ),
+	speed( 0.0 ),
+	momentum( 0.0 ),
+	m_Position(),
+	m_Velocity(),
+	m_Acceleration(),
+	m_nextPosition(),
+	m_nextVelocity(),
+	m_nextAcceleration(),
+	m_Entities(),
+	m_Forces()
+{
 } //}}}
 
 Particle::~Particle()
