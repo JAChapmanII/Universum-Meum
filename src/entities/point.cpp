@@ -27,35 +27,40 @@
 class Point : public Entity
 {
 	public:
-		Point( long double iX, long double iY )
-		{ //{{{
+		Point( long double iX, long double iY ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( 1 )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
-			Radius( 1 );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		Point( long double iX, long double iY, long double iRadius )
-		{ //{{{
+		Point( long double iX, long double iY, long double iRadius ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( iRadius )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
-			Radius( iRadius );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue )
-		{ //{{{
+		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( iRadius )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
 			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha )
-		{ //{{{
+		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( iRadius )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
-			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
 
