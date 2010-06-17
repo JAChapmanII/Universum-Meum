@@ -327,7 +327,7 @@ int main( int argc, const char* argv[] )
 			}
 		} //}}}
 
-		// Maybe delete a particle based on 'd' or RMB
+		/// Maybe create new particle
 		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist2 > 100 )
 				&& ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
 				&& ( m_Particles.size() < MAX_PARTICLES ) )
@@ -355,26 +355,20 @@ int main( int argc, const char* argv[] )
 			m_ParticleSystem->AddParticle( nParticle );
 		} //}}}
 
-		/// Maybe create new particle
+		// Maybe delete a particle based on 'd' or RMB
 		if( ( ( m_Game->isClicked( SDL_BUTTON_RIGHT ) ) || ( m_Game->isPressed( Key[ "d" ] ) ) )
-				&& ( m_Particles.size() > 0 ) )
+				&& ( m_Particles.size() > 0 ) && ( m_Game->GetTicks() > lastKill + 10 ) )
 		{ //{{{
-			unsigned int tTime = 0;
+			lastKill = m_Game->GetTicks();
+
 			bool kill = true;
 			if( m_Game->isClicked( SDL_BUTTON_RIGHT ) )
 			{
-				tTime = m_Game->ClickCreateTime( SDL_BUTTON_RIGHT );
 				kill = ( minDist2 <= 100 );
 			}
-			else
-			{
-				tTime = m_Game->PressCreateTime( Key[ "d" ] );
-			}
 
-			if( ( tTime > lastKill ) && kill )
+			if( kill )
 			{
-				lastKill = tTime;
-
 				cout << "Removing... " << m_Particles.size() << ", " << m_Polygons.size() << "\n";
 				Polygon* eMin = ( Polygon* )( pMin->GetEntity() );
 
