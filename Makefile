@@ -15,13 +15,13 @@ ${PROG}: debug
 
 full: dirs clean release documentation
 
-release:
-	${CC} -o ${BINDIR}/${PROG} ${CFLAGS} -O ${SRCDIR}/${SRC}
+release: dirs clean
+	${CC} -o ${BINDIR}/${PROG} ${CFLAGS} -O3 ${SRCDIR}/${SRC}
 
 debug: dirs clean
 	${CC} -o ${BINDIR}/${PROG}-debug ${CFLAGS} -g ${SRCDIR}/${SRC}
 
-profile:
+profile: dirs clean
 	${CC} -o ${BINDIR}/${PROG}-profile ${CFLAGS} -g ${SRCDIR}/${SRC}
 
 documentation:
