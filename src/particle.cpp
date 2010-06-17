@@ -73,13 +73,15 @@ void Particle::Update( long double deltaTime )
 	m_Position.x = m_nextPosition.x;
 	m_Position.y = m_nextPosition.y;
 
+	this->speed = sqrt( XVelocity()*XVelocity() + YVelocity()*YVelocity() );
+	this->momentum = this->mass * this->speed;
+
 	for( std::vector< Entity* >::iterator i = m_Entities.begin(); i != m_Entities.end(); ++i )
 	{
 		(*i)->position.x = XPosition();
 		(*i)->position.y = YPosition();
 	}
 
-	this->speed = sqrt( XVelocity()*XVelocity() + YVelocity()*YVelocity() );
 } //}}}
 
 void Particle::AddForce( Force *nForce )

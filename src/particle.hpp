@@ -117,6 +117,7 @@ class Particle
 		long double mass;
 		long double radius;
 		long double speed;
+		long double momentum;
 
 	private:
 
