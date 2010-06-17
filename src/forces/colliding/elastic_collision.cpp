@@ -21,6 +21,7 @@
 #define ELASTIC_COLLISOIN_CPP
 
 #include <math.h>
+#include <iostream>
 
 #include <SDL/SDL.h>
 
@@ -46,11 +47,11 @@ void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 		long double yDist = A->YPosition() - B->YPosition();
 		long double dist2 = (xDist * xDist) + (yDist * yDist);
 		long double dist  = sqrt( dist2 );
-		long double sumR = A->Radius() + B->Radius();
+		long double sumR = A->radius + B->radius;
 
 		if( ( dist < sumR ) && ( dist > 0 ) )
 		{
-			long double sectLength = (A->Radius()+B->Radius()) - dist;
+			long double sectLength = (A->radius+B->radius) - dist;
 			long double unitX = xDist / dist;
 			long double unitY = yDist / dist;
 
@@ -65,11 +66,11 @@ void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 			long double theta = atan2( yDist, xDist );
 			long double dir1 = atan2( A->YVelocity(), A->XVelocity() );
 			long double dir2 = atan2( B->YVelocity(), B->XVelocity() );
-			long double nYV1 = A->Speed() * sin( dir1 - theta );
-			long double fXV1 = ( ( A->Mass() - B->Mass() ) * ( A->Speed() * cos( dir1 - theta ) ) + 2 *
-						B->Mass() * ( B->Speed() * cos( dir2 - theta ) ) ) / ( A->Mass() + B->Mass() );
+			long double nYV1 = A->speed * sin( dir1 - theta );
+			long double fXV1 = ( ( A->mass - B->mass ) * ( A->speed * cos( dir1 - theta ) ) + 2 *
+						B->mass * ( B->speed * cos( dir2 - theta ) ) ) / ( A->mass + B->mass );
 
-			long double nYV2 = B->Speed() * sin( dir1 - theta );
+			long double nYV2 = B->speed * sin( dir1 - theta );
 			A->XVelocity( (cos(theta) * fXV1 + cos(theta+PI_2) * nYV1));
 			A->YVelocity( (sin(theta) * fXV1 + sin(theta+PI_2) * nYV1));
 		}

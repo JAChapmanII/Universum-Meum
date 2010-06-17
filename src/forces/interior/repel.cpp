@@ -33,10 +33,10 @@ void Repel( Particle* A, Particle* B, long double deltaTime )
 	long double dist2 = (xDist * xDist) + (yDist * yDist);
 	long double dist  = sqrt( dist2 );
 
-	if( ( dist < (A->Radius() + B->Radius()) ) && ( dist2 > 0 ) )
+	if( ( dist < (A->radius + B->radius) ) && ( dist2 > 0 ) )
 	{
-		long double repMass = repConst * B->Mass() * 2.0;
-		long double sectLength = (A->Radius()+B->Radius()) - dist;
+		long double repMass = repConst * B->mass * 2.0;
+		long double sectLength = (A->radius + B->radius) - dist;
 		long double unitX = xDist / dist;
 		long double unitY = yDist / dist;
 

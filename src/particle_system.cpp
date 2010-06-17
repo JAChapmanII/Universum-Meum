@@ -88,7 +88,7 @@ class ParticleSystem
 			long double current = 0.0f;
 			for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 			{
-				current = (*i)->Speed();
+				current = (*i)->speed;
 				if( current >= max )
 				{
 					max = current;

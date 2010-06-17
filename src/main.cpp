@@ -244,7 +244,7 @@ int main( int argc, const char* argv[] )
 		Particle *nParticle = new Particle();
 		m_Particles.push_back( nParticle );
 		nParticle->AddEntity( nPolygon );
-		nParticle->Radius( 10.0 );
+		nParticle->radius = 10.0;
 
 		nParticle->CurrentPositions( m_Game->Width() / 2 + 100*cos( i * 2 * PI / numObjects ),
 									 m_Game->Height() / 2 + 100*sin( i * 2 * PI / numObjects ) );
@@ -262,8 +262,8 @@ int main( int argc, const char* argv[] )
 
 	m_Sun->AddEntity( m_SunPolygon );
 	m_Sun->Positions( gWidth / 2, gHeight / 2 );
-	m_Sun->Radius( 25.0f );
-	m_Sun->Mass( 62.5f );
+	m_Sun->radius = 25.0f;
+	m_Sun->mass = 62.5f;
 	m_Game->AddEntity( m_SunPolygon );
 	m_ParticleSystem->AddParticle( m_Sun );
 
@@ -282,8 +282,8 @@ int main( int argc, const char* argv[] )
 
 	m_Cursor->AddEntity( m_CursorPolygon );
 	m_Cursor->Positions( 400.0f, 300.0f );
-	m_Cursor->Radius( 0.0f );
-	m_Cursor->Mass( 0.0f );
+	m_Cursor->radius = 0.0f;
+	m_Cursor->mass = 0.0f;
 	m_Game->AddEntity( m_CursorPolygon );
 
 	//m_ParticleSystem.AddParticle( m_Cursor );
@@ -394,7 +394,7 @@ int main( int argc, const char* argv[] )
 						Particle* nParticle = new Particle();
 						m_Particles.push_back( nParticle );
 						nParticle->AddEntity( nPolygon );
-						nParticle->Radius( 10.0 );
+						nParticle->radius = 10.0;
 
 						nParticle->CurrentPositions( m_CursorPolygon->position.x,
 													 m_CursorPolygon->position.y );
