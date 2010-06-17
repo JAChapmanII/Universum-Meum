@@ -498,23 +498,74 @@ long double Game::Zoom()
 	return m_Zoom;
 } //}}}
 
-Game::Game()
+/// Default consructor
+Game::Game() : //{{{
+	m_TickInterval( 0 ),
+	m_NextTime( 0 ),
+	m_isDone( false ),
+	m_isActive( true ),
+	m_ModulesLoaded( false ),
+	m_Width( 0 ),
+	m_Height( 0 ),
+	m_BPP( 0 ),
+	m_ViewWidth( 0 ),
+	m_ViewHeight( 0 ),
+	m_Entities(),
+	m_Event(),
+	m_Keypresses(),
+	m_Clicks(),
+	m_Cursor(),
+	m_Zoom( 0 )
 {
-}
+} //}}}
 
-Game::Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
+/// Construct with initial Width/Height/BPP
+Game::Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP ) : //{{{
+	m_TickInterval( 0 ),
+	m_NextTime( 0 ),
+	m_isDone( false ),
+	m_isActive( true ),
+	m_ModulesLoaded( false ),
+	m_Width( iWidth ),
+	m_Height( iHeight ),
+	m_BPP( iBPP ),
+	m_ViewWidth( iWidth ),
+	m_ViewHeight( iHeight ),
+	m_Entities(),
+	m_Event(),
+	m_Keypresses(),
+	m_Clicks(),
+	m_Cursor(),
+	m_Zoom( 0 )
 {
 	InitSGL( iWidth, iHeight, iBPP );
-}
+} //}}}
 
-Game::Game( Game const& )
+Game::Game( Game const& r ) : //{{{
+	m_TickInterval( r.m_TickInterval ),
+	m_NextTime( r.m_NextTime ),
+	m_isDone( r.m_isDone ),
+	m_isActive( r.m_isActive ),
+	m_ModulesLoaded( r.m_ModulesLoaded ),
+	m_Width( r.m_Width ),
+	m_Height( r.m_Height ),
+	m_BPP( r.m_BPP ),
+	m_ViewWidth( r.m_ViewWidth ),
+	m_ViewHeight( r.m_ViewHeight ),
+	m_Entities( r.m_Entities ),
+	m_Event( r.m_Event ),
+	m_Keypresses( r.m_Keypresses ),
+	m_Clicks( r.m_Clicks ),
+	m_Cursor( r.m_Cursor ),
+	m_Zoom( r.m_Zoom )
 {
-}
+} //}}}
 
-Game& Game::operator=( Game const& )
+/// Does no copying
+Game& Game::operator=( Game const& ) //{{{
 {
 	return *this;
-}
+} //}}}
 
 // load modules needed to interface with C libs SDL, GL, IL
 void Game::loadModules()
