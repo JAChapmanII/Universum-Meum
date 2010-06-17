@@ -35,12 +35,16 @@ class Entity
 
 		Vector< long double > position;
 
-		Entity()
+		Entity() :
+			position()
+		{
+		}
+
+		virtual ~Entity()
 		{
 		}
 
 	private:
-
 
 };
 
