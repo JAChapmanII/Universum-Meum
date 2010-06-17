@@ -22,10 +22,12 @@
 
 #include "particle_system.hpp"
 
-ParticleSystem::ParticleSystem( long double iStep, long double iMaxSteps )
-{ //{{{
-	Step( iStep );
-	MaxSteps( iMaxSteps );
+ParticleSystem::ParticleSystem( long double iStep, long double iMaxSteps ) :
+	m_Step( iStep ), //{{{
+	m_MaxSteps( iMaxSteps ),
+	m_Particles(),
+	m_Forces()
+{
 } //}}}
 
 void ParticleSystem::Work( long double deltaTime )
