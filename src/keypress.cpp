@@ -23,10 +23,10 @@
 class Keypress
 {
 	public:
-		Keypress( unsigned int iSymCode, unsigned int iCreateTime )
+		Keypress( unsigned int iSymCode, unsigned int iCreateTime ) :
+			m_SymCode( iSymCode ),
+			m_CreateTime( iCreateTime )
 		{
-			m_SymCode = iSymCode;
-			m_CreateTime = iCreateTime;
 		}
 
 		unsigned int SymCode()
