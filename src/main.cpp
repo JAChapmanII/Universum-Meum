@@ -337,8 +337,6 @@ int main( int argc, const char* argv[] )
 			if( m_Game->ClickCreateTime( SDL_BUTTON_RIGHT ) > lastSpawn )
 			{
 				lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_RIGHT );
-				long double xPos = m_CursorPolygon->position.x;
-				long double yPos = m_CursorPolygon->position.y;
 
 				long double minDist2 = 1000000000;
 				Particle* pMin;
