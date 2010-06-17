@@ -25,12 +25,11 @@
 class Click
 {
 	public:
-		Click( unsigned int iX, unsigned int iY, unsigned int iButton, unsigned int cTime )
+		Click( unsigned int iX, unsigned int iY, unsigned int iButton, unsigned int cTime ) :
+			position( iX, iY, 0 ),
+			createTime( cTime ),
+			button( iButton )
 		{
-			this->position.x = iX;
-			this->position.y = iY;
-			this->createTime = cTime;
-			this->button = iButton;
 		}
 
 		Vector< unsigned int > position;
