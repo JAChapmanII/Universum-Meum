@@ -32,39 +32,43 @@ const long double PI_2 = 1.5707963267949;
 class Polygon : public Entity
 {
 	public:
-		Polygon( long double iX, long double iY )
-		{ //{{{
-			m_NumSegments = 36;;
+		Polygon( long double iX, long double iY ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( 1 ),
+			m_NumSegments( 36 )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
-			Radius( 1 );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		Polygon( long double iX, long double iY, long double iRadius )
-		{ //{{{
-			m_NumSegments = 36;;
+		Polygon( long double iX, long double iY, long double iRadius ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( iRadius ),
+			m_NumSegments( 36 )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
-			Radius( iRadius );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		} //}}}
 
-		Polygon( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue )
-		{ //{{{
-			m_NumSegments = 36;;
+		Polygon( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( iRadius ),
+			m_NumSegments( 36 )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
-			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, 1.0f );
 		} //}}}
 
-		Polygon( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha )
-		{ //{{{
-			m_NumSegments = 36;;
+		Polygon( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha ) :
+			Entity( iX, iY, 0 ), //{{{
+			m_Radius( iRadius ),
+			m_NumSegments( 36 )
+		{
 			this->position.x = iX;
 			this->position.y = iY;
-			Radius( iRadius );
 			Color( iRed, iGreen, iBlue, iAlpha );
 		} //}}}
 
