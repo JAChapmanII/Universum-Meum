@@ -50,7 +50,6 @@ class Game : public Entity
 
 		void ProcessInput();
 
-
 		bool isClicked( unsigned int toCheckFor = SDL_BUTTON_LEFT );
 		unsigned int ClickX( unsigned int button );
 		unsigned int ClickY( unsigned int button );
@@ -58,6 +57,7 @@ class Game : public Entity
 		void WarpMouse( unsigned int nX, unsigned int nY );
 
 		bool isPressed( unsigned int toCheckFor = 27 );
+		unsigned int PressCreateTime( unsigned int button );
 
 		/// {G,S}etter for m_Width
 		void Width( unsigned int nWidth ); //{{{

@@ -294,6 +294,19 @@ bool Game::isPressed( unsigned int toCheckFor )
 	return false;
 } //}}}
 
+unsigned int Game::PressCreateTime( unsigned int button )
+{ //{{{
+	for( std::vector< Keypress >::iterator i = m_Keypresses.begin(); i != m_Keypresses.end(); i++ )
+	{
+		if( i->SymCode() == button )
+		{
+			return i->CreateTime();
+		}
+	}
+	return -1;
+	// TODO throw something
+} //}}}
+
 /// {G,S}etter for m_Width
 void Game::Width( unsigned int nWidth ) //{{{
 {
