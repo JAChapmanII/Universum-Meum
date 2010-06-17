@@ -20,92 +20,90 @@
 #ifndef VECTOR_CPP
 #define VECTOR_CPP
 
-// 3 Dimensional vector class template, T is the type of component
+#include "vector.hpp"
+
+/// Default constructor, X and Y components default to T's default
 template< class T >
-class Vector
-{
-	public:
-		/// Default constructor, X and Y components default to T's default
-		Vector()
-		{ //{{{
-		} //}}}
+Vector< T >::Vector()
+{ //{{{
+} //}}}
 
-		/// Constructs a Vector with initial X and Y values
-		Vector( T iX, T iY, T iZ )
-		{ //{{{
-			this.x = iX;
-			this.y = iY;
-			this.z = iZ;
-		} //}}}
+/// Constructs a Vector with initial X and Y values
+template< class T >
+Vector< T >::Vector( T iX, T iY, T iZ )
+{ //{{{
+	this.x = iX;
+	this.y = iY;
+	this.z = iZ;
+} //}}}
 
-		Vector Set( T nX, T nY, T nZ )
-		{
-			x = nX;
-			y = nY;
-			z = nZ;
-		}
+/// Set all members at once
+template< class T >
+Vector< T > Vector< T >::Set( T nX, T nY, T nZ )
+{ //{{{
+	x = nX;
+	y = nY;
+	z = nZ;
+} //}}}
 
-		Vector Zero()
-		{
-			x = 0;
-			y = 0;
-			z = 0;
-			return *this;
-		}
+/// Set all members to zero, return zero vector
+template< class T >
+Vector< T > Vector< T >::Zero()
+{ //{{{
+	x = 0;
+	y = 0;
+	z = 0;
+	return *this;
+} //}}}
 
-		/// Overloaded + operator
-		Vector opAdd( Vector r )
-		{ //{{{
-			return new Vector( x + r.x, y + r.y, z + r.z );
-		} //}}}
+/// Overloaded + operator
+template< class T >
+Vector< T > Vector< T >::opAdd( Vector r )
+{ //{{{
+	return new Vector< T >( x + r.x, y + r.y, z + r.z );
+} //}}}
 
-		/// Overloaded += operator
-		Vector opAddAssign( Vector r )
-		{ //{{{
-			x += r.x;
-			y += r.y;
-			z += r.z;
-			return this;
-		} //}}}
+/// Overloaded += operator
+template< class T >
+Vector< T > Vector< T >::opAddAssign( Vector r )
+{ //{{{
+	x += r.x;
+	y += r.y;
+	z += r.z;
+	return this;
+} //}}}
 
-		/// Overloaded - operator
-		Vector opSub( Vector r )
-		{ //{{{
-			return new Vector( x - r.x, y - r.y, z - r.z );
-		} //}}}
+/// Overloaded - operator
+template< class T >
+Vector< T > Vector< T >::opSub( Vector r )
+{ //{{{
+	return new Vector< T >( x - r.x, y - r.y, z - r.z );
+} //}}}
 
-		/// Overloaded -= operator
-		Vector opSubAssign( Vector r )
-		{ //{{{
-			x -= r.x;
-			y -= r.y;
-			z -= r.z;
-			return this;
-		} //}}}
+/// Overloaded -= operator
+template< class T >
+Vector< T > Vector< T >::opSubAssign( Vector r )
+{ //{{{
+	x -= r.x;
+	y -= r.y;
+	z -= r.z;
+	return this;
+} //}}}
 
-		/// Dot product of this and r
-		T Dot( Vector r )
-		{ //{{{
-			return ( x * r.x ) + ( y * r.y ) + ( z * r.z );
-		} //}}}
+/// Dot product of this and r
+template< class T >
+T Vector< T >::Dot( Vector r )
+{ //{{{
+	return ( x * r.x ) + ( y * r.y ) + ( z * r.z );
+} //}}}
 
-		/// Cross product of this and r
-		Vector Cross( Vector r )
-		{ //{{{
-			return new Vector( y * r.z - z * r.y,
-							   z * r.x - x * r.z,
-							   x * r.y - y * r.x );
-		} //}}}
-
-		/// X component
-		T x;
-		/// Y component
-		T y;
-		/// Z component
-		T z;
-
-	private:
-
-};
+/// Cross product of this and r
+template< class T >
+Vector< T > Vector< T >::Cross( Vector r )
+{ //{{{
+	return new Vector< T >( y * r.z - z * r.y,
+							z * r.x - x * r.z,
+							x * r.y - y * r.x );
+} //}}}
 
 #endif // VECTOR_CPP
