@@ -246,8 +246,8 @@ int main( int argc, const char* argv[] )
 		nParticle->AddEntity( nPolygon );
 		nParticle->radius = 10.0;
 
-		nParticle->CurrentPositions( m_Game->Width() / 2 + 100*cos( i * 2 * PI / numObjects ),
-									 m_Game->Height() / 2 + 100*sin( i * 2 * PI / numObjects ) );
+		nParticle->CurrentPositions( m_Game->Width() / 2 + 100*cos( i * 2 * M_PI / numObjects ),
+									 m_Game->Height() / 2 + 100*sin( i * 2 * M_PI / numObjects ) );
 
 		nParticle->Velocities( detVelocity( initVel ) );
 		nParticle->AddForce( m_Gravity );
