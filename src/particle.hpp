@@ -43,75 +43,75 @@ class Particle
 		Entity* GetEntity();
 
 		// {G,S}etter for current XPosition
-		long double XPosition();
-		void CurrentXPosition( long double nXPosition );
+		inline long double XPosition();
+		inline void CurrentXPosition( long double nXPosition );
 
 		// {G,S}etter for current YPosition
-		long double YPosition();
-		void CurrentYPosition( long double nYPosition );
+		inline long double YPosition();
+		inline void CurrentYPosition( long double nYPosition );
 
 		// Setter for both current Positions
-		void CurrentPositions( long double nXPosition, long double nYPosition);
+		inline void CurrentPositions( long double nXPosition, long double nYPosition);
 
 		// {G,S}etter for next XPosition
-		long double NextXPosition();
-		void XPosition( long double nXPosition );
+		inline long double NextXPosition();
+		inline void XPosition( long double nXPosition );
 
 		// {G,S}etter for next YPosition
-		long double NextYPosition();
-		void YPosition( long double nYPosition );
+		inline long double NextYPosition();
+		inline void YPosition( long double nYPosition );
 
 		// Setter for both next Positions
-		void Positions( long double nXPosition, long double nYPosition );
+		inline void Positions( long double nXPosition, long double nYPosition );
 
 
 		// {G,S}etter for current XVelocity
-		long double XVelocity();
-		void CurrentXVelocity( long double nXVelocity );
+		inline long double XVelocity();
+		inline void CurrentXVelocity( long double nXVelocity );
 
 		// {G,S}etter for current YVelocity
-		long double YVelocity();
-		void CurrentYVelocity( long double nYVelocity );
+		inline long double YVelocity();
+		inline void CurrentYVelocity( long double nYVelocity );
 
 		// Setter for both current Velocitys
-		void CurrentVelocities( long double nXVelocity, long double nYVelocity);
+		inline void CurrentVelocities( long double nXVelocity, long double nYVelocity);
 
 		// {G,S}etter for next XVelocity
-		long double NextXVelocity();
-		void XVelocity( long double nXVelocity );
+		inline long double NextXVelocity();
+		inline void XVelocity( long double nXVelocity );
 
 		// {G,S}etter for next YVelocity
-		long double NextYVelocity();
-		void YVelocity( long double nYVelocity );
+		inline long double NextYVelocity();
+		inline void YVelocity( long double nYVelocity );
 
 		// Setter for both next Velocitys
-		void Velocities( long double nXVelocity, long double nYVelocity );
+		inline void Velocities( long double nXVelocity, long double nYVelocity );
 
 		// Setter for both next Velocitys
-		void Velocities( Vector< long double > nVelocity );
+		inline void Velocities( Vector< long double > nVelocity );
 
 
 		// {G,S}etter for current XAcceleration
-		long double XAcceleration();
-		void CurrentXAcceleration( long double nXAcceleration );
+		inline long double XAcceleration();
+		inline void CurrentXAcceleration( long double nXAcceleration );
 
 		// {G,S}etter for current YAcceleration
-		long double YAcceleration();
-		void CurrentYAcceleration( long double nYAcceleration );
+		inline long double YAcceleration();
+		inline void CurrentYAcceleration( long double nYAcceleration );
 
 		// Setter for both current Accelerations
-		void CurrentAccelerations( long double nXAcceleration, long double nYAcceleration);
+		inline void CurrentAccelerations( long double nXAcceleration, long double nYAcceleration);
 
 		// {G,S}etter for next XAcceleration
-		long double NextXAcceleration();
-		void XAcceleration( long double nXAcceleration );
+		inline long double NextXAcceleration();
+		inline void XAcceleration( long double nXAcceleration );
 
 		// {G,S}etter for next YAcceleration
-		long double NextYAcceleration();
-		void YAcceleration( long double nYAcceleration );
+		inline long double NextYAcceleration();
+		inline void YAcceleration( long double nYAcceleration );
 
 		// Setter for both next Accelerations
-		void Accelerations( long double nXAcceleration, long double nYAcceleration );
+		inline void Accelerations( long double nXAcceleration, long double nYAcceleration );
 
 
 		long double mass;
