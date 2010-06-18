@@ -1,8 +1,9 @@
 Complete:
 	- Move most if not everything that could be done as a Vector into a Vector
-	- Split out .cpp files fully into .cpp and .hpp, see the game.* example
 	- Look for more bugs/memory leaks
 	- Look for bad C++ code that was fine D
+		- To go along with this, look at the HACKING file and make sure things match up
+			- I'm talking mainly about the this-> pointer usage in member functions
 
 Design Problems:
 	- Current example "repel" looks bad. Get an example that will look realistic.
