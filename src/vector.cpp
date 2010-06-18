@@ -24,17 +24,29 @@
 
 /// Default constructor, X and Y components default to T's default
 template< class T >
-Vector< T >::Vector()
-{ //{{{
+Vector< T >::Vector() :
+	x( 0 ), //{{{
+	y( 0 ),
+	z( 0 )
+{
 } //}}}
 
-/// Constructs a Vector with initial X and Y values
+/// Constructs a Vector with initial X, Y and Z values
 template< class T >
-Vector< T >::Vector( T iX, T iY, T iZ )
-{ //{{{
-	this.x = iX;
-	this.y = iY;
-	this.z = iZ;
+Vector< T >::Vector( T iX, T iY, T iZ ) :
+	x( iX ), //{{{
+	y( iY ),
+	z( iZ )
+{
+} //}}}
+
+/// Copy consructs a Vector with initial X, Y and Z values
+template< class T >
+Vector< T >::Vector( Vector< T > const& r ) :
+	x( r.x ), //{{{
+	y( r.y ),
+	z( r.z )
+{
 } //}}}
 
 /// Set all members at once

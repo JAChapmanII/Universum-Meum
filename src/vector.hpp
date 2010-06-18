@@ -28,8 +28,11 @@ class Vector
 		/// Default constructor, X and Y components default to T's default
 		Vector();
 
-		/// Constructs a Vector with initial X and Y values
+		/// Constructs a Vector with initial X, Y and Z values
 		Vector( T iX, T iY, T iZ );
+
+		/// Copy constructs a Vector with initial X, Y and Z values
+		Vector( Vector const& r );
 
 		/// Set all members at once
 		Vector< T > Set( T nX, T nY, T nZ );
