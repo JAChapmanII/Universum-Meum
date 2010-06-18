@@ -42,7 +42,8 @@ using namespace std;
 
 const unsigned int MAX_PARTICLES = 1000;
 
-Vector< long double > detVelocity( unsigned int type = 0 )
+Vector< long double > detVelocity( unsigned int type = 0 );
+Vector< long double > detVelocity( unsigned int type )
 {
 	Vector< long double >* rVec = new Vector< long double >;
 	rVec->Zero();
@@ -214,10 +215,6 @@ int main( int argc, const char* argv[] )
 		if( argc > 2 )
 		{
 			initVel = atoi( argv[ 2 ] );
-			if( initVel < 0 )
-			{
-				initVel = 0;
-			}
 			initVel %= 4;
 			cout << "initVel method set to " << initVel << "\n";
 		}
