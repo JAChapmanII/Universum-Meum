@@ -17,17 +17,18 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-module mODULE; /// TODO rename me
+#ifndef CLASS_HPP
+#define CLASS_HPP
 
-class MODULE /// TODO rename me
+class CLASS /// TODO rename me
 {
 	public:
-		this()
-		{
-		}
+		CLASS(); /// TODO
 
 	protected:
 
 	private:
 
 }
+
+#endif // CLASS_HPP
