@@ -21,6 +21,7 @@
 #define PARTICLE_SYSTEM_HPP
 
 #include <vector>
+#include <algorithm>
 
 #include "particle.cpp"
 

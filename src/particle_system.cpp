@@ -62,6 +62,7 @@ void ParticleSystem::Work( long double deltaTime )
 
 void ParticleSystem::WorkAll( long double deltaTime )
 { //{{{
+	std::random_shuffle( m_Particles.begin(), m_Particles.end() );
 	for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 	{
 		for( std::vector< Force* >::iterator f = m_Forces.begin(); f != m_Forces.end(); ++f )
