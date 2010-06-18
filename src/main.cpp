@@ -302,6 +302,7 @@ int main( int argc, const char* argv[] )
 
 	unsigned int lastSpawn = 0;
 	unsigned int lastKill = 0;
+	long double maxMomSeen = 0;
 	long double xCenter, yCenter;
 	Particle* pMin;
 	Particle* pMax;
@@ -462,9 +463,13 @@ int main( int argc, const char* argv[] )
 		}
 		//m_ParticleSystem->Work( .02 );
 
+		if( m_ParticleSystem->maxSpeed() > maxMomSeen )
+		{
+			maxMomSeen = m_ParticleSystem->maxSpeed();
+		}
 		for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
 		{
-			long double logmom = (*i)->speed / m_ParticleSystem->maxSpeed();
+			long double logmom = (*i)->speed / maxMomSeen;
 			Entity* cEnt = (*i)->GetEntity();
 			(*static_cast< Polygon* >( cEnt )).Color( logmom, 0, 1.0 - logmom, 1.0 );
 		}
