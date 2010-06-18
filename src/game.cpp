@@ -541,7 +541,9 @@ Game::Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP ) : //{
 	InitSGL( iWidth, iHeight, iBPP );
 } //}}}
 
+/// Does vary shallow copy
 Game::Game( Game const& r ) : //{{{
+	Entity( r.position ),
 	m_TickInterval( r.m_TickInterval ),
 	m_NextTime( r.m_NextTime ),
 	m_isDone( r.m_isDone ),
@@ -561,7 +563,7 @@ Game::Game( Game const& r ) : //{{{
 {
 } //}}}
 
-/// Does no copying
+/// Does no equaling
 Game& Game::operator=( Game const& ) //{{{
 {
 	return *this;
