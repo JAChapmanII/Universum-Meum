@@ -35,15 +35,20 @@ void Repel( Particle* A, Particle* B, long double deltaTime )
 
 	if( ( dist < (A->radius + B->radius) ) && ( dist2 > 0 ) )
 	{
-		long double repMass = repConst * B->mass * 2.0;
 		long double unitX = xDist / dist;
 		long double unitY = yDist / dist;
 
 		A->XAcceleration( A->NextXAcceleration() -
-			( repMass ) * ( unitX ) / ( dist2 ) );
+			( repConst * 2.0 * B->mass ) * ( unitX ) / ( dist2 ) );
 
 		A->YAcceleration( A->NextYAcceleration() -
-			( repMass ) * ( unitY ) / ( dist2 ) );
+			( repConst * 2.0 * B->mass ) * ( unitY ) / ( dist2 ) );
+
+		B->XAcceleration( B->NextXAcceleration() +
+			( repConst * 2.0 * A->mass ) * ( unitX ) / ( dist2 ) );
+
+		B->YAcceleration( B->NextYAcceleration() +
+			( repConst * 2.0 * A->mass ) * ( unitY ) / ( dist2 ) );
 	}
 } //}}}
 

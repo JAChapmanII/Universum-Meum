@@ -64,7 +64,7 @@ void ParticleSystem::WorkAll( long double deltaTime )
 { //{{{
 	for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 	{
-		for( std::vector< Particle* >::iterator j = m_Particles.begin(); j != m_Particles.end(); ++j )
+		for( std::vector< Particle* >::iterator j = i + 1; j != m_Particles.end(); ++j )
 		{
 			(*i)->Work( *j, deltaTime );
 		}

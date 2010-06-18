@@ -32,14 +32,19 @@ void Gravity( Particle* A, Particle* B, long double deltaTime )
 
 	if( dist2 > 0 )
 	{
-		long double gravMass = gravConst * B->mass;
 		long double dist  = sqrt( dist2 );
 
 		A->XAcceleration( A->NextXAcceleration() +
-			( gravMass )*(xDist/dist) / ( dist2 ) );
+			( gravConst * B->mass )*(xDist/dist) / ( dist2 ) );
 
 		A->YAcceleration( A->NextYAcceleration() +
-			( gravMass )*(yDist/dist) / ( dist2 ) );
+			( gravConst * B->mass )*(yDist/dist) / ( dist2 ) );
+
+		B->XAcceleration( B->NextXAcceleration() +
+			( gravConst * A->mass )*(-xDist/dist) / ( dist2 ) );
+
+		B->YAcceleration( B->NextYAcceleration() +
+			( gravConst * A->mass )*(-yDist/dist) / ( dist2 ) );
 	}
 } //}}}
 

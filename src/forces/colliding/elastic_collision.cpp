@@ -47,14 +47,23 @@ void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 		A->YPosition( A->YPosition() + ( unitY * sectLength ) / 2 );
 
 		long double theta = atan2( yDist, xDist );
+		long double theta2 = atan2( -yDist, -xDist );
 		long double dir1 = atan2( A->YVelocity(), A->XVelocity() );
 		long double dir2 = atan2( B->YVelocity(), B->XVelocity() );
+
 		long double nYV1 = A->speed * sin( dir1 - theta );
 		long double fXV1 = ( ( A->mass - B->mass ) * ( A->speed * cos( dir1 - theta ) ) + 2 *
 					B->mass * ( B->speed * cos( dir2 - theta ) ) ) / ( A->mass + B->mass );
 
 		A->XVelocity( (cos( theta ) * fXV1 + cos( theta + M_PI_2 ) * nYV1 ) );
 		A->YVelocity( (sin( theta ) * fXV1 + sin( theta + M_PI_2 ) * nYV1 ) );
+
+		long double nYV2 = B->speed * sin( dir2 - theta2 );
+		long double fXV2 = ( ( B->mass - A->mass ) * ( B->speed * cos( dir2 - theta2 ) ) + 2 *
+					A->mass * ( A->speed * cos( dir1 - theta2 ) ) ) / ( B->mass + A->mass );
+
+		B->XVelocity( (cos( theta2 ) * fXV2 + cos( theta2 + M_PI_2 ) * nYV2 ) );
+		B->YVelocity( (sin( theta2 ) * fXV2 + sin( theta2 + M_PI_2 ) * nYV2 ) );
 	}
 }//}}}
 
