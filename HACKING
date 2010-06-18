@@ -1,37 +1,60 @@
-module example;
+// Use header guards
+#ifndef FILE_EXT
+#define FILE_EXT
 
-// Standard imports first
-import tango.io.Stdout;
+// Standard includes first
+#include <iostream>
 
-// Module names all lower case, underscore to separate words
-import modules.other_example
+// includes relative to this file
+#include "file_in_same_dir.cpp"
+#include "../above.cpp"
+#include "below/file.cpp"
 
-// All outside of project imports clumped based on project
-import libs.a.A;
-import libs.b.A;
+// All outside of project includes clumped based on project
+#include <GL/gl.h>
+#include <GL/glu.h>
 
-import poop.Toilet;
-import poop.Flush;
+#include <SDL/SDL.h>
 
+// Classes defined in header files...
 /// Triple slashes for documentation
 class UppercaseForEachWord
 {
 	public:
-		void PublicMethod()
-		{
-			Stdout.formatln( "Class methods use getter/setters too: {}", ProtectedVariable );
-		}
+		UpperCaseForEachWord();
 
-		// Getter/Setter for m_ProtectedVariable
-		uint ProtectedVariable();
-		void ProtectedVariable( uint nProtectedVariable );
+		void PublicMethod();
 
-		uint memberVariableThatsPublic;
-		uint x;
+		// Getter for m_ProtectedVariable
+		unsigned int ProtectedVariable();
+
+		unsigned int memberVariableThatsPublic;
+		unsigned int x;
 
 	protected:
 		// Camel case for variables, prepend m_ for those belonging to classes
-		uint m_ProtectedVariable;
+		// Only make things non-public when needed
+		unsigned int m_ProtectedVariable;
+}
+
+UpperCaseForEachWord::UpperCaseForEachWord() :
+	// use initializer lists, wall will complain otherwise
+	memberVariableThatsPublic( 0 ),
+	x( 0 ),
+	m_ProtectedVariable( 17 )
+{
+}
+
+// Classes implemented in corresponding cpp...
+void UpperCaseForEachWord::PublicMethod()
+{
+	Stdout.formatln( "Class methods use getter/setters too: {}", ProtectedVariable );
+}
+
+unsigned int UppercaseForEachWord::ProtectedVariable()
+{
+	// Use this-> when referencing anything in current object in clases
+	return this->m_ProtectedVariable;
 }
 
 // Fold big long stuff, or logical blocks
@@ -39,20 +62,24 @@ void RandomFunction()
 { //{{{
 } //}}}
 
-int main( char[][] args )
+int main( int argc, const char* argv[] )
 {
-	Stdout.formatln( "Invoked as; {}", args[ 0 ] );
-	if( args.length > 1 )
+	int integers[ 3 ];
+	integers[ 0 ] = 5;
+
+	std::cout << "Don't use unitialized vars: " << integers[ 2 ] << "flush output when needed\n";
+	if( argsc > 1 )
 	{
-		Stdout.formatln( "Argument one: {}", args[ 1 ] );
+		cout << "More than one arg\n";
 	}
 
-	uint a = 5, b = 7;
-	uint c = ( a + ( b * b ) ) * args[ 0 ][ 0 ];
-
-	Stdout.formatln( "a: {} b: {} c: (a+(b^2))*{} = {}", a, b, args[ 0 ][ 0 ], c );
+	unsigned int a = 5, b = 7;
+	// space stuff out so you can see what is happening
+	unsigned int c = ( a + ( b * b ) ) * args[ 0 ][ 0 ];
 
 	return 0;
 }
 
-// vim: ft=d:
+// It's nice to now what we ended
+#endif // FILE_EXT
+// vim: ft=cpp:
