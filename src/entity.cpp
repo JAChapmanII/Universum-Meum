@@ -45,6 +45,16 @@ class Entity
 		{
 		}
 
+		Entity( Entity const& r ) :
+			position( r.position )
+		{
+		}
+
+		Entity( Vector< long double > iPosition ) :
+			position( iPosition )
+		{
+		}
+
 		virtual ~Entity()
 		{
 		}
