@@ -20,131 +20,107 @@
 #ifndef POINT_CPP
 #define POINT_CPP
 
-#include <GL/gl.h>
+#include "point.hpp"
 
-#include "../entity.cpp"
-
-class Point : public Entity
+Point::Point( long double iX, long double iY ) :
+	Entity( iX, iY, 0 ), //{{{
+	radius( 1 )
 {
-	public:
-		Point( long double iX, long double iY ) :
-			Entity( iX, iY, 0 ), //{{{
-			m_Radius( 1 )
-		{
-			this->position.x = iX;
-			this->position.y = iY;
-			Color( 1.0f, 1.0f, 1.0f, 1.0f );
-		} //}}}
+	this->position.x = iX;
+	this->position.y = iY;
+	Color( 1.0f, 1.0f, 1.0f, 1.0f );
+} //}}}
 
-		Point( long double iX, long double iY, long double iRadius ) :
-			Entity( iX, iY, 0 ), //{{{
-			m_Radius( iRadius )
-		{
-			this->position.x = iX;
-			this->position.y = iY;
-			Color( 1.0f, 1.0f, 1.0f, 1.0f );
-		} //}}}
+Point::Point( long double iX, long double iY, long double iRadius ) :
+	Entity( iX, iY, 0 ), //{{{
+	radius( iRadius )
+{
+	this->position.x = iX;
+	this->position.y = iY;
+	Color( 1.0f, 1.0f, 1.0f, 1.0f );
+} //}}}
 
-		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue ) :
-			Entity( iX, iY, 0 ), //{{{
-			m_Radius( iRadius )
-		{
-			this->position.x = iX;
-			this->position.y = iY;
-			Radius( iRadius );
-			Color( iRed, iGreen, iBlue, 1.0f );
-		} //}}}
+Point::Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue ) :
+	Entity( iX, iY, 0 ), //{{{
+	radius( iRadius )
+{
+	this->position.x = iX;
+	this->position.y = iY;
+	Color( iRed, iGreen, iBlue, 1.0f );
+} //}}}
 
-		Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha ) :
-			Entity( iX, iY, 0 ), //{{{
-			m_Radius( iRadius )
-		{
-			this->position.x = iX;
-			this->position.y = iY;
-			Color( iRed, iGreen, iBlue, iAlpha );
-		} //}}}
+Point::Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha ) :
+	Entity( iX, iY, 0 ), //{{{
+	radius( iRadius )
+{
+	this->position.x = iX;
+	this->position.y = iY;
+	Color( iRed, iGreen, iBlue, iAlpha );
+} //}}}
 
-		void Draw( long double m_Zoom = 1 )
-		{ //{{{
-			// glPointSize takes a diameter
-			glPointSize( Radius() * 2 * m_Zoom );
-			glColor4f( Red(), Green(), Blue(), Alpha() );
-			glBegin( GL_POINTS );
-			glVertex2f( this->position.x, this->position.y );
-			glEnd();
-		} //}}}
+void Point::Draw( long double zoom )
+{ //{{{
+	// glPointSize takes a diameter
+	glPointSize( this->radius * 2 * zoom );
+	glColor4f( Red(), Green(), Blue(), Alpha() );
+	glBegin( GL_POINTS );
+	glVertex2f( this->position.x, this->position.y );
+	glEnd();
+} //}}}
 
-		// {G,S}etter for m_Radius
-		long double Radius() //{{{
-		{
-			return m_Radius;
-		}
-		void Radius( long double nRadius )
-		{
-			m_Radius = nRadius;
-		} //}}}
+void Point::Color( long double nRed, long double nGreen, long double nBlue, long double nAlpha )
+{ //{{{
+	m_Color[ 0 ] = nRed;
+	m_Color[ 1 ] = nGreen;
+	m_Color[ 2 ] = nBlue;
+	m_Color[ 3 ] = nAlpha;
+} //}}}
 
-		void Color( long double nRed, long double nGreen, long double nBlue, long double nAlpha )
-		{ //{{{
-			m_Color[ 0 ] = nRed;
-			m_Color[ 1 ] = nGreen;
-			m_Color[ 2 ] = nBlue;
-			m_Color[ 3 ] = nAlpha;
-		} //}}}
+void Point::Color( long double nRed, long double nGreen, long double nBlue )
+{ //{{{
+	m_Color[ 0 ] = nRed;
+	m_Color[ 1 ] = nGreen;
+	m_Color[ 2 ] = nBlue;
+} //}}}
 
-		void Color( long double nRed, long double nGreen, long double nBlue )
-		{ //{{{
-			m_Color[ 0 ] = nRed;
-			m_Color[ 1 ] = nGreen;
-			m_Color[ 2 ] = nBlue;
-		} //}}}
+// {G,S} for m_Color[ 0 ]
+long double Point::Red() //{{{
+{
+	return m_Color[ 0 ];
+}
+void Point::Red( long double nRed )
+{
+	m_Color[ 0 ] = nRed;
+} //}}}
 
-		// {G,S} for m_Color[ 0 ]
-		long double Red() //{{{
-		{
-			return m_Color[ 0 ];
-		}
-		void Red( long double nRed )
-		{
-			m_Color[ 0 ] = nRed;
-		} //}}}
+// {G,S} for m_Color[ 1 ]
+long double Point::Green() //{{{
+{
+	return m_Color[ 1 ];
+}
+void Point::Green( long double nGreen )
+{
+	m_Color[ 1 ] = nGreen;
+} //}}}
 
-		// {G,S} for m_Color[ 1 ]
-		long double Green() //{{{
-		{
-			return m_Color[ 1 ];
-		}
-		void Green( long double nGreen )
-		{
-			m_Color[ 1 ] = nGreen;
-		} //}}}
+// {G,S} for m_Color[ 2 ]
+long double Point::Blue() //{{{
+{
+	return m_Color[ 2 ];
+}
+void Point::Blue( long double nBlue )
+{
+	m_Color[ 2 ] = nBlue;
+} //}}}
 
-		// {G,S} for m_Color[ 2 ]
-		long double Blue() //{{{
-		{
-			return m_Color[ 2 ];
-		}
-		void Blue( long double nBlue )
-		{
-			m_Color[ 2 ] = nBlue;
-		} //}}}
-
-		// {G,S} for m_Color[ 3 ]
-		long double Alpha() //{{{
-		{
-			return m_Color[ 3 ];
-		}
-		void Alpha( long double nAlpha )
-		{
-			m_Color[ 3 ] = nAlpha;
-		} //}}}
-
-	protected:
-		long double m_Radius;
-		long double m_Color[ 4 ];
-
-	private:
-
-};
+// {G,S} for m_Color[ 3 ]
+long double Point::Alpha() //{{{
+{
+	return m_Color[ 3 ];
+}
+void Point::Alpha( long double nAlpha )
+{
+	m_Color[ 3 ] = nAlpha;
+} //}}}
 
 #endif // POINT_CPP
