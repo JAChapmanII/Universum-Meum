@@ -351,6 +351,10 @@ void Game::AddEntity( Entity *nEntity )
 
 void Game::RemoveEntity( Entity *toRemove )
 { //{{{
+	if( toRemove == NULL )
+	{
+		return;
+	}
 	for( std::vector< Entity* >::iterator i = m_Entities.begin(); i != m_Entities.end(); ++i )
 	{
 		if( (*i) == toRemove )
