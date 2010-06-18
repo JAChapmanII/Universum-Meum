@@ -32,6 +32,7 @@
 #include "entities/polygon.cpp"
 #include "entities/point.cpp"
 #include "forces/exterior/gravity.cpp"
+#include "forces/exterior/collapse.cpp"
 #include "forces/interior/repel.cpp"
 #include "forces/colliding/elastic_collision.cpp"
 
@@ -192,6 +193,10 @@ int main( int argc, const char* argv[] )
 	Particle::Force m_GravityFunc = &( Gravity< rgConstant > );
 	Particle::Force* m_Gravity = &m_GravityFunc;
 
+	//cout << "Creating a collapse force\n";
+	//Particle::Force m_CollapseFunc = &( Collapse< rgConstant * 20 > );
+	//Particle::Force* m_Collapse = &m_CollapseFunc;
+
 	cout <<  "Creating a elastic_collision force\n";
 	Particle::Force* m_ElasticCollision = &DefaultElasticCollision;
 
@@ -199,6 +204,9 @@ int main( int argc, const char* argv[] )
 
 	cout << "Now a particle system\n";
 	ParticleSystem *m_ParticleSystem = new ParticleSystem( 1.0, 10000.0 );
+
+	//cout << "Adding global collpase function\n";
+	//m_ParticleSystem->AddForce( m_Collapse );
 
 	unsigned int numObjects = 3; //{{{
 	unsigned int initVel = 0;
@@ -296,6 +304,7 @@ int main( int argc, const char* argv[] )
 	unsigned int lastKill = 0;
 	long double xCenter, yCenter;
 	Particle* pMin;
+	Particle* pMax;
 	cout << "Entering main game loop\n";
 	while( !m_Game->isDone() )
 	{ //{{{
@@ -310,8 +319,10 @@ int main( int argc, const char* argv[] )
 		xCenter = m_Game->XCenter();
 		yCenter = m_Game->YCenter();
 
-		// Find particle nearest to cursor
-		long double minDist2 = numeric_limits< long double >::max(); pMin = NULL;
+		pMin = NULL; pMax = NULL;
+		// Find particle nearest and furthest to cursor
+		long double minDist2 = numeric_limits< long double >::max();
+		long double maxDist2 = 0;
 		for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
 		{ //{{{
 			long double cXDist = m_CursorPolygon->position.x - (*i)->XPosition();
@@ -322,11 +333,16 @@ int main( int argc, const char* argv[] )
 				minDist2 = cDist2;
 				pMin = (*i);
 			}
+			if( cDist2 > maxDist2 )
+			{
+				maxDist2 = cDist2;
+				pMax = (*i);
+			}
 		} //}}}
 
 		// Maybe delete a particle based on 'd' or RMB
 		if( ( ( m_Game->isClicked( SDL_BUTTON_RIGHT ) ) || ( m_Game->isPressed( Key[ "d" ] ) ) )
-				&& ( m_Particles.size() > 0 ) && ( m_Game->GetTicks() > lastKill + 10 ) )
+				&& ( m_Particles.size() > 0 ) && ( m_Game->GetTicks() > lastKill + 100 ) )
 		{ //{{{
 			lastKill = m_Game->GetTicks();
 
@@ -362,6 +378,37 @@ int main( int argc, const char* argv[] )
 				delete pMin;
 				delete eMin;
 			}
+		} //}}}
+
+		// Maybe delete a particle based on 'i'
+		if( ( m_Game->isPressed( Key[ "i" ] ) ) && ( m_Particles.size() > 0 )
+				&& ( m_Game->GetTicks() > lastKill + 100 ) )
+		{ //{{{
+			lastKill = m_Game->GetTicks();
+
+			cout << "Removing... " << m_Particles.size() << ", " << m_Polygons.size() << "\n";
+			Polygon* eMax = ( Polygon* )( pMax->GetEntity() );
+
+			m_ParticleSystem->RemoveParticle( pMax );
+			for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
+			{
+				if( (*i) == pMax )
+				{
+					m_Particles.erase( i );
+					break;
+				}
+			}
+			for( std::vector< Polygon* >::iterator i = m_Polygons.begin(); i != m_Polygons.end(); ++i )
+			{
+				if( (*i) == eMax )
+				{
+					m_Polygons.erase( i );
+					break;
+				}
+			}
+			m_Game->RemoveEntity( eMax );
+			delete pMax;
+			delete eMax;
 		} //}}}
 
 		/// Maybe create new particle
@@ -408,11 +455,12 @@ int main( int argc, const char* argv[] )
 			m_Game->Centers( xCenter, yCenter );
 		} //}}}
 
-		/*
-		m_ParticleSystem->WorkAll( .02 );
-		m_ParticleSystem->UpdateAll( .02 );
-		*/
-		m_ParticleSystem->Work( .02 );
+		for( unsigned int i = 0; i < 10; ++i )
+		{
+			m_ParticleSystem->WorkAll( .001 );
+			m_ParticleSystem->UpdateAll( .001 );
+		}
+		//m_ParticleSystem->Work( .02 );
 
 		for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
 		{

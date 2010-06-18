@@ -64,6 +64,10 @@ void ParticleSystem::WorkAll( long double deltaTime )
 { //{{{
 	for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 	{
+		for( std::vector< Force* >::iterator f = m_Forces.begin(); f != m_Forces.end(); ++f )
+		{
+			(*(*f))( *i, *i, deltaTime );
+		}
 		for( std::vector< Particle* >::iterator j = i + 1; j != m_Particles.end(); ++j )
 		{
 			(*i)->Work( *j, deltaTime );
@@ -133,7 +137,7 @@ long double ParticleSystem::MaxSteps()
 	return m_MaxSteps;
 } //}}}
 
-void ParticleSystem::AddForce( Particle::Force nForce )
+void ParticleSystem::AddForce( Particle::Force* nForce )
 { //{{{
 	if( nForce != 0 )
 	{

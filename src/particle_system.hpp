@@ -44,7 +44,7 @@ class ParticleSystem
 		void MaxSteps( long double nMax );
 		long double MaxSteps();
 
-		void AddForce( Particle::Force nForce );
+		void AddForce( Particle::Force *nForce );
 
 		void AddParticle( Particle *nParticle );
 		void RemoveParticle( Particle *toRemove );
@@ -56,7 +56,7 @@ class ParticleSystem
 		long double m_MaxSteps;
 
 		std::vector< Particle* > m_Particles;
-		std::vector< Particle::Force > m_Forces;
+		std::vector< Particle::Force* > m_Forces;
 
 };
 
