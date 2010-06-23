@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include <limits>
+#include <math.h>
 
 #include "game.cpp"
 #include "particle.cpp"
@@ -152,9 +153,11 @@ int main( int argc, const char* argv[] )
 
 	cout << "Welcome to Universum Meum.\n";
 
+	/* TODO This doesn't exactly happen anymore...
 	cout << "Creating random number generator\n" ;
-	//   TODO   auto rand = new Twister();
-	//   TODO   rand.seed();
+	//auto rand = new Twister();
+	//rand.seed();
+	*/
 
 	unsigned int gWidth = 0, gHeight = 0;
 	while( ( gWidth <= 0 ) || ( gWidth > 2560 ) )
@@ -291,6 +294,11 @@ int main( int argc, const char* argv[] )
 	//m_Cursor.AddForce( m_Gravity );
 	//m_Cursor.AddForce( m_Repel );
 	//}}}
+
+	cout << "Creating an examlpe button (hud-esque)\n";
+	Point* quitButton = new Point( 0, 0, 10, 1, 0, 0 );
+	quitButton->noZoom = true;
+	m_Game->AddEntity( quitButton );
 
 	unsigned int lastSpawn = 0;
 	unsigned int lastKill = 0;
@@ -464,9 +472,23 @@ int main( int argc, const char* argv[] )
 
 		m_Cursor->CurrentPositions(
 			(int)(
-				(long double)(m_Game->CursorX()) / m_Game->Width()*m_Game->ViewWidth() + m_Game->position.x ),
+				(long double)(m_Game->CursorX()) / m_Game->Width() * m_Game->ViewWidth() + m_Game->position.x ),
 			(int)(
-				(1.0 - ((long double)(m_Game->CursorY()) / m_Game->Height()))*m_Game->ViewHeight() + m_Game->position.y) );
+				(1.0 - ((long double)(m_Game->CursorY()) / m_Game->Height())) * m_Game->ViewHeight() + m_Game->position.y) );
+
+		quitButton->position.Set( 40.0 * m_Game->ViewWidth()/m_Game->Width() + m_Game->position.x,
+				(1.0 - 40.0/m_Game->Height()) * m_Game->ViewHeight() + m_Game->position.y, 0 );
+
+		if( m_Game->isClicked( SDL_BUTTON_LEFT ) )
+		{
+			long double xDist = m_Cursor->XPosition() - quitButton->position.x;
+			long double yDist = m_Cursor->YPosition() - quitButton->position.y;
+			long double dist = sqrt( xDist*xDist + yDist*yDist );
+			if( dist < (10* m_Game->ViewWidth()/m_Game->Width()) )
+			{
+				m_Game->isDone( true );
+			}
+		}
 
 		m_Game->Draw();
 		m_Game->WaitFor();
