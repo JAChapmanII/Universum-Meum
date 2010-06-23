@@ -52,8 +52,6 @@ Game* Game::Instance( unsigned int iWidth, unsigned int iHeight, unsigned int iB
 
 void Game::InitSGL( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP )
 { //{{{
-	this->loadModules();
-
 	if( SDL_Init( SDL_INIT_VIDEO ) != 0 )
 	{
 		// TODO used to throw exception
@@ -80,7 +78,6 @@ void Game::InitSGL( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP
 void Game::DeinitSGL()
 { //{{{
 	SDL_Quit();
-	unloadModules();
 } //}}}
 
 void Game::ResizeViewport( long double nWidth, long double nHeight )
@@ -99,7 +96,6 @@ void Game::ResizeViewport()
 	Zoom( Width() / ViewWidth() );
 } //}}}
 
-/// Iterates through each actor that has been registered and calls its Draw function
 void Game::Draw( long double magZoom )
 { //{{{
 	glPushMatrix();
@@ -307,7 +303,6 @@ unsigned int Game::PressCreateTime( unsigned int button )
 	// TODO throw something
 } //}}}
 
-/// {G,S}etter for m_Width
 void Game::Width( unsigned int nWidth ) //{{{
 {
 	m_Width = nWidth;
@@ -317,7 +312,6 @@ unsigned int Game::Width()
 	return m_Width;
 } //}}}
 
-/// {G,S}etter for m_Height
 void Game::Height( unsigned int nHeight ) //{{{
 {
 	m_Height = nHeight;
@@ -327,7 +321,6 @@ unsigned int Game::Height()
 	return m_Height;
 } //}}}
 
-/// {G,S}etter for m_BPP
 void Game::BPP( unsigned int nBPP ) //{{{
 {
 	m_BPP = nBPP;
@@ -395,7 +388,6 @@ void Game::sleep( unsigned int microSeconds )
 	SDL_Delay( microSeconds );
 } //}}}
 
-/// {G,S}etter for m_TickInterval
 void Game::TickInterval( unsigned int nTickInterval ) //{{{
 {
 	m_TickInterval = nTickInterval;
@@ -405,7 +397,6 @@ unsigned int Game::TickInterval()
 	return m_TickInterval;
 } //}}}
 
-/// {G,S}etter for m_isDone
 void Game::isDone( bool nState ) //{{{
 {
 	m_isDone = nState;
@@ -415,7 +406,6 @@ bool Game::isDone()
 	return m_isDone;
 } //}}}
 
-/// {G,S}etter for m_isActive
 void Game::isActive( bool nState ) //{{{
 {
 	m_isActive = nState;
@@ -425,7 +415,6 @@ bool Game::isActive()
 	return m_isActive;
 } //}}}
 
-/// Getter for m_ViewWidth
 /*void Game::ViewWidth( long double nViewWidth ) //{{{
 {
 	m_ViewWidth = nViewWidth;
@@ -435,7 +424,6 @@ long double Game::ViewWidth()
 	return m_ViewWidth;
 } //}}}
 
-/// Getter for m_ViewHeight
 /*void Game::ViewHeight( long double nViewHeight ) //{{{
 {
 	m_ViewHeight = nViewHeight;
@@ -445,14 +433,12 @@ long double Game::ViewHeight()
 	return m_ViewHeight;
 } //}}}
 
-/// Setter for both X/Y centers
 void Game::Centers( long double nXC, long double nYC ) //{{{
 {
 	this->position.x = nXC - ViewWidth() / 2;
 	this->position.y = nYC - ViewHeight() / 2;
 } //}}}
 
-/// {G,S}etter for the X center
 long double Game::XCenter() //{{{
 {
 	return ViewWidth() / 2 + this->position.x;
@@ -462,7 +448,6 @@ void Game::XCenter( long double nXC )
 	this->position.x = nXC - ViewWidth() / 2;
 } //}}}
 
-/// {G,S}etter for the Y center
 long double Game::YCenter() //{{{
 {
 	return ViewHeight() / 2 + this->position.y;
@@ -472,7 +457,6 @@ void Game::YCenter( long double nYC )
 	this->position.y = nYC - ViewHeight() / 2;
 } //}}}
 
-/// {G,S}etter for the Cursor X
 unsigned int Game::CursorX() //{{{
 {
 	return m_Cursor.x;
@@ -482,7 +466,6 @@ void Game::CursorX( unsigned int nCX )
 	WarpMouse( nCX, m_Cursor.y );
 } //}}}
 
-/// {G,S}etter for the Cursor Y
 unsigned int Game::CursorY() //{{{
 {
 	return m_Cursor.y;
@@ -492,7 +475,6 @@ void Game::CursorY( unsigned int nCY )
 	WarpMouse( m_Cursor.x, nCY );
 } //}}}
 
-/// {G,S}etter for the Zoom
 void Game::Zoom( long double nZoom ) //{{{
 {
 	m_Zoom = nZoom;
@@ -502,13 +484,11 @@ long double Game::Zoom()
 	return m_Zoom;
 } //}}}
 
-/// Default consructor
 Game::Game() : //{{{
 	m_TickInterval( 0 ),
 	m_NextTime( 0 ),
 	m_isDone( false ),
 	m_isActive( true ),
-	m_ModulesLoaded( false ),
 	m_Width( 0 ),
 	m_Height( 0 ),
 	m_BPP( 0 ),
@@ -523,13 +503,11 @@ Game::Game() : //{{{
 {
 } //}}}
 
-/// Construct with initial Width/Height/BPP
 Game::Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP ) : //{{{
 	m_TickInterval( 0 ),
 	m_NextTime( 0 ),
 	m_isDone( false ),
 	m_isActive( true ),
-	m_ModulesLoaded( false ),
 	m_Width( iWidth ),
 	m_Height( iHeight ),
 	m_BPP( iBPP ),
@@ -545,14 +523,12 @@ Game::Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP ) : //{
 	InitSGL( iWidth, iHeight, iBPP );
 } //}}}
 
-/// Does vary shallow copy
 Game::Game( Game const& r ) : //{{{
 	Entity( r.position ),
 	m_TickInterval( r.m_TickInterval ),
 	m_NextTime( r.m_NextTime ),
 	m_isDone( r.m_isDone ),
 	m_isActive( r.m_isActive ),
-	m_ModulesLoaded( r.m_ModulesLoaded ),
 	m_Width( r.m_Width ),
 	m_Height( r.m_Height ),
 	m_BPP( r.m_BPP ),
@@ -567,51 +543,9 @@ Game::Game( Game const& r ) : //{{{
 {
 } //}}}
 
-/// Does no equaling
 Game& Game::operator=( Game const& ) //{{{
 {
 	return *this;
-} //}}}
-
-// load modules needed to interface with C libs SDL, GL, IL
-void Game::loadModules()
-{ //{{{
-	if( ! m_ModulesLoaded )
-	{
-		// TODO Uhh......
-		m_ModulesLoaded = true;
-	}
-	else
-	{
-		// TODO Error
-	}
-} //}}}
-
-// unload modules needed to interface with C libs SDL, GL, IL
-void Game::unloadModules()
-{ //{{{
-	if( m_ModulesLoaded )
-	{
-		// TODO Uhm???
-		m_ModulesLoaded = false;
-	}
-	else
-	{
-		// TODO something...
-	}
-} //}}}
-
-// toggle {un}loaded state of modules
-void Game::toggleModules()
-{ //{{{
-	if( m_ModulesLoaded )
-	{
-		unloadModules();
-	}
-	else
-	{
-		loadModules();
-	}
 } //}}}
 
 Game *Game::m_Instance = 0;
