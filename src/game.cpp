@@ -116,7 +116,7 @@ void Game::ProcessInput()
 	/// TODO look into a better way to do this, as currently we're throwing away potentially
 	/// valid data. This is because each mouse wheel "click" is actually a press and release
 	/// at the same time.
-	for( std::vector< Click >::iterator i = m_Clicks.begin(); i != m_Clicks.end(); i++ ) //{{{
+	for( std::vector< Click >::iterator i = this->m_Clicks.begin(); i != this->m_Clicks.end(); i++ ) //{{{
 	{
 		if( ( i->button == SDL_BUTTON_WHEELUP ) || ( i->button == SDL_BUTTON_WHEELDOWN ) )
 		{
@@ -126,30 +126,30 @@ void Game::ProcessInput()
 	} //}}}
 	// handle all SDL events that we might've received in this loop
 	// iteration TODO can this SDL_Poll... error?
-	while( SDL_PollEvent( &m_Event ) )
+	while( SDL_PollEvent( &this->m_Event ) )
 	{
-		switch( m_Event.type )
+		switch( this->m_Event.type )
 		{
 			// user has clicked on the window's close button
 			case SDL_QUIT:
 			{ //{{{
 				// set the done flag
-				isDone( true );
+				this->isDone = true;
 				return;
 			} //}}}
 
 			// window has gained/lost attention
 			case SDL_ACTIVEEVENT:
 			{ //{{{
-				if( m_Event.active.gain == 0 )
+				if( this->m_Event.active.gain == 0 )
 				{
 					// lost focus
-					isActive( false );
+					this->isActive = false;
 				}
 				else
 				{
 					// gained focus
-					isActive( true );
+					this->isActive = true;
 				}
 				break;
 			} //}}}
@@ -157,19 +157,19 @@ void Game::ProcessInput()
 			// A key was pressed
 			case SDL_KEYDOWN:
 			{ //{{{
-				m_Keypresses.push_back( Keypress( m_Event.key.keysym.sym, GetTicks() ) );
+				this->m_Keypresses.push_back( Keypress( m_Event.key.keysym.sym, GetTicks() ) );
 				break;
 			} //}}}
 
 			// A key was released
 			case SDL_KEYUP:
 			{ //{{{
-				for( std::vector< Keypress >::iterator i = m_Keypresses.begin();
-						i != m_Keypresses.end(); ++i )
+				for( std::vector< Keypress >::iterator i = this->m_Keypresses.begin();
+						i != this->m_Keypresses.end(); ++i )
 				{
-					if( i->SymCode() == m_Event.key.keysym.sym )
+					if( i->SymCode() == this->m_Event.key.keysym.sym )
 					{
-						m_Keypresses.erase( i );
+						this->m_Keypresses.erase( i );
 						break;
 					}
 				}
@@ -178,31 +178,31 @@ void Game::ProcessInput()
 
 			case SDL_MOUSEMOTION:
 			{ //{{{
-				m_Cursor.x = m_Event.motion.x;
-				m_Cursor.y = m_Event.motion.y;
+				this->m_Cursor.x = m_Event.motion.x;
+				this->m_Cursor.y = m_Event.motion.y;
 				break;
 			} //}}}
 
 			case SDL_MOUSEBUTTONDOWN:
 			{ //{{{
-				m_Clicks.push_back( Click( m_Event.button.x, m_Event.button.y,
-									m_Event.button.button, GetTicks() ) );
+				this->m_Clicks.push_back( Click( m_Event.button.x, m_Event.button.y,
+												 m_Event.button.button, GetTicks() ) );
 				break;
 			} //}}}
 
 			case SDL_MOUSEBUTTONUP:
 			{ //{{{
-				if( ( m_Event.button.button == SDL_BUTTON_WHEELUP ) ||
-					( m_Event.button.button == SDL_BUTTON_WHEELDOWN ) )
+				if( ( this->m_Event.button.button == SDL_BUTTON_WHEELUP ) ||
+					( this->m_Event.button.button == SDL_BUTTON_WHEELDOWN ) )
 				{
 					break;
 				}
-				for( std::vector< Click >::iterator i = m_Clicks.begin();
-						i != m_Clicks.end(); i++ )
+				for( std::vector< Click >::iterator i = this->m_Clicks.begin();
+						i != this->m_Clicks.end(); i++ )
 				{
-					if( i->button == m_Event.button.button )
+					if( i->button == this->m_Event.button.button )
 					{
-						m_Clicks.erase( i );
+						this->m_Clicks.erase( i );
 						break;
 					}
 				}
@@ -366,11 +366,11 @@ unsigned int Game::GetTicks()
 void Game::WaitFor()
 { //{{{
 	static unsigned int now;
-	now = GetTicks();
+	now = this->GetTicks();
 
-	if( m_NextTime > now )
+	if( this->nextTime > now )
 	{
-		SDL_Delay( m_NextTime - now );
+		SDL_Delay( this->nextTime - now );
 	}
 	else
 	{
@@ -380,39 +380,12 @@ void Game::WaitFor()
 		log.info( tlog );
 		*/
 	}
-	m_NextTime += m_TickInterval;
+	this->nextTime += this->tickInterval;
 } //}}}
 
 void Game::sleep( unsigned int microSeconds )
 { //{{{
 	SDL_Delay( microSeconds );
-} //}}}
-
-void Game::TickInterval( unsigned int nTickInterval ) //{{{
-{
-	m_TickInterval = nTickInterval;
-}
-unsigned int Game::TickInterval()
-{
-	return m_TickInterval;
-} //}}}
-
-void Game::isDone( bool nState ) //{{{
-{
-	m_isDone = nState;
-}
-bool Game::isDone()
-{
-	return m_isDone;
-} //}}}
-
-void Game::isActive( bool nState ) //{{{
-{
-	m_isActive = nState;
-}
-bool Game::isActive()
-{
-	return m_isActive;
 } //}}}
 
 /*void Game::ViewWidth( long double nViewWidth ) //{{{
@@ -485,10 +458,10 @@ long double Game::Zoom()
 } //}}}
 
 Game::Game() : //{{{
-	m_TickInterval( 0 ),
-	m_NextTime( 0 ),
-	m_isDone( false ),
-	m_isActive( true ),
+	tickInterval( 0 ),
+	nextTime( 0 ),
+	isDone( false ),
+	isActive( true ),
 	m_Width( 0 ),
 	m_Height( 0 ),
 	m_BPP( 0 ),
@@ -504,10 +477,10 @@ Game::Game() : //{{{
 } //}}}
 
 Game::Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP ) : //{{{
-	m_TickInterval( 0 ),
-	m_NextTime( 0 ),
-	m_isDone( false ),
-	m_isActive( true ),
+	tickInterval( 0 ),
+	nextTime( 0 ),
+	isDone( false ),
+	isActive( true ),
 	m_Width( iWidth ),
 	m_Height( iHeight ),
 	m_BPP( iBPP ),
@@ -525,10 +498,10 @@ Game::Game( unsigned int iWidth, unsigned int iHeight, unsigned int iBPP ) : //{
 
 Game::Game( Game const& r ) : //{{{
 	Entity( r.position ),
-	m_TickInterval( r.m_TickInterval ),
-	m_NextTime( r.m_NextTime ),
-	m_isDone( r.m_isDone ),
-	m_isActive( r.m_isActive ),
+	tickInterval( r.tickInterval ),
+	nextTime( r.nextTime ),
+	isDone( r.isDone ),
+	isActive( r.isActive ),
 	m_Width( r.m_Width ),
 	m_Height( r.m_Height ),
 	m_BPP( r.m_BPP ),

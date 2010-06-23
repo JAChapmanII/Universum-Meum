@@ -107,21 +107,6 @@ class Game : public Entity
 		/// Block for microSeconds number of microSeconds
 		void sleep( unsigned int microSeconds = 1000 );
 
-		/// Setter for m_TickInterval
-		void TickInterval( unsigned int nTickInterval );
-		/// Getter for m_TickInterval
-		unsigned int TickInterval();
-
-		/// Getter for m_isDone
-		void isDone( bool nState );
-		/// Getter for m_isDone
-		bool isDone();
-
-		/// Setter for m_isActive
-		void isActive( bool nState );
-		/// Getter for m_isActive
-		bool isActive();
-
 		/// Getter for m_ViewWidth
 		//void ViewWidth( long double nViewWidth );
 		long double ViewWidth();
@@ -158,7 +143,17 @@ class Game : public Entity
 		/// Getter for the Zoom
 		long double Zoom();
 
-	private:
+		/// Time to wait for when WaitFor is called
+		unsigned int nextTime;
+		/// Amount of time to wait on WaitFor
+		unsigned int tickInterval;
+
+		/// Set to true if the program recieves a quit request
+		bool isDone;
+		/// Set to false when the WM of the user unfocuses/minimizes the window
+		bool isActive;
+
+	protected:
 		//{{{
 		/// Internal default constructor
 		Game();
@@ -168,16 +163,6 @@ class Game : public Entity
 		Game( Game const& );
 		/// Equals operator (not needed because Game is a singleton)
 		Game& operator=( Game const& );
-
-		/// Amount of time to wait on WaitFor
-		unsigned int m_TickInterval;
-		/// Time to wait for when WaitFor is called
-		unsigned int m_NextTime;
-
-		/// Set to true if the program recieves a quit request
-		bool m_isDone;
-		/// Set to false when the WM of the user unfocuses/minimizes the window
-		bool m_isActive;
 
 		/// Width of window
 		unsigned int m_Width;

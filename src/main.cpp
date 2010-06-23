@@ -181,7 +181,7 @@ int main( int argc, const char* argv[] )
 
 	cout << "Setting framerate to 100\n";
 	unsigned int frameRate = 100;
-	m_Game->TickInterval( 1000 / frameRate );
+	m_Game->tickInterval = 1000 / frameRate;
 	//}}}
 
 	float floatArray[ 2 ];
@@ -315,13 +315,13 @@ int main( int argc, const char* argv[] )
 	Particle* pMin;
 	Particle* pMax;
 	cout << "Entering main game loop\n";
-	while( !m_Game->isDone() )
+	while( !m_Game->isDone )
 	{ //{{{
 		m_Game->ProcessInput();
 
 		if( m_Game->isPressed( Key[ "Escape" ] ) )
 		{
-			m_Game->isDone( true );
+			m_Game->isDone = true;
 			continue;
 		}
 
@@ -510,7 +510,7 @@ int main( int argc, const char* argv[] )
 			{
 				frameRate += 5;
 				cout << "New framerate: " << frameRate << "\n";
-				m_Game->TickInterval( 1000 / frameRate );
+				m_Game->tickInterval = 1000 / frameRate;
 			}
 		} //}}}
 		else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) ) /// Decrease framerate
@@ -519,7 +519,7 @@ int main( int argc, const char* argv[] )
 			{
 				frameRate -= 5;
 				cout << "New framerate: " << frameRate << "\n";
-				m_Game->TickInterval( 1000 / frameRate );
+				m_Game->tickInterval = 1000 / frameRate;
 			}
 		} //}}}
 
@@ -539,7 +539,7 @@ int main( int argc, const char* argv[] )
 			long double dist = sqrt( xDist*xDist + yDist*yDist );
 			if( dist < (10* m_Game->ViewWidth()/m_Game->Width()) )
 			{
-				m_Game->isDone( true );
+				m_Game->isDone = true;
 			}
 		}
 
