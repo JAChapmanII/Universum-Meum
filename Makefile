@@ -9,6 +9,9 @@ PROG=Universum-Meum
 CC=g++
 CFLAGS=-lSDL -lGL -pipe
 
+DOXY=doxygen
+DCONFIG=Doxyfile
+
 all: ${PROG}
 
 ${PROG}: debug
@@ -32,7 +35,7 @@ profile: dirs clean
 	${CC} -o ${BINDIR}/${PROG}-profile ${CFLAGS} -pg ${SRCDIR}/${SRC}
 
 documentation:
-	${CC} -p -D -Dq${DOCDIR} -I${SRCDIR} ${SRCDIR}/${SRC}
+	${DOXY} ${DCONFIG}
 
 dirs:
 	mkdir -p ${SRCDIR}
@@ -41,7 +44,7 @@ dirs:
 	mkdir -p ${BINDIR}
 
 clean:
-	rm -f ${OBJDIR}/*
-	rm -f ${BINDIR}/*
-	rm -f ${DOCDIR}/*
+	rm -rf ${OBJDIR}/*
+	rm -rf ${BINDIR}/*
+	rm -rf ${DOCDIR}/*
 
