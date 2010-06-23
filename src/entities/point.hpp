@@ -54,6 +54,7 @@ class Point : public Entity
 		void Alpha( long double nAlpha );
 
 		long double radius;
+		bool noZoom;
 
 	protected:
 		long double m_Color[ 4 ];
