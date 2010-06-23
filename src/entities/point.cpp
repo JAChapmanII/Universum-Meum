@@ -24,7 +24,8 @@
 
 Point::Point( long double iX, long double iY ) :
 	Entity( iX, iY, 0 ), //{{{
-	radius( 1 )
+	radius( 1 ),
+	noZoom( false )
 {
 	this->position.x = iX;
 	this->position.y = iY;
@@ -33,7 +34,8 @@ Point::Point( long double iX, long double iY ) :
 
 Point::Point( long double iX, long double iY, long double iRadius ) :
 	Entity( iX, iY, 0 ), //{{{
-	radius( iRadius )
+	radius( iRadius ),
+	noZoom( false )
 {
 	this->position.x = iX;
 	this->position.y = iY;
@@ -42,7 +44,8 @@ Point::Point( long double iX, long double iY, long double iRadius ) :
 
 Point::Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue ) :
 	Entity( iX, iY, 0 ), //{{{
-	radius( iRadius )
+	radius( iRadius ),
+	noZoom( false )
 {
 	this->position.x = iX;
 	this->position.y = iY;
@@ -51,7 +54,8 @@ Point::Point( long double iX, long double iY, long double iRadius, long double i
 
 Point::Point( long double iX, long double iY, long double iRadius, long double iRed, long double iGreen, long double iBlue, long double iAlpha ) :
 	Entity( iX, iY, 0 ), //{{{
-	radius( iRadius )
+	radius( iRadius ),
+	noZoom( false )
 {
 	this->position.x = iX;
 	this->position.y = iY;
@@ -61,7 +65,14 @@ Point::Point( long double iX, long double iY, long double iRadius, long double i
 void Point::Draw( long double zoom )
 { //{{{
 	// glPointSize takes a diameter
-	glPointSize( this->radius * 2 * zoom );
+	if( !noZoom )
+	{
+		glPointSize( this->radius * 2 * zoom );
+	}
+	else
+	{
+		glPointSize( this->radius * 2 );
+	}
 	glColor4f( Red(), Green(), Blue(), Alpha() );
 	glBegin( GL_POINTS );
 	glVertex2f( this->position.x, this->position.y );
