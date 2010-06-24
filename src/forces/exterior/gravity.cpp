@@ -26,6 +26,14 @@
 template< int gravConst >
 void Gravity( Particle* A, Particle* B, long double deltaTime )
 { //{{{
+	/**
+	 * Formula for universal gravitation:
+	 * \f[
+	 *   \vec{F}=\left\{
+	 *       \frac{Gm_1m_2}{r^2}
+	 *       \right\}
+	 * \f]
+	 */
 	long double xDist = B->XPosition() - A->XPosition();
 	long double yDist = B->YPosition() - A->YPosition();
 	long double dist2 = (xDist * xDist) + (yDist * yDist);
