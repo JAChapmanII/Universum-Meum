@@ -46,6 +46,9 @@ void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 		A->XPosition( A->XPosition() + ( unitX * sectLength ) / 2 );
 		A->YPosition( A->YPosition() + ( unitY * sectLength ) / 2 );
 
+		B->XPosition( B->XPosition() - ( unitX * sectLength ) / 2 );
+		B->YPosition( B->YPosition() - ( unitY * sectLength ) / 2 );
+
 		long double theta = atan2( yDist, xDist );
 		long double theta2 = atan2( -yDist, -xDist );
 		long double dir1 = atan2( A->YVelocity(), A->XVelocity() );
