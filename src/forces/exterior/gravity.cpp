@@ -17,6 +17,8 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
+#ifndef GRAVITY_CPP
+#define GRAVITY_CPP
 
 #include <math.h>
 
@@ -35,7 +37,7 @@ void Gravity( Particle* A, Particle* B, long double deltaTime )
 	 * \f]
 	 */
 	Vector< long double > distance = B->position - A->position;
-	long double dist = sqrt( distance.Magnitude() );
+	long double dist = distance.Magnitude();
 
 	if( dist > 0 )
 	{
@@ -48,3 +50,5 @@ void Gravity( Particle* A, Particle* B, long double deltaTime )
 } //}}}
 
 Particle::Force DefaultGravity = &Gravity< 0 >;
+
+#endif // GRAVITY_CPP
