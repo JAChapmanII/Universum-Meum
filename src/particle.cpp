@@ -110,7 +110,6 @@ void Particle::AddEntity( Entity *nEntity )
 	}
 } //}}}
 
-/// Return first entity in m_Entities or null if there are none.
 Entity* Particle::GetEntity()
 { //{{{
 	if( m_Entities.size() > 0 )
