@@ -28,27 +28,17 @@
 template< int repConst >
 void Repel( Particle* A, Particle* B, long double deltaTime )
 { //{{{
-	long double xDist = B->XPosition() - A->XPosition();
-	long double yDist = B->YPosition() - A->YPosition();
-	long double dist2 = (xDist * xDist) + (yDist * yDist);
-	long double dist  = sqrt( dist2 );
+	Vector< long double > distance = B->position - A->position;
+	long double dist = distance.Magnitude();
 
-	if( ( dist < (A->radius + B->radius) ) && ( dist2 > 0 ) )
+	if( ( dist > 0 ) && ( dist < (A->radius + B->radius) ) )
 	{
-		long double unitX = xDist / dist;
-		long double unitY = yDist / dist;
+		long double dist2 = pow( dist, 2 );
+		distance /= dist;
 
-		A->XAcceleration( A->NextXAcceleration() -
-			( repConst * 2.0 * B->mass ) * ( unitX ) / ( dist2 ) );
+		A->impulses.push_back( distance * -( repConst * 2.0 * B->mass / dist2 ) );
 
-		A->YAcceleration( A->NextYAcceleration() -
-			( repConst * 2.0 * B->mass ) * ( unitY ) / ( dist2 ) );
-
-		B->XAcceleration( B->NextXAcceleration() +
-			( repConst * 2.0 * A->mass ) * ( unitX ) / ( dist2 ) );
-
-		B->YAcceleration( B->NextYAcceleration() +
-			( repConst * 2.0 * A->mass ) * ( unitY ) / ( dist2 ) );
+		B->impulses.push_back( distance * ( repConst * 2.0 * A->mass / dist2 ) );
 	}
 } //}}}
 
