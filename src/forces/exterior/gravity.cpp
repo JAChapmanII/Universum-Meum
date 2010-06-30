@@ -34,26 +34,16 @@ void Gravity( Particle* A, Particle* B, long double deltaTime )
 	 *       \right\}
 	 * \f]
 	 */
-	long double xDist = B->XPosition() - A->XPosition();
-	long double yDist = B->YPosition() - A->YPosition();
-	long double dist2 = (xDist * xDist) + (yDist * yDist);
+	Vector< long double > distance = B->position - A->position;
+	long double dist = sqrt( distance.Magnitude() );
 
-	if( dist2 > 0 )
+	if( dist > 0 )
 	{
-		long double dist3 = pow( dist2, 1.5 );
-		//long double dist  = sqrt( dist2 );
+		long double dist3 = pow( dist, 3 );
 
-		A->XAcceleration( A->NextXAcceleration() +
-			( gravConst * B->mass )*(xDist) / ( dist3 ) );
+		A->impulses.push_back( distance * ( gravConst * B->mass / dist3 ) );
 
-		A->YAcceleration( A->NextYAcceleration() +
-			( gravConst * B->mass )*(yDist) / ( dist3 ) );
-
-		B->XAcceleration( B->NextXAcceleration() +
-			( gravConst * A->mass )*(-xDist) / ( dist3 ) );
-
-		B->YAcceleration( B->NextYAcceleration() +
-			( gravConst * A->mass )*(-yDist) / ( dist3 ) );
+		B->impulses.push_back( distance * -( gravConst * A->mass / dist3 ) );
 	}
 } //}}}
 
