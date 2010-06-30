@@ -22,7 +22,6 @@
 
 #include "vector.hpp"
 
-/// Default constructor, X and Y components default to T's default
 template< class T >
 Vector< T >::Vector() :
 	x( 0 ), //{{{
@@ -31,7 +30,6 @@ Vector< T >::Vector() :
 {
 } //}}}
 
-/// Constructs a Vector with initial X, Y and Z values
 template< class T >
 Vector< T >::Vector( T iX, T iY, T iZ ) :
 	x( iX ), //{{{
@@ -40,7 +38,6 @@ Vector< T >::Vector( T iX, T iY, T iZ ) :
 {
 } //}}}
 
-/// Copy consructs a Vector with initial X, Y and Z values
 template< class T >
 Vector< T >::Vector( Vector< T > const& r ) :
 	x( r.x ), //{{{
@@ -49,7 +46,6 @@ Vector< T >::Vector( Vector< T > const& r ) :
 {
 } //}}}
 
-/// Set all members at once
 template< class T >
 Vector< T > Vector< T >::Set( T nX, T nY, T nZ )
 { //{{{
@@ -58,7 +54,6 @@ Vector< T > Vector< T >::Set( T nX, T nY, T nZ )
 	z = nZ;
 } //}}}
 
-/// Set all members to zero, return zero vector
 template< class T >
 Vector< T > Vector< T >::Zero()
 { //{{{
@@ -68,14 +63,12 @@ Vector< T > Vector< T >::Zero()
 	return *this;
 } //}}}
 
-/// Overloaded + operator
 template< class T >
 Vector< T > Vector< T >::opAdd( Vector r )
 { //{{{
 	return new Vector< T >( x + r.x, y + r.y, z + r.z );
 } //}}}
 
-/// Overloaded += operator
 template< class T >
 Vector< T > Vector< T >::opAddAssign( Vector r )
 { //{{{
@@ -85,14 +78,12 @@ Vector< T > Vector< T >::opAddAssign( Vector r )
 	return this;
 } //}}}
 
-/// Overloaded - operator
 template< class T >
 Vector< T > Vector< T >::opSub( Vector r )
 { //{{{
 	return new Vector< T >( x - r.x, y - r.y, z - r.z );
 } //}}}
 
-/// Overloaded -= operator
 template< class T >
 Vector< T > Vector< T >::opSubAssign( Vector r )
 { //{{{
@@ -102,14 +93,12 @@ Vector< T > Vector< T >::opSubAssign( Vector r )
 	return this;
 } //}}}
 
-/// Dot product of this and r
 template< class T >
 T Vector< T >::Dot( Vector r )
 { //{{{
 	return ( x * r.x ) + ( y * r.y ) + ( z * r.z );
 } //}}}
 
-/// Cross product of this and r
 template< class T >
 Vector< T > Vector< T >::Cross( Vector r )
 { //{{{

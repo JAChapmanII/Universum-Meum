@@ -20,7 +20,7 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-// 3 Dimensional vector class template, T is the type of component
+/// 3 Dimensional vector class template, T is the type of component
 template< class T >
 class Vector
 {
