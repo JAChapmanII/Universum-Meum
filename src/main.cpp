@@ -257,10 +257,10 @@ int main( int argc, const char* argv[] )
 		nParticle->AddEntity( nPolygon );
 		nParticle->radius = 10.0;
 
-		nParticle->CurrentPositions( m_Game->Width() / 2 + 100*cos( i * 2 * M_PI / numObjects ),
-									 m_Game->Height() / 2 + 100*sin( i * 2 * M_PI / numObjects ) );
+		nParticle->position.Set( m_Game->Width() / 2 + 100*cos( i * 2 * M_PI / numObjects ),
+								 m_Game->Height() / 2 + 100*sin( i * 2 * M_PI / numObjects ), 0 );
 
-		nParticle->Velocities( detVelocity( initVel ) );
+		nParticle->velocity.Set( detVelocity( initVel ) );
 		nParticle->AddForce( m_Gravity );
 		nParticle->AddForce( m_ElasticCollision );
 
@@ -272,7 +272,7 @@ int main( int argc, const char* argv[] )
 	Particle* m_Sun = new Particle();
 
 	m_Sun->AddEntity( m_SunPolygon );
-	m_Sun->Positions( gWidth / 2, gHeight / 2 );
+	m_Sun->position.Set( gWidth / 2, gHeight / 2, 0 );
 	m_Sun->radius = 25.0f;
 	m_Sun->mass = 62.5f;
 	m_Game->AddEntity( m_SunPolygon );
@@ -292,7 +292,7 @@ int main( int argc, const char* argv[] )
 	Particle* m_Cursor = new Particle();
 
 	m_Cursor->AddEntity( m_CursorPolygon );
-	m_Cursor->Positions( 400.0f, 300.0f );
+	m_Cursor->position.Set( 400.0f, 300.0f, 0 );
 	m_Cursor->radius = 0.0f;
 	m_Cursor->mass = 0.0f;
 	m_Game->AddEntity( m_CursorPolygon );
@@ -330,21 +330,20 @@ int main( int argc, const char* argv[] )
 
 		pMin = NULL; pMax = NULL;
 		// Find particle nearest and furthest to cursor
-		long double minDist2 = numeric_limits< long double >::max();
-		long double maxDist2 = 0;
+		long double minDist = numeric_limits< long double >::max();
+		long double maxDist = 0;
 		for( vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); i++ )
 		{ //{{{
-			long double cXDist = m_CursorPolygon->position.x - (*i)->XPosition();
-			long double cYDist = m_CursorPolygon->position.y - (*i)->YPosition();
-			long double cDist2 = cXDist*cXDist + cYDist*cYDist;
-			if( cDist2 < minDist2 )
+			Vector< long double > cDistance = m_CursorPolygon->position - (*i)->position;
+			long double cDist = cDistance.Magnitude();
+			if( cDist < minDist )
 			{
-				minDist2 = cDist2;
+				minDist = cDist;
 				pMin = (*i);
 			}
-			if( cDist2 > maxDist2 )
+			if( cDist > maxDist )
 			{
-				maxDist2 = cDist2;
+				maxDist = cDist;
 				pMax = (*i);
 			}
 		} //}}}
@@ -358,7 +357,7 @@ int main( int argc, const char* argv[] )
 			bool kill = true;
 			if( m_Game->isClicked( SDL_BUTTON_RIGHT ) )
 			{
-				kill = ( minDist2 <= 100 );
+				kill = ( minDist <= 10 );
 			}
 
 			if( kill )
@@ -421,7 +420,7 @@ int main( int argc, const char* argv[] )
 		} //}}}
 
 		// Maybe create new particle
-		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist2 > 100 )
+		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist > 10 )
 				&& ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
 				&& ( m_Particles.size() < MAX_PARTICLES ) )
 		{ //{{{
@@ -438,10 +437,9 @@ int main( int argc, const char* argv[] )
 			nParticle->AddEntity( nPolygon );
 			nParticle->radius = 10.0;
 
-			nParticle->CurrentPositions( m_CursorPolygon->position.x,
-										 m_CursorPolygon->position.y );
+			nParticle->position.Set( m_CursorPolygon->position );
 
-			nParticle->Velocities( detVelocity( initVel ) );
+			nParticle->velocity.Set( detVelocity( initVel ) );
 			nParticle->AddForce( m_Gravity );
 			nParticle->AddForce( m_ElasticCollision );
 
@@ -484,7 +482,7 @@ int main( int argc, const char* argv[] )
 
 		if( doLock )
 		{
-			m_Game->Centers( m_Sun->XPosition(), m_Sun->YPosition() );
+			m_Game->Centers( m_Sun->position.x, m_Sun->position.y );
 		}
 		else /// Use arrows to move camera
 		{ //{{{
@@ -523,11 +521,12 @@ int main( int argc, const char* argv[] )
 			}
 		} //}}}
 
-		m_Cursor->CurrentPositions(
-			(int)(
-				(long double)(m_Game->CursorX()) / m_Game->Width() * m_Game->ViewWidth() + m_Game->position.x ),
-			(int)(
-				(1.0 - ((long double)(m_Game->CursorY()) / m_Game->Height())) * m_Game->ViewHeight() + m_Game->position.y) );
+		m_Cursor->position.Set(
+		(int)(
+			(long double)(m_Game->CursorX()) / m_Game->Width() * m_Game->ViewWidth() + m_Game->position.x ),
+		(int)(
+			(1.0 - ((long double)(m_Game->CursorY()) / m_Game->Height())) * m_Game->ViewHeight() + m_Game->position.y),
+			0 );
 
 		quitButton->position.Set( 40.0 * m_Game->ViewWidth()/m_Game->Width() + m_Game->position.x,
 				(1.0 - 40.0/m_Game->Height()) * m_Game->ViewHeight() + m_Game->position.y, 0 );
