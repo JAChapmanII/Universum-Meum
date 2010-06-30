@@ -1,3 +1,11 @@
+GUI:
+	- There is currently a pretty bad quit button example.
+	  - Z-order needs to be counted in
+	- Decide what buttons/menus there should be
+	- Create a generic-er way to implement said things
+	  - Perhaps classes with function pointers for what happens on click?
+	- Implement the said buttons/menus using said system
+
 Complete:
 	- Move most if not everything that could be done as a Vector into a Vector
 	- Look for more bugs/memory leaks
