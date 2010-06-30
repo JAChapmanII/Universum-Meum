@@ -527,6 +527,7 @@ int main( int argc, const char* argv[] )
 		(int)(
 			(1.0 - ((long double)(m_Game->CursorY()) / m_Game->Height())) * m_Game->ViewHeight() + m_Game->position.y),
 			0 );
+		m_Cursor->Update( 1 );
 
 		quitButton->position.Set( 40.0 * m_Game->ViewWidth()/m_Game->Width() + m_Game->position.x,
 				(1.0 - 40.0/m_Game->Height()) * m_Game->ViewHeight() + m_Game->position.y, 0 );
