@@ -50,6 +50,9 @@ class Vector
 		/// Overloaded -= operator
 		Vector< T > &operator-=( Vector r );
 
+		/// Overloaded * op
+		Vector< T > operator*( T r );
+
 		/// Dot product of this and r
 		T Dot( Vector r );
 		/// Cross product of this and r

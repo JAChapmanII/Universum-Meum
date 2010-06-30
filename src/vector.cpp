@@ -94,6 +94,12 @@ Vector< T > &Vector< T >::operator-=( Vector r )
 } //}}}
 
 template< class T >
+Vector< T > Vector< T >::operator*( T r )
+{ //{{{
+	return Vector< T >( this->x * r, this->y * r, this->z * r );
+} //}}}
+
+template< class T >
 T Vector< T >::Dot( Vector r )
 { //{{{
 	return ( x * r.x ) + ( y * r.y ) + ( z * r.z );
