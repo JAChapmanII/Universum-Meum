@@ -31,42 +31,40 @@
 template< int elasticityConst >
 void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 { //{{{
-	long double xDist = A->XPosition() - B->XPosition();
-	long double yDist = A->YPosition() - B->YPosition();
-	long double dist2 = (xDist * xDist) + (yDist * yDist);
-	long double dist  = sqrt( dist2 );
+	Vector< long double > distance = A->position - B->position;
+	long double dist = distance.Magnitude();
 	long double sumR = A->radius + B->radius;
 
 	if( ( dist < sumR ) && ( dist > 0 ) )
 	{
 		long double sectLength = (A->radius+B->radius) - dist;
-		long double unitX = xDist / dist;
-		long double unitY = yDist / dist;
+		distance /= dist;
+		//long double unitX = xDist / dist;
+		//long double unitY = yDist / dist;
 
-		A->XPosition( A->XPosition() + ( unitX * sectLength ) / 2 );
-		A->YPosition( A->YPosition() + ( unitY * sectLength ) / 2 );
+		A->movers.push_back( distance * ( sectLength / 2 ) );
+		B->movers.push_back( distance * -( sectLength / 2 ) );
 
-		B->XPosition( B->XPosition() - ( unitX * sectLength ) / 2 );
-		B->YPosition( B->YPosition() - ( unitY * sectLength ) / 2 );
-
-		long double theta = atan2( yDist, xDist );
-		long double theta2 = atan2( -yDist, -xDist );
-		long double dir1 = atan2( A->YVelocity(), A->XVelocity() );
-		long double dir2 = atan2( B->YVelocity(), B->XVelocity() );
+		long double theta = atan2( distance.y, distance.x );
+		long double theta2 = atan2( -distance.y, -distance.x );
+		long double dir1 = atan2( A->velocity.y, A->velocity.x );
+		long double dir2 = atan2( B->velocity.y, B->velocity.x );
 
 		long double nYV1 = A->speed * sin( dir1 - theta );
 		long double fXV1 = ( ( A->mass - B->mass ) * ( A->speed * cos( dir1 - theta ) ) + 2 *
 					B->mass * ( B->speed * cos( dir2 - theta ) ) ) / ( A->mass + B->mass );
 
-		A->XVelocity( (cos( theta ) * fXV1 + cos( theta + M_PI_2 ) * nYV1 ) );
-		A->YVelocity( (sin( theta ) * fXV1 + sin( theta + M_PI_2 ) * nYV1 ) );
+		A->impulses.push_back( Vector< long double >(
+						(cos( theta ) * fXV1 + cos( theta + M_PI_2 ) * nYV1 ) - A->velocity.x,
+						(sin( theta ) * fXV1 + sin( theta + M_PI_2 ) * nYV1 ) - B->velocity.y ) );
 
 		long double nYV2 = B->speed * sin( dir2 - theta2 );
 		long double fXV2 = ( ( B->mass - A->mass ) * ( B->speed * cos( dir2 - theta2 ) ) + 2 *
 					A->mass * ( A->speed * cos( dir1 - theta2 ) ) ) / ( B->mass + A->mass );
 
-		B->XVelocity( (cos( theta2 ) * fXV2 + cos( theta2 + M_PI_2 ) * nYV2 ) );
-		B->YVelocity( (sin( theta2 ) * fXV2 + sin( theta2 + M_PI_2 ) * nYV2 ) );
+		B->impulses.push_back( Vector< long double >(
+						(cos( theta2 ) * fXV2 + cos( theta2 + M_PI_2 ) * nYV2 ) - B->velocity.x,
+						(sin( theta2 ) * fXV2 + sin( theta2 + M_PI_2 ) * nYV2 ) - B->velocity.y ) );
 	}
 }//}}}
 
