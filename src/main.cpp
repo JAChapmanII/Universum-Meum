@@ -363,7 +363,7 @@ int main( int argc, const char* argv[] )
 
 			if( kill )
 			{
-				cout << "Removing... " << m_Particles.size() << ", " << m_Polygons.size() << "\n";
+				cout << "Deleted a particle -- (↓) to " << m_Particles.size() -1 << '\n';
 				Polygon* eMin = ( Polygon* )( pMin->GetEntity() );
 
 				m_ParticleSystem->RemoveParticle( pMin );
@@ -395,7 +395,7 @@ int main( int argc, const char* argv[] )
 		{ //{{{
 			lastKill = m_Game->GetTicks();
 
-			cout << "Removing... " << m_Particles.size() << ", " << m_Polygons.size() << "\n";
+			cout << "Deleted a particle -- (↓) to " << m_Particles.size() -1 << '\n';
 			Polygon* eMax = ( Polygon* )( pMax->GetEntity() );
 
 			m_ParticleSystem->RemoveParticle( pMax );
@@ -420,7 +420,7 @@ int main( int argc, const char* argv[] )
 			delete eMax;
 		} //}}}
 
-		/// Maybe create new particle
+		// Maybe create new particle
 		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist2 > 100 )
 				&& ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
 				&& ( m_Particles.size() < MAX_PARTICLES ) )
@@ -428,7 +428,7 @@ int main( int argc, const char* argv[] )
 			lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_LEFT );
 
 			unsigned int pNum = m_Polygons.size() + 1;
-			cout << "\nCreated new particle based on RMB press: " << pNum << "\n";
+			cout << "Created a new particle -- (↑) to " << pNum << "\n";
 			Polygon* nPolygon = new Polygon( 0, 0, 10, sin( pNum ), cos( pNum ), tan( pNum ) );
 			m_Polygons.push_back( nPolygon );
 			m_Game->AddEntity( nPolygon );
