@@ -46,14 +46,14 @@ class Vector
 		T Magnitude();
 
 		/// Overloaded + operator
-		Vector< T > operator+( Vector r );
+		Vector< T > operator+( Vector< T > r ) const;
 		/// Overloaded += operator
-		Vector< T > &operator+=( Vector r );
+		Vector< T > &operator+=( const Vector< T > &r );
 
 		/// Overloaded - operator
-		Vector< T > operator-( Vector r );
+		Vector< T > operator-( Vector< T > r ) const;
 		/// Overloaded -= operator
-		Vector< T > &operator-=( Vector r );
+		Vector< T > &operator-=( const Vector< T > &r );
 
 		/// Overloaded * op
 		Vector< T > operator*( T r );

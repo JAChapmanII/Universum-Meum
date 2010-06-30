@@ -79,33 +79,33 @@ T Vector< T >::Magnitude()
 } //}}}
 
 template< class T >
-Vector< T > Vector< T >::operator+( Vector r )
+Vector< T > Vector< T >::operator+( Vector< T > r ) const
 { //{{{
-	return new Vector< T >( x + r.x, y + r.y, z + r.z );
+	return Vector< T >( this->x + r.x, this->y + r.y, this->z + r.z );
 } //}}}
 
 template< class T >
-Vector< T > &Vector< T >::operator+=( Vector r )
+Vector< T > &Vector< T >::operator+=( const Vector &r )
 { //{{{
-	x += r.x;
-	y += r.y;
-	z += r.z;
-	return this;
+	this->x += r.x;
+	this->y += r.y;
+	this->z += r.z;
+	return *this;
 } //}}}
 
 template< class T >
-Vector< T > Vector< T >::operator-( Vector r )
+Vector< T > Vector< T >::operator-( Vector< T > r ) const
 { //{{{
-	return new Vector< T >( x - r.x, y - r.y, z - r.z );
+	return Vector< T >( this->x - r.x, this->y - r.y, this->z - r.z );
 } //}}}
 
 template< class T >
-Vector< T > &Vector< T >::operator-=( Vector r )
+Vector< T > &Vector< T >::operator-=( const Vector< T > &r )
 { //{{{
-	x -= r.x;
-	y -= r.y;
-	z -= r.z;
-	return this;
+	this->x -= r.x;
+	this->y -= r.y;
+	this->z -= r.z;
+	return *this;
 } //}}}
 
 template< class T >
