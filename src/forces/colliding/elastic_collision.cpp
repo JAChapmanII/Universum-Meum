@@ -56,7 +56,7 @@ void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 
 		A->impulses.push_back( Vector< long double >(
 						(cos( theta ) * fXV1 + cos( theta + M_PI_2 ) * nYV1 ) - A->velocity.x,
-						(sin( theta ) * fXV1 + sin( theta + M_PI_2 ) * nYV1 ) - B->velocity.y ) );
+						(sin( theta ) * fXV1 + sin( theta + M_PI_2 ) * nYV1 ) - B->velocity.y, 0 ) );
 
 		long double nYV2 = B->speed * sin( dir2 - theta2 );
 		long double fXV2 = ( ( B->mass - A->mass ) * ( B->speed * cos( dir2 - theta2 ) ) + 2 *
@@ -64,7 +64,7 @@ void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 
 		B->impulses.push_back( Vector< long double >(
 						(cos( theta2 ) * fXV2 + cos( theta2 + M_PI_2 ) * nYV2 ) - B->velocity.x,
-						(sin( theta2 ) * fXV2 + sin( theta2 + M_PI_2 ) * nYV2 ) - B->velocity.y ) );
+						(sin( theta2 ) * fXV2 + sin( theta2 + M_PI_2 ) * nYV2 ) - B->velocity.y, 0 ) );
 	}
 }//}}}
 
