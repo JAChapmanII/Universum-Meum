@@ -533,8 +533,8 @@ int main( int argc, const char* argv[] )
 
 		if( m_Game->isClicked( SDL_BUTTON_LEFT ) )
 		{
-			long double xDist = m_Cursor->XPosition() - quitButton->position.x;
-			long double yDist = m_Cursor->YPosition() - quitButton->position.y;
+			long double xDist = m_Cursor->position.x - quitButton->position.x;
+			long double yDist = m_Cursor->position.y - quitButton->position.y;
 			long double dist = sqrt( xDist*xDist + yDist*yDist );
 			if( dist < (10* m_Game->ViewWidth()/m_Game->Width()) )
 			{
