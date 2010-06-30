@@ -64,6 +64,12 @@ Vector< T > Vector< T >::Zero()
 } //}}}
 
 template< class T >
+T Vector< T >::Magnitude()
+{ //{{{
+	return sqrt( this->x*this->x + this->y*this->y + this->z*this->z );
+} //}}}
+
+template< class T >
 Vector< T > Vector< T >::operator+( Vector r )
 { //{{{
 	return new Vector< T >( x + r.x, y + r.y, z + r.z );

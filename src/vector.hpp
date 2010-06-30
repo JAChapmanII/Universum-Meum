@@ -40,6 +40,9 @@ class Vector
 		/// Set all members to zero, return zero vector
 		Vector< T > Zero();
 
+		/// Magnitude of vector
+		T Magnitude();
+
 		/// Overloaded + operator
 		Vector< T > operator+( Vector r );
 		/// Overloaded += operator
