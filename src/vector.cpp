@@ -64,13 +64,13 @@ Vector< T > Vector< T >::Zero()
 } //}}}
 
 template< class T >
-Vector< T > Vector< T >::opAdd( Vector r )
+Vector< T > Vector< T >::operator+( Vector r )
 { //{{{
 	return new Vector< T >( x + r.x, y + r.y, z + r.z );
 } //}}}
 
 template< class T >
-Vector< T > Vector< T >::opAddAssign( Vector r )
+Vector< T > &Vector< T >::operator+=( Vector r )
 { //{{{
 	x += r.x;
 	y += r.y;
@@ -79,13 +79,13 @@ Vector< T > Vector< T >::opAddAssign( Vector r )
 } //}}}
 
 template< class T >
-Vector< T > Vector< T >::opSub( Vector r )
+Vector< T > Vector< T >::operator-( Vector r )
 { //{{{
 	return new Vector< T >( x - r.x, y - r.y, z - r.z );
 } //}}}
 
 template< class T >
-Vector< T > Vector< T >::opSubAssign( Vector r )
+Vector< T > &Vector< T >::operator-=( Vector r )
 { //{{{
 	x -= r.x;
 	y -= r.y;

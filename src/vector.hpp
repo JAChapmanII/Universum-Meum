@@ -41,14 +41,14 @@ class Vector
 		Vector< T > Zero();
 
 		/// Overloaded + operator
-		Vector< T > opAdd( Vector r );
+		Vector< T > operator+( Vector r );
 		/// Overloaded += operator
-		Vector< T > opAddAssign( Vector r );
+		Vector< T > &operator+=( Vector r );
 
 		/// Overloaded - operator
-		Vector< T > opSub( Vector r );
+		Vector< T > operator-( Vector r );
 		/// Overloaded -= operator
-		Vector< T > opSubAssign( Vector r );
+		Vector< T > &operator-=( Vector r );
 
 		/// Dot product of this and r
 		T Dot( Vector r );
