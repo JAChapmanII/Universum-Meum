@@ -99,22 +99,6 @@ long double ParticleSystem::maxSpeed()
 	return max;
 } //}}}
 
-long double ParticleSystem::maxAcceleration()
-{ //{{{
-	long double max = 0.0f;
-	long double current = 0.0f;
-	for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
-	{
-		current = sqrt( (*i)->XAcceleration()*(*i)->XAcceleration() +
-						(*i)->YAcceleration()*(*i)->YAcceleration() );
-		if( current >= max )
-		{
-			max = current;
-		}
-	}
-	return max;
-} //}}}
-
 // {G,S}etter for m_Step
 void ParticleSystem::Step( long double nStep ) //{{{
 {

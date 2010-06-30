@@ -35,7 +35,6 @@ class ParticleSystem
 		void UpdateAll( long double deltaTime );
 
 		long double maxSpeed();
-		long double maxAcceleration();
 
 		// {G,S}etter for m_Step
 		void Step( long double nStep );
