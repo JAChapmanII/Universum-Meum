@@ -25,17 +25,13 @@
 template< int collConst >
 void Collapse( Particle* A, Particle* B, long double deltaTime )
 { //{{{
-	long double dist2 = (A->XPosition()*A->XPosition()) + (A->YPosition()*A->YPosition());
+	long double dist = A->position.Magnitude();
 
-	if( ( dist2 > 0 ) && ( dist2 > 400 ) )
+	if( ( dist > 0 ) && ( dist > A->radius ) )
 	{
-		long double dist3 = pow( dist2, 1.5 );
+		long double dist3 = pow( dist, 3 );
 
-		A->XAcceleration( A->NextXAcceleration() +
-			( collConst )*(-A->XPosition()) / ( dist3 ) );
-
-		A->YAcceleration( A->NextYAcceleration() +
-			( collConst )*(-A->YPosition()) / ( dist3 ) );
+		A->impulses.push_back( A->position * -( collConst / dist3 ) );
 	}
 } //}}}
 
