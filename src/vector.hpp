@@ -36,6 +36,8 @@ class Vector
 
 		/// Set all members at once
 		Vector< T > Set( T nX, T nY, T nZ );
+		/// Set all members at once
+		Vector< T > Set( Vector< T > nThis );
 
 		/// Set all members to zero, return zero vector
 		Vector< T > Zero();

@@ -55,6 +55,15 @@ Vector< T > Vector< T >::Set( T nX, T nY, T nZ )
 } //}}}
 
 template< class T >
+Vector< T > Vector< T >::Set( Vector< T > nThis )
+{ //{{{
+	this->x = nThis.x;
+	this->y = nThis.y;
+	this->z = nThis.z;
+	return *this;
+} //}}}
+
+template< class T >
 Vector< T > Vector< T >::Zero()
 { //{{{
 	x = 0;
