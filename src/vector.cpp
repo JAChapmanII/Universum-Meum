@@ -109,9 +109,33 @@ Vector< T > &Vector< T >::operator-=( const Vector< T > &r )
 } //}}}
 
 template< class T >
-Vector< T > Vector< T >::operator*( T r )
+Vector< T > &Vector< T >::operator/=( const Vector< T > &r )
+{ //{{{
+	this->x /= r.x;
+	this->y /= r.y;
+	this->z /= r.z;
+	return *this;
+} //}}}
+
+template< class T >
+Vector< T > Vector< T >::operator*( T r ) const
 { //{{{
 	return Vector< T >( this->x * r, this->y * r, this->z * r );
+} //}}}
+
+template< class T >
+Vector< T > Vector< T >::operator/( T r ) const
+{ //{{{
+	return Vector< T >( this->x / r, this->y / r, this->z / r );
+} //}}}
+
+template< class T >
+Vector< T > Vector< T >::operator/=( T r )
+{ //{{{
+	this->x /= r;
+	this->y /= r;
+	this->z /= r;
+	return *this;
 } //}}}
 
 template< class T >

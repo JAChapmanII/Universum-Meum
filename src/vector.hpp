@@ -55,8 +55,16 @@ class Vector
 		/// Overloaded -= operator
 		Vector< T > &operator-=( const Vector< T > &r );
 
+		/// Overloaded /= operator
+		Vector< T > &operator/=( const Vector< T > &r );
+
 		/// Overloaded * op
-		Vector< T > operator*( T r );
+		Vector< T > operator*( T r ) const;
+
+		/// Overloaded / operator
+		Vector< T > operator/( T r ) const;
+		/// Overloaded /= operator
+		Vector< T > operator/=( T r );
 
 		/// Dot product of this and r
 		T Dot( Vector r );
