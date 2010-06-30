@@ -22,42 +22,53 @@
 
 #include "vector.cpp"
 
+/// An object that should be allowed to be drawn to the screen
 class Entity
 {
 	public:
+		/// Draw object to screen using OpenGL commands, zoom is with reference to default
 		virtual void Draw( long double m_Zoom = 1 )
 		{
 		}
 
+		/// Update the object in anyway needed, called each frame
 		virtual void Update()
 		{
 		}
 
+		/// Position of Entity in whatever coordinate system it chooses
 		Vector< long double > position;
 
+		/// Default constructor
 		Entity() :
 			position()
 		{
 		}
 
+		/// Construct with an initial position
 		Entity( long double iX, long double iY, long double iZ ) :
 			position( iX, iY, iZ )
 		{
 		}
 
+		/// Copy consturctor
 		Entity( Entity const& r ) :
 			position( r.position )
 		{
 		}
 
+		/// Consturctor that initializes this->position to an input Vector
 		Entity( Vector< long double > iPosition ) :
 			position( iPosition )
 		{
 		}
 
+		/// Default destructor made virtual
 		virtual ~Entity()
 		{
 		}
+
+	protected:
 
 	private:
 
