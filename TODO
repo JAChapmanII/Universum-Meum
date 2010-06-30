@@ -7,6 +7,8 @@ GUI:
 	- Implement the said buttons/menus using said system
 
 Complete:
+	- Move to use impulses/forces
+	  - Look at the TODO statement in the elastic collision code, basically
 	- Move most if not everything that could be done as a Vector into a Vector
 	- Look for more bugs/memory leaks
 	- Look for bad C++ code that was fine D
