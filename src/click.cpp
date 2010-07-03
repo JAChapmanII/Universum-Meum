@@ -22,18 +22,24 @@
 
 #include "vector.cpp"
 
+/// Holds information about the location and type of a mouse click
 class Click
 {
 	public:
-		Click( unsigned int iX, unsigned int iY, unsigned int iButton, unsigned int cTime ) :
+		/// Construct with a position, time, and mouse button
+		Click( unsigned int iX, unsigned int iY,
+				unsigned int iButton, unsigned int cTime ) :
 			position( iX, iY, 0 ),
 			createTime( cTime ),
 			button( iButton )
 		{
 		}
 
+		/// Coordinates of click in pixels
 		Vector< unsigned int > position;
+		/// Time of click in ticks since SDL has been initialized
 		unsigned int createTime;
+		/// Which mouse button was clicked
 		unsigned int button;
 
 	private:

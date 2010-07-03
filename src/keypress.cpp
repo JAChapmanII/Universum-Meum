@@ -20,26 +20,32 @@
 #ifndef KEYPRESS_CPP
 #define KEYPRESS_CPP
 
+/// Holds information about an SDL_Event that is a keyboard key press
 class Keypress
 {
 	public:
+		/// Construct with some values
 		Keypress( unsigned int iSymCode, unsigned int iCreateTime ) :
 			m_SymCode( iSymCode ),
 			m_CreateTime( iCreateTime )
 		{
 		}
 
+		/// Return m_SymCode
 		unsigned int SymCode()
 		{
 			return m_SymCode;
 		}
 
+		/// Return m_CreateTime
 		unsigned int CreateTime()
 		{
 			return m_CreateTime;
 		}
 
 	private:
+		// TODO Might want to make these public and not worry about getters, and
+		// and assume that they might have been changed after creation TODO
 		unsigned int m_SymCode;
 		unsigned int m_CreateTime;
 
