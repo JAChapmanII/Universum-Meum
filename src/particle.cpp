@@ -33,7 +33,7 @@ Particle::Particle() :
 	velocity(),
 	movers(),
 	impulses(),
-	m_Entities(),
+	m_Drawables(),
 	m_Forces()
 {
 } //}}}
@@ -55,14 +55,14 @@ void Particle::Work( Particle* B, long double deltaTime )
 
 void Particle::Update( long double deltaTime )
 { //{{{
-	for( std::vector< Vector< long double > >::iterator i = this->movers.begin();
+	for( std::vector< Vector2< long double > >::iterator i = this->movers.begin();
 			i != this->movers.end(); i++ )
 	{
 		this->position += (*i);
 	}
 	this->movers.clear();
 
-	for( std::vector< Vector< long double > >::iterator i = this->impulses.begin();
+	for( std::vector< Vector2< long double > >::iterator i = this->impulses.begin();
 			i != this->impulses.end(); i++ )
 	{
 		this->velocity += (*i) * deltaTime;
@@ -71,13 +71,14 @@ void Particle::Update( long double deltaTime )
 
 	this->position += this->velocity * deltaTime;
 
-	this->speed = this->velocity.Magnitude();
+	this->speed = sqrt( this->velocity.x * this->velocity.x
+		+ this->velocity.y * this->velocity.y );
 	this->momentum = this->mass * this->speed;
 
-	for( std::vector< Entity* >::iterator i = this->m_Entities.begin();
-			i != this->m_Entities.end(); ++i )
+	for( std::vector< Drawable* >::iterator i = this->m_Drawables.begin();
+			i != this->m_Drawables.end(); ++i )
 	{
-		(*i)->position = this->position;
+		(*i)->SetPosition( (float)this->position.x, (float)this->position.y );
 	}
 
 } //}}}
@@ -94,11 +95,11 @@ void Particle::AddForce( Force *nForce )
 	}
 } //}}}
 
-void Particle::AddEntity( Entity *nEntity )
+void Particle::AddDrawable( Drawable *nDrawable )
 { //{{{
-	if( nEntity != 0 )
+	if( nDrawable != 0 )
 	{
-		m_Entities.push_back( nEntity );
+		m_Drawables.push_back( nDrawable );
 	}
 	else
 	{
@@ -106,11 +107,11 @@ void Particle::AddEntity( Entity *nEntity )
 	}
 } //}}}
 
-Entity* Particle::GetEntity()
+Drawable* Particle::GetDrawable()
 { //{{{
-	if( m_Entities.size() > 0 )
+	if( m_Drawables.size() > 0 )
 	{
-		return m_Entities.front();
+		return m_Drawables.front();
 	}
 	return NULL;
 	// TODO Error

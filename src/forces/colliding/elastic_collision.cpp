@@ -20,10 +20,7 @@
 #ifndef ELASTIC_COLLISOIN_CPP
 #define ELASTIC_COLLISOIN_CPP
 
-#include <math.h>
-#include <iostream>
-
-#include <SDL/SDL.h>
+#include <cmath>
 
 #include "../../particle.cpp"
 
@@ -31,8 +28,8 @@
 template< int elasticityConst >
 void ElasticCollision( Particle* A, Particle* B, long double deltaTime )
 { //{{{
-	Vector< long double > distance = A->position - B->position;
-	long double dist = distance.Magnitude();
+	Vector2< long double > distance = A->position - B->position;
+	long double dist = Magnitude( distance );
 	long double sumR = A->radius + B->radius;
 
 	if( ( dist < sumR ) && ( dist > 0 ) )

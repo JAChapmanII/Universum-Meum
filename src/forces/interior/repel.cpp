@@ -20,7 +20,7 @@
 #ifndef REPEL_CPP
 #define REPEL_CPP
 
-#include <math.h>
+#include <cmath>
 
 #include "../../particle.cpp"
 
@@ -28,8 +28,8 @@
 template< int repConst >
 void Repel( Particle* A, Particle* B, long double deltaTime )
 { //{{{
-	Vector< long double > distance = B->position - A->position;
-	long double dist = distance.Magnitude();
+	Vector2< long double > distance = B->position - A->position;
+	long double dist = Magnitude( distance );
 
 	if( ( dist > 0 ) && ( dist < (A->radius + B->radius) ) )
 	{

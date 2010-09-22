@@ -21,9 +21,15 @@
 #define PARTICLE_HPP
 
 #include <vector>
-#include <math.h>
+#include <cmath>
 
-#include "entity.cpp"
+#include <SFML/Graphics/Drawable.hpp>
+using sf::Drawable;
+
+#include <SFML/System/Vector2.hpp>
+using sf::Vector2;
+
+#include "util.cpp"
 
 /// Class representing an object that should be consrained by some system
 class Particle
@@ -44,11 +50,11 @@ class Particle
 
 		/// Push Force into m_Forces
 		void AddForce( Force *nForce );
-		/// Push Entity into m_Entities, used to draw a representation of this particle
-		void AddEntity( Entity *nEntity );
+		/// Push Drawable into m_Drawables, used to draw a representation of this particle
+		void AddDrawable( Drawable *nDrawable );
 
-		/// Return first entity in m_Entities or null if there are none.
-		Entity* GetEntity();
+		/// Return first entity in m_Drawables or null if there are none.
+		Drawable* GetDrawable();
 
 		/// Mass of particle
 		long double mass;
@@ -59,17 +65,17 @@ class Particle
 		/// this->speed*this->mass, momentum of particle
 		long double momentum;
 
-		Vector< long double > position;
-		Vector< long double > velocity;
+		Vector2< long double > position;
+		Vector2< long double > velocity;
 
 		/// Movers (changes in position) that should affect particle
-		std::vector< Vector< long double > > movers;
+		std::vector< Vector2< long double > > movers;
 		/// Impulses (changes in velocity) that should act on particle
-		std::vector< Vector< long double > > impulses;
+		std::vector< Vector2< long double > > impulses;
 
 	private:
-		/// std::vector of Entity's representincg this object on the screen
-		std::vector< Entity* > m_Entities;
+		/// std::vector of Drawables representincg this object on the screen
+		std::vector< Drawable* > m_Drawables;
 		/// std::vector of Forces this particle "emits"
 		std::vector< Force* > m_Forces;
 

@@ -17,15 +17,17 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
+#ifndef COLLAPSE_CPP
+#define COLLAPSE_CPP
 
-#include <math.h>
+#include <cmath>
 
 #include "../../particle.cpp"
 
 template< int collConst >
 void Collapse( Particle* A, Particle* B, long double deltaTime )
 { //{{{
-	long double dist = A->position.Magnitude();
+	long double dist = Magnitude( A->position );
 
 	if( ( dist > 0 ) && ( dist > A->radius ) )
 	{
@@ -36,3 +38,5 @@ void Collapse( Particle* A, Particle* B, long double deltaTime )
 } //}}}
 
 Particle::Force DefaultCollapse = &Collapse< 0 >;
+
+#endif // COLLAPSE_CPP

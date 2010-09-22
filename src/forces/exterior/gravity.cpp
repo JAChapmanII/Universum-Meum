@@ -20,7 +20,7 @@
 #ifndef GRAVITY_CPP
 #define GRAVITY_CPP
 
-#include <math.h>
+#include <cmath>
 
 #include "../../particle.cpp"
 
@@ -36,8 +36,8 @@ void Gravity( Particle* A, Particle* B, long double deltaTime )
 	 *       \right\}
 	 * \f]
 	 */
-	Vector< long double > distance = B->position - A->position;
-	long double dist = distance.Magnitude();
+	Vector2< long double > distance = B->position - A->position;
+	long double dist = Magnitude( distance );
 
 	if( dist > 0 )
 	{
