@@ -20,35 +20,37 @@
 
 #include <iostream>
 #include <vector>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <map>
 #include <limits>
-#include <math.h>
+#include <cmath>
 
-#include "game.cpp"
-#include "particle.cpp"
-#include "particle_system.cpp"
-#include "entity.cpp"
-#include "entities/polygon.cpp"
-#include "entities/point.cpp"
+#include <SFML/Graphics.hpp>
+// Using declarations for SFML {{{
+using sf::RenderWindow;
+using sf::VideoMode;
+using sf::Shape;
+using sf::Color;
+using sf::Event;
+using sf::Input;
+// }}}
+
+#include "particle.hpp"
+#include "particle_system.hpp"
 #include "forces/exterior/gravity.cpp"
 #include "forces/exterior/collapse.cpp"
 #include "forces/interior/repel.cpp"
 #include "forces/colliding/elastic_collision.cpp"
 
-#include <SDL/SDL.h>
-#include <GL/gl.h>
-
 using namespace std;
 
 const unsigned int MAX_PARTICLES = 1000;
 
-Vector< long double > detVelocity( unsigned int type = 0 );
-Vector< long double > detVelocity( unsigned int type )
+Vector2< long double > detVelocity( unsigned int type = 0 );
+Vector2< long double > detVelocity( unsigned int type )
 {
-	Vector< long double >* rVec = new Vector< long double >;
-	rVec->Zero();
+	Vector2< long double >* rVec = new Vector2< long double >;
 	switch( type ) /// Determine appropriate init velocities
 	{ // {{{
 		case 0: /// Nothing
@@ -172,16 +174,15 @@ int main( int argc, const char* argv[] )
 			cin >> gHeight;
 	}
 
-	cout << "Creating a Game\n" ;
+	cout << "Creating a window\n" ;
 	cout << "W: " << gWidth << "\tH: " << gHeight << "\n";
-	Game *m_Game;
-	m_Game = Game::Instance( gWidth, gHeight, 32 ); //{{{
-	m_Game->position.x = 0;
-	m_Game->position.y = 0;
+	RenderWindow *m_Game =
+		new RenderWindow( VideoMode( gWidth, gHeight, 32 ), "Universum-Meum" ); //{{{
+	const Input &m_Input = m_Game->GetInput();
 
 	cout << "Setting framerate to 100\n";
 	unsigned int frameRate = 100;
-	m_Game->tickInterval = 1000 / frameRate;
+	m_Game->SetFramerateLimit( frameRate );
 	//}}}
 
 	float floatArray[ 2 ];
@@ -242,25 +243,26 @@ int main( int argc, const char* argv[] )
 
 	cout <<  "Creating particles/points\n" ;
 	vector< Particle* > m_Particles;
-	vector< Polygon* > m_Polygons;
+	vector< Shape* > m_Shapes;
 
 	/// Create particles
 	for( unsigned int i = 0; i < numObjects; i++ ) //{{{
 	{
 		cout << "Number: " << i << "\n";
-		Polygon* nPolygon = new Polygon( 0, 0, 10, sin( i ), cos( i ), tan( i ) );
-		m_Polygons.push_back( nPolygon );
-		m_Game->AddEntity( nPolygon );
+		Shape* nShape = new Shape(
+			Shape::Circle( 0, 0, 10, Color( sin( i ), cos( i ), tan( i ) ) ) );
+		m_Shapes.push_back( nShape );
+		// TODO m_Game->AddEntity( nShape );
 
 		Particle *nParticle = new Particle();
 		m_Particles.push_back( nParticle );
-		nParticle->AddEntity( nPolygon );
+		nParticle->AddDrawable( nShape );
 		nParticle->radius = 10.0;
 
-		nParticle->position.Set( m_Game->Width() / 2 + 100*cos( i * 2 * M_PI / numObjects ),
-								 m_Game->Height() / 2 + 100*sin( i * 2 * M_PI / numObjects ), 0 );
+		nParticle->position.x = m_Game->GetWidth() / 2 + 100*cos( i * 2 * M_PI / numObjects );
+		nParticle->position.y = m_Game->GetHeight() / 2 + 100*sin( i * 2 * M_PI / numObjects );
 
-		nParticle->velocity.Set( detVelocity( initVel ) );
+		nParticle->velocity = detVelocity( initVel );
 		nParticle->AddForce( m_Gravity );
 		nParticle->AddForce( m_ElasticCollision );
 
@@ -268,14 +270,17 @@ int main( int argc, const char* argv[] )
 	} //}}}
 
 	cout << "Setting up the sun\n";
-	Polygon* m_SunPolygon = new Polygon( m_Game->Width() / 2, m_Game->Height() / 2, 25.0f, 1.0f, 1.0f, 0.0f ); //{{{
+	Shape* m_SunShape = new Shape(
+		Shape::Circle( m_Game->GetWidth() / 2, m_Game->GetHeight() / 2, 25.0f,
+			Color( 1.0f, 1.0f, 0.0f ) ) ); //{{{
 	Particle* m_Sun = new Particle();
 
-	m_Sun->AddEntity( m_SunPolygon );
-	m_Sun->position.Set( gWidth / 2, gHeight / 2, 0 );
+	m_Sun->AddDrawable( m_SunShape );
+	m_Sun->position.x = gWidth / 2;
+	m_Sun->position.y = gHeight / 2;
 	m_Sun->radius = 25.0f;
 	m_Sun->mass = 62.5f;
-	m_Game->AddEntity( m_SunPolygon );
+	// TODO m_Game->AddEntity( m_SunShape );
 	m_ParticleSystem->AddParticle( m_Sun );
 
 	m_Sun->AddForce( m_Gravity );
@@ -287,26 +292,23 @@ int main( int argc, const char* argv[] )
 	//}}}
 
 	cout << "Setting up the cursor\n" ;
-	Polygon* m_CursorPolygon = new Polygon( 400.0f, 300.0f, 3.0f, 0.0f, 0.0f, 0.0f ); //{{{
-	m_Game->WarpMouse( 400, 300 );
+	Shape* m_CursorShape = new Shape(
+		Shape::Circle( 400.0f, 300.0f, 3.0f, Color( 0.0f, 0.0f, 0.0f ) ) ); //{{{
+	m_Game->SetCursorPosition( 400, 300 );
 	Particle* m_Cursor = new Particle();
 
-	m_Cursor->AddEntity( m_CursorPolygon );
-	m_Cursor->position.Set( 400.0f, 300.0f, 0 );
+	m_Cursor->AddDrawable( m_CursorShape );
+	m_Cursor->position.x = 400.0f;
+	m_Cursor->position.y = 300.0f;
 	m_Cursor->radius = 0.0f;
 	m_Cursor->mass = 0.0f;
-	m_Game->AddEntity( m_CursorPolygon );
+	// TODO m_Game->AddEntity( m_CursorShape );
 
 	//m_ParticleSystem.AddParticle( m_Cursor );
 
 	//m_Cursor.AddForce( m_Gravity );
 	//m_Cursor.AddForce( m_Repel );
 	//}}}
-
-	cout << "Creating an examlpe button (hud-esque)\n";
-	Point* quitButton = new Point( 0, 0, 10, 1, 0, 0 );
-	quitButton->noZoom = true;
-	m_Game->AddEntity( quitButton );
 
 	unsigned int lastSpawn = 0;
 	unsigned int lastKill = 0;
@@ -315,13 +317,11 @@ int main( int argc, const char* argv[] )
 	Particle* pMin;
 	Particle* pMax;
 	cout << "Entering main game loop\n";
-	while( !m_Game->isDone )
+	while( !m_Game->IsOpened() )
 	{ //{{{
-		m_Game->ProcessInput();
-
-		if( m_Game->isPressed( Key[ "Escape" ] ) )
+		if( m_Input.IsKeyDown( sf::Key::Escape ) )
 		{
-			m_Game->isDone = true;
+			m_Game->Close();
 			continue;
 		}
 
@@ -349,7 +349,7 @@ int main( int argc, const char* argv[] )
 		} //}}}
 
 		// Maybe delete a particle based on 'd' or RMB
-		if( ( ( m_Game->isClicked( SDL_BUTTON_RIGHT ) ) || ( m_Game->isPressed( Key[ "d" ] ) ) )
+		if( ( ( m_Game->isClicked( SDL_BUTTON_RIGHT ) ) || ( m_Input.IsKeyDown( sf::Key::D ) ) )
 				&& ( m_Particles.size() > 0 ) && ( m_Game->GetTicks() > lastKill + 100 ) )
 		{ //{{{
 			lastKill = m_Game->GetTicks();
@@ -389,7 +389,7 @@ int main( int argc, const char* argv[] )
 		} //}}}
 
 		// Maybe delete a particle based on 'i'
-		if( ( m_Game->isPressed( Key[ "i" ] ) ) && ( m_Particles.size() > 0 )
+		if( ( m_Input.IsKeyDown( sf::Key::I ) ) && ( m_Particles.size() > 0 )
 				&& ( m_Game->GetTicks() > lastKill + 100 ) )
 		{ //{{{
 			lastKill = m_Game->GetTicks();
@@ -420,7 +420,7 @@ int main( int argc, const char* argv[] )
 		} //}}}
 
 		// Maybe create new particle
-		if( ( m_Game->isClicked( SDL_BUTTON_LEFT ) ) && ( minDist > 10 )
+		if( ( m_Input->IsKeyDown( sf::Key::Left ) ) && ( minDist > 10 )
 				&& ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
 				&& ( m_Particles.size() < MAX_PARTICLES ) )
 		{ //{{{
@@ -486,23 +486,23 @@ int main( int argc, const char* argv[] )
 		}
 		else /// Use arrows to move camera
 		{ //{{{
-			if( m_Game->isPressed( Key[ "Right" ] ) )
+			if( m_Input.IsKeyDown( sf::Key::Right ) )
 			{
 				m_Game->position.x += 5;
-			} else if( m_Game->isPressed( Key[ "Left" ] ) )
+			} else if( m_Input.IsKeyDown( sf::Key::Left ) )
 			{
 				m_Game->position.x -= 5;
 			}
-			if( m_Game->isPressed( Key[ "Up" ] ) )
+			if( m_Input.IsKeyDown( sf::Key::Up ) )
 			{
 				m_Game->position.y += 5;
-			} else if( m_Game->isPressed( Key[ "Down" ] ) )
+			} else if( m_Input.IsKeyDown( sf::Key::Down ) )
 			{
 				m_Game->position.y -= 5;
 			}
 		} //}}}
 
-		if( m_Game->isPressed( Key[ "Key Pad Plus" ] ) ) /// Increase framerate
+		if( m_Input.IsKeyDown( sf::Key::Add ) ) /// Increase framerate
 		{ //{{{
 			if( frameRate <= 995 )
 			{
@@ -511,7 +511,7 @@ int main( int argc, const char* argv[] )
 				m_Game->tickInterval = 1000 / frameRate;
 			}
 		} //}}}
-		else if( m_Game->isPressed( Key[ "Key Pad Minus" ] ) ) /// Decrease framerate
+		else if( m_Input.IsKeyDown( sf::Key::Subtract ) ) /// Decrease framerate
 		{ //{{{
 			if( frameRate >= 10 )
 			{
