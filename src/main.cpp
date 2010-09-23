@@ -90,15 +90,15 @@ int main( int argc, const char* argv[] )
 
 	cout << "Creating a window\n" ;
 	cout << "W: " << gWidth << "\tH: " << gHeight << "\n";
-	RenderWindow *m_Game =
-		new RenderWindow( VideoMode( gWidth, gHeight, 32 ), "Universum-Meum" ); //{{{
-	const Input &m_Input = m_Game->GetInput();
+	RenderWindow *m_Game = new RenderWindow(
+			VideoMode( gWidth, gHeight ), "Universum-Meum", sf::Style::Close ); //{{{
 	View *m_View = &m_Game->GetDefaultView();
 	m_Game->SetView( *m_View );
 	Clock *m_Clock = new Clock();
+	const Input &m_Input = m_Game->GetInput();
 
-	cout << "Setting framerate to 100\n";
-	unsigned int frameRate = 100;
+	cout << "Setting framerate to 60\n";
+	unsigned int frameRate = 60;
 	m_Game->SetFramerateLimit( frameRate );
 	//}}}
 
@@ -169,8 +169,8 @@ int main( int argc, const char* argv[] )
 
 	cout << "Setting up the sun\n";
 	Shape* m_SunShape = new Shape(
-		Shape::Circle( m_Game->GetWidth() / 2, m_Game->GetHeight() / 2, 25.0f,
-			Color( 1.0f, 1.0f, 0.0f ) ) ); //{{{
+		Shape::Circle( 0.0f, 0.0f, 25.0f,
+			Color( 255, 255, 0 ) ) ); //{{{
 	Particle* m_Sun = new Particle();
 
 	m_Sun->AddDrawable( m_SunShape );
@@ -179,6 +179,7 @@ int main( int argc, const char* argv[] )
 	m_Sun->radius = 25.0f;
 	m_Sun->mass = 62.5f;
 	// TODO m_Game->AddEntity( m_SunShape );
+	m_Shapes.push_back( m_SunShape );
 	m_ParticleSystem->AddParticle( m_Sun );
 
 	m_Sun->AddForce( m_Gravity );
@@ -191,7 +192,7 @@ int main( int argc, const char* argv[] )
 
 	cout << "Setting up the cursor\n" ;
 	Shape* m_CursorShape = new Shape(
-		Shape::Circle( 400.0f, 300.0f, 3.0f, Color( 0.0f, 0.0f, 0.0f ) ) ); //{{{
+		Shape::Circle( 0.0f, 0.0f, 3.0f, Color( 0, 0, 0 ) ) ); //{{{
 	m_Game->SetCursorPosition( 400, 300 );
 	Particle* m_Cursor = new Particle();
 
@@ -201,6 +202,7 @@ int main( int argc, const char* argv[] )
 	m_Cursor->radius = 0.0f;
 	m_Cursor->mass = 0.0f;
 	// TODO m_Game->AddEntity( m_CursorShape );
+	m_Shapes.push_back( m_CursorShape );
 
 	//m_ParticleSystem.AddParticle( m_Cursor );
 
@@ -209,18 +211,28 @@ int main( int argc, const char* argv[] )
 	//}}}
 
 	unsigned int lastSpawn = 0;
-	unsigned int lastKill = 0;
+	unsigned int lastKill = m_Clock->GetElapsedTime();
 	long double maxMomSeen = 0;
 	long double xCenter, yCenter;
 	Particle* pMin;
 	Particle* pMax;
+	Event m_Event;
 	cout << "Entering main game loop\n";
 	while( m_Game->IsOpened() )
 	{ //{{{
+		while( m_Game->GetEvent( m_Event ) )
+		{
+			if( m_Event.Type == sf::Event::Closed )
+			{
+				m_Game->Close();
+				break;
+			}
+		}
 		if( m_Input.IsKeyDown( sf::Key::Escape ) )
 		{
+			cout << "Escape was pressed\n";
 			m_Game->Close();
-			continue;
+			break;
 		}
 
 		xCenter = m_View->GetCenter().x;
@@ -249,8 +261,10 @@ int main( int argc, const char* argv[] )
 		} //}}}
 
 		// Maybe delete a particle based on 'd' or RMB
-		if( ( ( m_Input.IsMouseButtonDown( sf::Mouse::Right ) ) || ( m_Input.IsKeyDown( sf::Key::D ) ) )
-				&& ( m_Particles.size() > 0 ) && ( m_Clock->GetElapsedTime() > lastKill + 100 ) )
+		if( ( ( m_Input.IsMouseButtonDown( sf::Mouse::Right ) )
+			|| ( m_Input.IsKeyDown( sf::Key::D ) ) )
+			&& ( m_Particles.size() > 0 )
+			&& ( m_Clock->GetElapsedTime() > lastKill + 0.1 ) )
 		{ //{{{
 			lastKill = m_Clock->GetElapsedTime();
 
@@ -290,7 +304,7 @@ int main( int argc, const char* argv[] )
 
 		// Maybe delete a particle based on 'i'
 		if( ( m_Input.IsKeyDown( sf::Key::I ) ) && ( m_Particles.size() > 0 )
-				&& ( m_Clock->GetElapsedTime() > lastKill + 100 ) )
+			&& ( m_Clock->GetElapsedTime() > lastKill + 0.1f ) )
 		{ //{{{
 			lastKill = m_Clock->GetElapsedTime();
 
@@ -320,11 +334,11 @@ int main( int argc, const char* argv[] )
 		} //}}}
 
 		// Maybe create new particle
-		if( ( m_Input.IsKeyDown( sf::Key::Left ) ) && ( minDist > 10 )
-				// TODO && ( m_Game->ClickCreateTime( SDL_BUTTON_LEFT ) > lastSpawn )
-				&& ( m_Particles.size() < MAX_PARTICLES ) )
+		if( ( m_Input.IsMouseButtonDown( sf::Mouse::Left ) ) && ( minDist > 10 )
+			&& ( m_Clock->GetElapsedTime() > lastSpawn + 0.1f )
+			&& ( m_Particles.size() < MAX_PARTICLES ) )
 		{ //{{{
-			// TODO lastSpawn = m_Game->ClickCreateTime( SDL_BUTTON_LEFT );
+			lastSpawn = m_Clock->GetElapsedTime();
 
 			CreateParticle( &m_Shapes, &m_Particles, m_ParticleSystem, m_Forces, m_Game, initVel,
 					m_Cursor->position );
@@ -355,7 +369,8 @@ int main( int argc, const char* argv[] )
 		{
 			long double logmom = (*i)->speed / maxMomSeen;
 			Drawable* cEnt = (*i)->GetDrawable();
-			cEnt->SetColor( Color( logmom, 0, 1.0 - logmom, 1.0 ) );
+			cEnt->SetColor( Color(
+						(int)( logmom * 255.0f ), 0, (int)( (1.0 - logmom) * 255.0f ), 255 ) );
 		}
 
 		if( doLock )
@@ -373,10 +388,10 @@ int main( int argc, const char* argv[] )
 			}
 			if( m_Input.IsKeyDown( sf::Key::Up ) )
 			{
-				m_View->Move( 0.0f, 5.0f );
+				m_View->Move( 0.0f, -5.0f );
 			} else if( m_Input.IsKeyDown( sf::Key::Down ) )
 			{
-				m_View->Move( 0.0f, -5.0f );
+				m_View->Move( 0.0f, 5.0f );
 			}
 		} //}}}
 
@@ -403,13 +418,22 @@ int main( int argc, const char* argv[] )
 		m_Cursor->position.y = m_Game->ConvertCoords( m_Input.GetMouseX(), m_Input.GetMouseY() ).y;
 		m_Cursor->Update( 1 );
 
+		m_Game->Clear();
+		Shape mW = sf::Shape::Rectangle( m_View->GetRect().Left, m_View->GetRect().Top,
+				m_View->GetRect().Right, m_View->GetRect().Bottom, sf::Color::White );
+		m_Game->Draw( mW );
+		for( vector< Shape* >::iterator i = m_Shapes.begin(); i != m_Shapes.end(); i++ )
+		{
+			// (*i)->SetColor( sf::Color::Blue );
+			m_Game->Draw( *(*i) );
+		}
+
 		m_Game->Display();
 	} //}}}
 
 	cout << "\n---------------------------------\nThanks for playing!\n";
 	return 0;
 }
-
 
 void CreateParticle( vector< Shape* > *m_Shapes, vector< Particle* > *m_Particles,
 		ParticleSystem *m_ParticleSystem, vector< Particle::Force* > *m_Forces,
@@ -418,7 +442,14 @@ void CreateParticle( vector< Shape* > *m_Shapes, vector< Particle* > *m_Particle
 	int num = m_Shapes->size();
 	cout << "Created a new particle -- (↑) to " << num << "\n";
 	Shape* nShape = new Shape(
-		Shape::Circle( 0, 0, 10, Color( sin( num ), cos( num ), tan( num ) ) ) );
+			Shape::Circle( 0, 0, 10, sf::Color::White // Color(
+					/*
+					(int)( sin( num ) * 255.0f ),
+					(int)( cos( num ) * 255.0f ),
+					(int)( tan( num ) * 255.0f ), 255
+
+				)*/, 1 ) );
+	nShape->EnableFill( true );
 	m_Shapes->push_back( nShape );
 	// TODO m_Game->AddEntity( nShape );
 
@@ -443,7 +474,7 @@ void CreateParticles( vector< Shape* > *m_Shapes, vector< Particle* > *m_Particl
 		ParticleSystem *m_ParticleSystem, vector< Particle::Force* > *m_Forces,
 		RenderWindow *m_Game, int initVel, int numObjects )
 { //{{{
-	for( unsigned int i = 0; i < numObjects; i++ )
+	for( int i = 0; i < numObjects; i++ )
 	{
 		CreateParticle( m_Shapes, m_Particles, m_ParticleSystem, m_Forces, m_Game, initVel,
 				Vector2< long double >(
