@@ -109,7 +109,7 @@ int main( int argc, const char* argv[] )
 	/// Create Gravity/Repel forces
 	const int rgConstant = 1024; //{{{
 	cout << "\trgConstant: " << rgConstant << "\n";
-	vector< Particle::Force* > *m_Forces;
+	vector< Particle::Force* > *m_Forces = new vector< Particle::Force* >;
 
 	cout << "Creating a gravity force\n";
 	Particle::Force m_GravityFunc = &( Gravity< rgConstant > );
