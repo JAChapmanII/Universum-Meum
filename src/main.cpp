@@ -347,11 +347,11 @@ int main( int argc, const char* argv[] )
 
 		if( m_Input.IsKeyDown( sf::Key::PageUp ) ) /// Zoomin
 		{ //{{{
-			m_View->Zoom( 0.90f );
+			m_View->Zoom( 1.10f );
 		} //}}}
 		else if( m_Input.IsKeyDown( sf::Key::PageDown ) ) /// Zoomout
 		{ //{{{
-			m_View->Zoom( 1.10f );
+			m_View->Zoom( 0.90f );
 		} //}}}
 
 		for( unsigned int i = 0; i < 10; ++i )
@@ -442,14 +442,10 @@ void CreateParticle( vector< Shape* > *m_Shapes, vector< Particle* > *m_Particle
 	int num = m_Shapes->size();
 	cout << "Created a new particle -- (↑) to " << num << "\n";
 	Shape* nShape = new Shape(
-			Shape::Circle( 0, 0, 10, sf::Color::White // Color(
-					/*
+			Shape::Circle( 0, 0, 10, Color(
 					(int)( sin( num ) * 255.0f ),
 					(int)( cos( num ) * 255.0f ),
-					(int)( tan( num ) * 255.0f ), 255
-
-				)*/, 1 ) );
-	nShape->EnableFill( true );
+					(int)( tan( num ) * 255.0f ) ) ) );
 	m_Shapes->push_back( nShape );
 	// TODO m_Game->AddEntity( nShape );
 
