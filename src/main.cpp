@@ -215,7 +215,7 @@ int main( int argc, const char* argv[] )
 	Particle* pMin;
 	Particle* pMax;
 	cout << "Entering main game loop\n";
-	while( !m_Game->IsOpened() )
+	while( m_Game->IsOpened() )
 	{ //{{{
 		if( m_Input.IsKeyDown( sf::Key::Escape ) )
 		{
