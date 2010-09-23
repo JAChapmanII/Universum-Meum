@@ -5,6 +5,6 @@
 # *.[oa]
 # *~
 bin/
-obj/
+*.o
 doc/
 gmon.out

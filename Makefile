@@ -1,50 +1,57 @@
-SHELL=/bin/sh
 SRCDIR=src
 DOCDIR=doc
-OBJDIR=obj
 BINDIR=bin
-SRC=main.cpp
-PROG=Universum-Meum
+SOURCES=$(wildcard $(SRCDIR)/*.cpp)
+HEADERS=$(wildcard $(SRCDIR)/*.hpp)
+OBJS=$(SOURCES:.cpp=.o)
+EXEC=Universum-Meum
 
 CC=g++
-CFLAGS=-lSDL -lGL -pipe
+CFLAGS=
+
+LD=ld
+LFLAGS=
+LFLAGS+=-lsfml-graphics -lsfml-window -lsfml-system
+#LFLAGS+=-lGL
+
+ifdef profile
+CFLAGS+=-pg
+endif
+
+ifndef nowall
+CFLAGS+=-Wextra -pedantic -Wmain -Weffc++ -Wswitch-default -Wswitch-enum
+CFLAGS+=-Wmissing-include-dirs -Wmissing-declarations -Wunreachable-code
+CFLAGS+=-Winline -Wfloat-equal -Wundef -Wcast-align -Wredundant-decls
+CFLAGS+=-Winit-self -Wshadow
+endif
+
+ifdef release
+CFLAGS+=-O3 -s
+else
+CFLAGS+=-g
+endif
 
 DOXY=doxygen
 DCONFIG=Doxyfile
 
-all: ${PROG}
+all: $(EXEC)
 
-${PROG}: debug
+full: release documentation
 
-full: dirs clean release documentation
+$(EXEC): $(OBJS)
+	mkdir -p $(BINDIR)
+# TODO If you're feeling brave, figure out what the hell happens here
+	$(CC) -o $(BINDIR)/$(EXEC) $(LFLAGS) $?
 
-release: dirs clean
-	${CC} -o ${BINDIR}/${PROG} ${CFLAGS} -O3 -s ${SRCDIR}/${SRC}
-
-debug: dirs clean
-	${CC} -o ${BINDIR}/${PROG}-debug ${CFLAGS} -g ${SRCDIR}/${SRC}
-
-wall: dirs clean
-	${CC} -o ${BINDIR}/${PROG}-wall ${CFLAGS} -g \
-	-Wextra -pedantic -Wmain -Weffc++ -Wswitch-default -Wswitch-enum -Wmissing-include-dirs \
-	-Wmissing-declarations -Wunreachable-code -Winline -Wfloat-equal -Wundef -Wcast-align \
-	-Wredundant-decls -Winit-self -Wshadow \
-	${SRCDIR}/${SRC}
-
-profile: dirs clean
-	${CC} -o ${BINDIR}/${PROG}-profile ${CFLAGS} -pg ${SRCDIR}/${SRC}
+%.o: %.cpp $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 documentation:
-	${DOXY} ${DCONFIG}
-
-dirs:
-	mkdir -p ${SRCDIR}
-	mkdir -p ${DOCDIR}
-	mkdir -p ${OBJDIR}
-	mkdir -p ${BINDIR}
+	mkdir -p $(DOCDIR)
+	$(DOXY) $(DCONFIG)
 
 clean:
-	rm -rf ${OBJDIR}/*
-	rm -rf ${BINDIR}/*
-	rm -rf ${DOCDIR}/*
+	rm -f $(BINDIR)/$(EXEC)
+	rm -f $(SRCDIR)/*.o
+	rm -rf $(DOCDIR)/*
 
