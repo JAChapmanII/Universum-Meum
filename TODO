@@ -2,63 +2,70 @@ General:
 	grep -n 'TODO' -R src/
 
 GUI:
-	- There is currently a pretty bad quit button example.
-	  - Z-order needs to be counted in
+	- There is no GUI
 	- Decide what buttons/menus there should be
-	- Create a generic-er way to implement said things
-	  - Perhaps classes with function pointers for what happens on click?
+	- Create a generic way to implement said things
+		- Perhaps classes with function pointers for what happens on click?
 	- Implement the said buttons/menus using said system
 
 Complete:
 	- Move to use impulses/forces
-	  - Look at the TODO statement in the elastic collision code, basically
+		- Look at the TODO statement in the elastic collision code, basically
 	- Move most if not everything that could be done as a Vector into a Vector
 	- Look for more bugs/memory leaks
 	- Look for bad C++ code that was fine D
 		- To go along with this, look at the HACKING file and make sure things match up
 			- I'm talking mainly about the this-> pointer usage in member functions
+	- Look for bad SFML code that was fine SDL
 
 Design Problems:
 	- Current example "repel" looks bad. Get an example that will look realistic.
-		- Finish the forceType enumeration implementation to allow different forces to be applied
-		  only at certain times.
+		- Finish the forceType enumeration implementation to allow different
+		  forces to be applied only at certain times.
 		- Split off and make a force that is actually elastic/inelastic collisions
-			- Get a system were we can impose restrictions on the time step of ParticleSystem so
-			  that this force will actually ever be applied.
-		- Suggestion was made for the interpolation method to be non-quadratic. May or may not make
-		  a better "repel" force. Might be better suited for some template repel class.
+			- Get a system were we can impose restrictions on the time step of
+			  ParticleSystem so that this force will actually ever be applied.
+		- Suggestion was made for the interpolation method to be non-quadratic.
+		  May or may not make a better "repel" force. Might be better suited for
+		  some template repel class.
 	- Timing system is flawed. Need a new implementation that is interval independent.
 		- Hopefully this will work out of the box with negative time changes
 
 Bugs:
 	- Our code sucks. It should suck less.
 	- There is no documentation really.
-		- In line documentation can be made with /// before a declaration. This can be (and is)
-		  extracted in the documentation target of the makefile.
-		- Pretty much everything should be documented, not just for us but for any end-user trying
-		  to add/make their own forces. It'd be nice to know the API
+		- In line documentation can be made with /// before a declaration. This
+		  can be (and is) extracted in the documentation target of the makefile.
+		- Pretty much everything should be documented, not just for us but for any
+		  end-user trying to add/make their own forces. It'd be nice to know the API
 	- Log more {,useful} stuff.
-		- Make a logging function that works like Stdout, so we can log variable values
-			- Might be able to do a Stdout onto a string actually.
+		- Make a logging function that works like cout, so we can log variable values
+			- Might be able to do a cout onto a string actually.
+				- stringstream anyone?
 
 Bad implementation:
-	- The whole hack-ish scroll wheel support.
 	- Some stuff uses lists, some uses arrays, make this consistent (array → linked list)
-	- Maybe include Keypress and Click as member classes of Game? Or something
+	- n^2 algorithm. Fast Multipole Method can get this down to n
 
 Features:
-	- ParticleSystem should have a way of passing information it's calculating to each call of a
-	  Work function. This should save a crap load of processing time, especially on mirror calls.
+	- ParticleSystem should have a way of passing information it's calculating
+	  to each call of a Work function. This should save a crap load of
+	  processing time, especially on mirror calls.
 	- Template-ize the current repel force to allow different interpolation method.
 	- Template-ize the gravity force and call it "attract".
 		- Make gravity an instance of this template.
 	- Make forces be even more customizable by allowing polygons of multiplication.
-		- i.e., at radius <5 there is a 1 multiplier of effect, ot >=5 there is a 0 multiplier to
-		  have some force that applies fully if the distance is within 5 and 0 if it isn't.
+		- i.e., at radius <5 there is a 1 multiplier of effect, ot >=5 there is a
+		  0 multiplier to have some force that applies fully if the distance is
+		  within 5 and 0 if it isn't.
 	- Make the thing multi-threaded
 		- First thing to do is split off rendering/simulating
-		- Second is to get the simulating thing to be safe to do on multiple particles at once and
-		  then spawn threads for each. [WARNING: horribly hard to do, I'm sure]
+		- Second is to get the simulating thing to be safe to do on multiple
+		  particles at once and then spawn threads for each.
+			- [WARNING: horribly hard to do, I'm sure]
+			- FMM Should allow this for the blocks that are simulated together,
+			  overall could then be treated just as another set of points,
+			  depending on total number of levels
 
 Miscellaneous:
 	- Create more formal/rigorous coding style. Use it. Needs to be consistent.
@@ -66,19 +73,17 @@ Miscellaneous:
 	- TODO looks like crap. Need to finish fixing it up so it's readable and easy to update.
 		- I like the way this is looking, but the back log still needs cleaned out.
 		- Make sure it is updated regularly
-	- Build system is bad, get on to ldc finally.
-		- In the meantime (if it's not too hard) a script that checks for basic parse-ability would
-		  bpEe nice. Maybe we can steal a YACC file that works for C or something? (YACC probably
-		  isn't what I mean, maybe Bison?)
 
 Nolan:
 	- Follow the coding style
-		- If you have any problems with it, let me know and we'll adapt it. Just make sure
-		  everytihng is consistent.
+		- If you have any problems with it, let me know and we'll adapt it. Just
+		  make sure everytihng is consistent.
 	- You never did send me that email that the TODO has been mentioning since the 5th :p
 
 Jeff:
 	- Make a more consistent work schedule
+	- Get some information on the FMM
 
 New Coders:
 	- Contact us and tell us what you're interested in.
+

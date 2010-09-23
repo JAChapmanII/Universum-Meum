@@ -1,70 +1,71 @@
-Universum Meum is a game that allows the player to create new particles and arbitrary interactions
-to build their own universe completely from scratch.
+Universum Meum is a game that allows the player to create new particles and
+arbitrary interactions to build their own universe completely from scratch.
 
-UM is currently in pre-alhpa and many things do not work. If you'd like to help us hack, drop us a
-line either through github or through our emails.
+UM is currently in pre-alhpa and many things do not work. If you'd like to help
+us hack, drop us a line either through github or through our emails.
 
 
 Obtaining:
 
 Github currently hosts the repo at http://github.com/JAChapmanII/Universum-Meum
-You can use:
-	git clone git://github.com/JAChapmanII/Universum-Meum.git
-to clone the repository locally.
+You can use: git clone git://github.com/JAChapmanII/Universum-Meum.git to clone
+the repository locally.
 
 
 Building:
 
-Recently the project has been ported to C++, so the build system is a little rough (though better
-than before). To compile it, you will need g++, SDL headers/libs, and OpenGL headers/libs.
-Once you have the build software, execute
-	make
-from the Universum Meum directory.
+Recently the project has been ported to C++, so the build system is a little
+rough (though better than before). To compile it, you will need g++, SFML
+headers/libs, and OpenGL headers/libs.  Once you have the build software,
+execute make from the Universum Meum directory.
 
-There are several targets you can use, the default being "debug"
-	- full cleans everything and makes a release build and the documentatition
-	- release strips debug information and optimizes fully
-	- debug builds in debug information and does no optimization
-	- wall builds with the -Wall parameter
-	- profile builds the same as debug, but also enables profiling (gprof information)
-	- documentation uses ddoc to make the documentation in docs/ (src code, not user manual)
+There are several targets you can use, the default being "Universum-Meum"
+	- full makes Universum-Meum and then the documentation
+	- Universum-Meum makes the executable, allowing for a few modifiers
+		- profile enables profiling
+		- nowall disables all the extra errors and warnings
+		- release optimizes instead of adding debug symbols
+	- documentation uses doxygen to make the documentation in docs/
+		(src code, not user manual)
 
-If anybody knows how we can improve our Makefile, please let us know (we're complely wingin it now)
+If anybody knows how we can improve our Makefile, please let us know (we're
+complely winging it now)
 
 
 Running:
 
-After the program is compiled, simply run:
-	./bin/Universum-Meum{-target} # Note: by default the target is currently debug
+After the program is compiled, simply run
+	./bin/Universum-Meum
 from the same directory from the Universum-Meum directory.
 
-To startup with more than the default number of particles, simply append tho number of particles
-you want to see. To start up with 5 particles use:
-	./bin/Universum-Meum{-target} 5
+To startup with more than the default number of particles, simply append tho
+number of particles you want to see. To start up with 5 particles use:
+	./bin/Universum-Meum 5
 
-To make each particle start with a random velocity, add a '1' after the number of particles:
+To make each particle start with a random velocity, add a '1' after the number
+of particles
 	./bin/Universum-Meum{-target} 5 1
 
 To make the screen lock onto the "Sun" make the last argument be "lock":
 	./bin/Universum-Meum{-target} 4 lock
 
-Once the game is running it will prompt you in the console to input a width and a height for the
-window. Once you do this you'll be up and running! Take a look at the Controls section for more
-information.
+Once the game is running it will prompt you in the console to input a width and
+a height for the window. Once you do this you'll be up and running! Take a look
+at the Controls section for more information.
 
 
 Controls:
 
 Particle manipulation:
-	Left click in empty space to make a particle
+	Left click in empty space to make a particle.
 	To delete a particle, right click when the cursor is on one
 		or, press d to delete the nearest one
 		or, press i to delete the furthest one
 
 Panning/zooming:
-	If "lock" is not passed as an argument, you can use the arrow keys to pan the view.
-	You can use the mousewheel to zoom in and out (If you zoom in too far, the camera will stop and
-													being able to view a 0x0 grid)
+	If "lock" is not passed as an argument,
+		you can use the arrow keys to pan the view.
+	You can use the page{up,down} keys to zoom in and out
 
 Adjusting framerate:
 	+ on the keypad makes the framerate increase by 5 (<=1000)
@@ -74,7 +75,6 @@ Quiting:
 	Hit the "Esc"ape key.
 	If your WM has a "close" butotn, you can use that.
 	kill -9 ${PROCESSID} # in bash/zsh you can use $(pgrep Universum-Meum) for ${PROCESSID}
-						 # in fish you can use (pgrep Universum-Meum)
-	The power button, or you can unplug the computer at either the PSU or wall if you have no UPS in
-		the way.
+	The power button
+	Unplug the computer at either the PSU or wall if you have no UPS in the way.
 

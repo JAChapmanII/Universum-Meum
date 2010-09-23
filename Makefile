@@ -36,7 +36,7 @@ DCONFIG=Doxyfile
 
 all: $(EXEC)
 
-full: release documentation
+full: $(EXEC) documentation
 
 $(EXEC): $(OBJS)
 	mkdir -p $(BINDIR)
