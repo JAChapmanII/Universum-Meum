@@ -23,7 +23,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "particle.cpp"
+#include "particle.hpp"
 
 class ParticleSystem
 {
@@ -61,3 +61,4 @@ class ParticleSystem
 };
 
 #endif // PARTICLE_SYSTEM_HPP
+

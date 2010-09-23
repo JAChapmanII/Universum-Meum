@@ -17,9 +17,6 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-#ifndef PARTICLE_SYSTEM_CPP
-#define PARTICLE_SYSTEM_CPP
-
 #include "particle_system.hpp"
 
 ParticleSystem::ParticleSystem( long double iStep, long double iMaxSteps ) :
@@ -65,7 +62,7 @@ void ParticleSystem::WorkAll( long double deltaTime )
 	std::random_shuffle( m_Particles.begin(), m_Particles.end() );
 	for( std::vector< Particle* >::iterator i = m_Particles.begin(); i != m_Particles.end(); ++i )
 	{
-		for( std::vector< Force* >::iterator f = m_Forces.begin(); f != m_Forces.end(); ++f )
+		for( std::vector< Particle::Force* >::iterator f = m_Forces.begin(); f != m_Forces.end(); ++f )
 		{
 			(*(*f))( *i, *i, deltaTime );
 		}
@@ -158,4 +155,3 @@ void ParticleSystem::RemoveParticle( Particle *toRemove )
 	}
 } //}}}
 
-#endif // PARTICLE_SYSTEM_CPP

@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "../../particle.cpp"
+#include "../../particle.hpp"
 
 /// Alters particle A by applying an force resulting from a elastic collision between A and B
 template< int elasticityConst >

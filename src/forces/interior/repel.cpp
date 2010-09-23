@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "../../particle.cpp"
+#include "../../particle.hpp"
 
 /// Alters particle A by applying an acceleration equal to that of a force like antigravity over deltaTime
 template< int repConst >

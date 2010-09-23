@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "../../particle.cpp"
+#include "../../particle.hpp"
 
 template< int collConst >
 void Collapse( Particle* A, Particle* B, long double deltaTime )

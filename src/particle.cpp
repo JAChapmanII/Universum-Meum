@@ -17,9 +17,6 @@
 	along with Universum Meum.  If not, see <http://www.gnu.org/licenses/>.
 
 */// }}}
-#ifndef PARTICLE_CPP
-#define PARTICLE_CPP
-
 #include "particle.hpp"
 
 typedef void( *Force )( Particle*, Particle*, long double );
@@ -117,4 +114,3 @@ Drawable* Particle::GetDrawable()
 	// TODO Error
 } //}}}
 
-#endif // "PARTICLE_CPP"
