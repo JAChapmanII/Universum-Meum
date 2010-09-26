@@ -92,6 +92,7 @@ int main( int argc, const char* argv[] )
 	cout << "W: " << gWidth << "\tH: " << gHeight << "\n";
 	RenderWindow *m_Game = new RenderWindow(
 			VideoMode( gWidth, gHeight ), "Universum-Meum", sf::Style::Close ); //{{{
+	m_Game->ShowMouseCursor( false );
 	View *m_View = &m_Game->GetDefaultView();
 	m_Game->SetView( *m_View );
 	Clock *m_Clock = new Clock();
@@ -192,7 +193,7 @@ int main( int argc, const char* argv[] )
 
 	cout << "Setting up the cursor\n" ;
 	Shape* m_CursorShape = new Shape(
-		Shape::Circle( 0.0f, 0.0f, 3.0f, Color( 0, 0, 0 ) ) ); //{{{
+		Shape::Circle( 0.0f, 0.0f, 3.0f, Color::Black, 0.5, Color::White ) ); //{{{
 	m_Game->SetCursorPosition( 400, 300 );
 	Particle* m_Cursor = new Particle();
 
@@ -202,7 +203,6 @@ int main( int argc, const char* argv[] )
 	m_Cursor->radius = 0.0f;
 	m_Cursor->mass = 0.0f;
 	// TODO m_Game->AddEntity( m_CursorShape );
-	m_Shapes.push_back( m_CursorShape );
 
 	//m_ParticleSystem.AddParticle( m_Cursor );
 
@@ -427,6 +427,7 @@ int main( int argc, const char* argv[] )
 			// (*i)->SetColor( sf::Color::Blue );
 			m_Game->Draw( *(*i) );
 		}
+		m_Game->Draw( *m_CursorShape );
 
 		m_Game->Display();
 	} //}}}
