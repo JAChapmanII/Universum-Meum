@@ -30,7 +30,7 @@ Particle::Particle() :
 	velocity(),
 	movers(),
 	impulses(),
-	m_Drawables(),
+	m_Shapes(),
 	m_Forces()
 {
 } //}}}
@@ -72,10 +72,12 @@ void Particle::Update( long double deltaTime )
 		+ this->velocity.y * this->velocity.y );
 	this->momentum = this->mass * this->speed;
 
-	for( std::vector< Drawable* >::iterator i = this->m_Drawables.begin();
-			i != this->m_Drawables.end(); ++i )
+	for( std::vector< Shape* >::iterator i = this->m_Shapes.begin();
+			i != this->m_Shapes.end(); ++i )
 	{
-		(*i)->SetPosition( (float)this->position.x, (float)this->position.y );
+		(*i)->setPosition(
+				(float)this->position.x - this->radius,
+				(float)this->position.y - this->radius );
 	}
 
 } //}}}
@@ -92,11 +94,11 @@ void Particle::AddForce( Force *nForce )
 	}
 } //}}}
 
-void Particle::AddDrawable( Drawable *nDrawable )
+void Particle::AddShape( Shape *nShape )
 { //{{{
-	if( nDrawable != 0 )
+	if( nShape != 0 )
 	{
-		m_Drawables.push_back( nDrawable );
+		m_Shapes.push_back( nShape );
 	}
 	else
 	{
@@ -104,11 +106,11 @@ void Particle::AddDrawable( Drawable *nDrawable )
 	}
 } //}}}
 
-Drawable* Particle::GetDrawable()
+Shape* Particle::GetShape()
 { //{{{
-	if( m_Drawables.size() > 0 )
+	if( m_Shapes.size() > 0 )
 	{
-		return m_Drawables.front();
+		return m_Shapes.front();
 	}
 	return NULL;
 	// TODO Error

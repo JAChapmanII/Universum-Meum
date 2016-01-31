@@ -23,8 +23,8 @@
 #include <vector>
 #include <cmath>
 
-#include <SFML/Graphics/Drawable.hpp>
-using sf::Drawable;
+#include <SFML/Graphics/Shape.hpp>
+using sf::Shape;
 
 #include <SFML/System/Vector2.hpp>
 using sf::Vector2;
@@ -50,11 +50,11 @@ class Particle
 
 		/// Push Force into m_Forces
 		void AddForce( Force *nForce );
-		/// Push Drawable into m_Drawables, used to draw a representation of this particle
-		void AddDrawable( Drawable *nDrawable );
+		/// Push Shape into m_Shapes, used to draw a representation of this particle
+		void AddShape( Shape *nShape );
 
-		/// Return first entity in m_Drawables or null if there are none.
-		Drawable* GetDrawable();
+		/// Return first entity in m_Shapes or null if there are none.
+		Shape* GetShape();
 
 		/// Mass of particle
 		long double mass;
@@ -74,8 +74,8 @@ class Particle
 		std::vector< Vector2< long double > > impulses;
 
 	private:
-		/// std::vector of Drawables representincg this object on the screen
-		std::vector< Drawable* > m_Drawables;
+		/// std::vector of Shapes representincg this object on the screen
+		std::vector< Shape* > m_Shapes;
 		/// std::vector of Forces this particle "emits"
 		std::vector< Force* > m_Forces;
 

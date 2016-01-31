@@ -11,8 +11,7 @@ CFLAGS=
 
 LD=ld
 LFLAGS=
-LFLAGS+=-lsfml-graphics -lsfml-window -lsfml-system
-#LFLAGS+=-lGL
+LFLAGS+=-lsfml-graphics -lsfml-window -lsfml-system -lGL
 
 ifdef profile
 CFLAGS+=-pg

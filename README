@@ -1,3 +1,10 @@
+Warning: this code is very old, and very bad. There were high aspirations for
+this project of which only a little was accomplished in my time working on it.
+I've just cleaned up some bitrot and converted it to use SFML2 so it compiles
+again, but any continuation of this project will likely need to start as a
+rewrite.
+
+
 Universum Meum is a game that allows the player to create new particles and
 arbitrary interactions to build their own universe completely from scratch.
 
